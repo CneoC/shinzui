@@ -11,9 +11,10 @@ class FontData
 public:
 	enum { TYPE = RESOURCE_FONT };
 
-	FontData(u32 type = 0)
-		: ResourceData(type | RESOURCE_FONT)
+	FontData(ResourceLoaderBase* pData)
+		: ResourceData(pData)
 	{
+		setType(TYPE);
 	}
 };
 

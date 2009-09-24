@@ -10,7 +10,7 @@ Process *GLWindow::run(double delta)
 {
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
 	SwapBuffers(hDC);
-	return Win32Window::run(delta);
+	return Window::run(delta);
 }
 
 bool GLWindow::createContext()

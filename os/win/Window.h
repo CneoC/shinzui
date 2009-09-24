@@ -3,20 +3,20 @@
 // Only compile on windows builds
 #ifdef _WIN32
 
-#ifndef __WIN32_WINDOW_H__
-#define __WIN32_WINDOW_H__
+#ifndef __WINDOW_H__
+#define __WINDOW_H__
 
-#include "os/Window.h"
+#include "core/WindowBase.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-class Win32Window :
-	public Window
+class Window :
+	public WindowBase
 {
 public:
-	Win32Window(Core *pCore);
-	~Win32Window();
+	Window(Core *pCore);
+	~Window();
 	
 	virtual Process *run(double delta);
 
@@ -38,6 +38,6 @@ protected:
 	HINSTANCE	hInstance;	// Holds The Instance Of The Application
 };
 
-#endif //__WIN32_WINDOW_H__
+#endif //__WINDOW_H__
 
 #endif //_WIN32

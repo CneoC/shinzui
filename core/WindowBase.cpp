@@ -1,6 +1,6 @@
-#include "Window.h"
+#include "WindowBase.h"
 
-Window::Window(Core *pCore)
+WindowBase::WindowBase(Core *pCore)
 	: ChainProcess(pCore, 0, Core::THREAD_ID_MAIN)
 	, m_size(800, 600)
 	, m_fullscreen(false)
@@ -8,6 +8,6 @@ Window::Window(Core *pCore)
 {
 }
 
-Window::~Window()
+WindowBase::~WindowBase()
 {
 }

@@ -11,12 +11,19 @@ class ShaderData
 public:
 	enum { TYPE = RESOURCE_SHADER };
 
-	ShaderData(u32 type = 0)
-		: ResourceData(type | TYPE)
+	ShaderData()
 	{
+		setType(TYPE);
 	}
 
 protected:
+};
+
+class GLShaderData
+	: public ShaderData
+{
+public:
+
 };
 
 typedef ResourceRef<ShaderData>		ShaderResource;

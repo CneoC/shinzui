@@ -3,6 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "engine.vcproj", "{781D54A7-F045-46DB-960D-644DDE484572}"
 	ProjectSection(ProjectDependencies) = postProject
+		{B39ED2B3-D53A-4077-B957-930979A3577D} = {B39ED2B3-D53A-4077-B957-930979A3577D}
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
 		{2BA81AFD-5122-481C-A9BD-4FDC7D7ECBE5} = {2BA81AFD-5122-481C-A9BD-4FDC7D7ECBE5}
 	EndProjectSection
@@ -10,6 +11,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "..\libraries\freetype_2_3_9\builds\win32\vc2008\freetype.vcproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glew_static", "..\libraries\glew\build\vc6\glew_static.vcproj", "{2BA81AFD-5122-481C-A9BD-4FDC7D7ECBE5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeImage", "..\libraries\freeimage\FreeImage.2005.vcproj", "{B39ED2B3-D53A-4077-B957-930979A3577D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +74,22 @@ Global
 		{2BA81AFD-5122-481C-A9BD-4FDC7D7ECBE5}.Release Singlethreaded|Win32.Build.0 = Release MX|Win32
 		{2BA81AFD-5122-481C-A9BD-4FDC7D7ECBE5}.Release|Win32.ActiveCfg = Release|Win32
 		{2BA81AFD-5122-481C-A9BD-4FDC7D7ECBE5}.Release|Win32.Build.0 = Release|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Debug Multithreaded|Win32.ActiveCfg = Debug|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Debug Multithreaded|Win32.Build.0 = Debug|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Debug MX|Win32.ActiveCfg = Debug|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Debug MX|Win32.Build.0 = Debug|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Debug Singlethreaded|Win32.ActiveCfg = Debug|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Debug Singlethreaded|Win32.Build.0 = Debug|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Debug|Win32.Build.0 = Debug|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Release Multithreaded|Win32.ActiveCfg = Release|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Release Multithreaded|Win32.Build.0 = Release|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Release MX|Win32.ActiveCfg = Release|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Release MX|Win32.Build.0 = Release|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Release Singlethreaded|Win32.ActiveCfg = Release|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Release Singlethreaded|Win32.Build.0 = Release|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Release|Win32.ActiveCfg = Release|Win32
+		{B39ED2B3-D53A-4077-B957-930979A3577D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

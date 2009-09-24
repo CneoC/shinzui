@@ -11,9 +11,9 @@ class TextureData
 public:
 	enum { TYPE = RESOURCE_TEXTURE };
 
-	TextureData(u32 type = 0)
-		: ResourceData(type | TYPE)
+	TextureData()
 	{
+		setType(TYPE);
 	}
 };
 

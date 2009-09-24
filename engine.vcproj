@@ -191,7 +191,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\GLWindow.cpp"
+				RelativePath=".\os\win\gl\GLWindow.cpp"
 				>
 			</File>
 			<File
@@ -204,6 +204,10 @@
 			</File>
 			<File
 				RelativePath=".\render\Renderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\Resource.cpp"
 				>
 			</File>
 			<File
@@ -223,11 +227,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Win32Window.cpp"
+				RelativePath=".\util\Util.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\os\Window.cpp"
+				RelativePath=".\os\win\Window.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\core\WindowBase.cpp"
 				>
 			</File>
 		</Filter>
@@ -265,15 +273,55 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resources\FontResource.h"
+				RelativePath=".\core\io\File.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\GLWindow.h"
+				RelativePath=".\resources\file\font\FileFontLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\GLWindow.h"
+				RelativePath=".\resources\file\font\FileFTFontLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\file\FileResourceLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\file\shader\FileShaderLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\file\texture\FileTextureLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\font\FontResource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\os\win\io\FSFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\core\io\FSFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\file\FSResourceLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\font\FTFontResource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\os\win\gl\GLWindow.h"
+				>
+			</File>
+			<File
+				RelativePath=".\core\gl\GLWindow.h"
 				>
 			</File>
 			<File
@@ -313,6 +361,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resources\ResourceLoaderBase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resources\ResourceTypes.h"
 				>
 			</File>
@@ -321,7 +373,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resources\ShaderResource.h"
+				RelativePath=".\resources\shader\ShaderResource.h"
 				>
 			</File>
 			<File
@@ -333,7 +385,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resources\TextureResource.h"
+				RelativePath=".\resources\texture\TextureResource.h"
 				>
 			</File>
 			<File
@@ -341,7 +393,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\Time.h"
+				RelativePath=".\core\Time.h"
 				>
 			</File>
 			<File
@@ -349,15 +401,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\util\Util.h"
+				>
+			</File>
+			<File
 				RelativePath=".\math\Vector2.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Win32Window.h"
+				RelativePath=".\core\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\Window.h"
+				RelativePath=".\os\win\Window.h"
+				>
+			</File>
+			<File
+				RelativePath=".\core\WindowBase.h"
 				>
 			</File>
 		</Filter>

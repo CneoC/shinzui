@@ -3,13 +3,13 @@
 #ifndef __GL_WINDOW_H__
 #define __GL_WINDOW_H__
 
-#include "Win32Window.h"
+#include "os/win/Window.h"
 
 class GLWindow :
-	public Win32Window
+	public Window
 {
 public:
-	GLWindow(Core *pCore) : Win32Window(pCore) {}
+	GLWindow(Core *pCore) : Window(pCore) {}
 	~GLWindow() {}
 
 	virtual Process *run(double delta);

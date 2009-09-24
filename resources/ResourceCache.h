@@ -3,30 +3,35 @@
 #ifndef __RESOURCE_CACHE_H__
 #define __RESOURCE_CACHE_H__
 
-class ResourceCache
-{
-protected:
-	struct Entry
-	{
-		Time		lastUsed;
-		Resource	resource;
-	};
+#include "util/Util.h"
 
+class ResourceCache
+	: public Process
+{
 public:
-	Resource get(const char *id)
+	typedef std::map<u32, Resource>	ResourceMap;
+
+	/**
+	 * Constructs a resource cache process.
+	 * @param pCore			core class.
+	 * @param id				process identifier for lookups.
+	 * @param targetThreadId	target thread id to run this process on (THREAD_ID_NONE for any thread)
+	 */
+	ResourceCache(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_NORMAL)
+		: Process(pCore, id, targetThreadId)
 	{
-		u32 hash = generateHash(id);
-		Entry &result = m_resources[hash];
-		result.lastUsed = Time(Time::NOW);
-		return result.resource;
 	}
 
-	void put(const char *id, const Resource &resource)
+	Resource get(const std::string &id)
 	{
-		u32 hash = generateHash(id);
-		Entry &entry = m_resources[hash];
-		entry.lastUsed = Time(Time::NOW);
-		entry.resource = resource;
+		u32 hash = Util::hashString(id.c_str(), id.length());
+		return m_resources[hash];
+	}
+
+	void put(const std::string &id, const Resource &resource)
+	{
+		u32 hash = Util::hashString(id.c_str(), id.length());
+		m_resources[hash] = resource;
 	}
 
 	void clean()
@@ -39,20 +44,14 @@ public:
 		m_resources.clear();
 	}
 
-protected:
-	u32 generateHash(const char *c) const
+	virtual Process* run(double delta)
 	{
-		u32 hash = 0;
-
-		while (c)
-		{
-			hash = *c + (hash << 6) + (hash << 16) - hash;
-			++c;
-		}
-		return hash;
+		clean();
+		return this;
 	}
 
-	std::map<u32, Entry>	m_resources;
+protected:
+	ResourceMap	m_resources;
 };
 
 #endif //__RESOURCE_CACHE_H__

@@ -8,30 +8,30 @@
 #include <list>
 
 /**
-* Process base class, inherited by core engine processes.
-*/
+ * Process base class, inherited by core engine processes.
+ */
 class Process
 {
 public:
 	typedef std::list<Process *> DependencyProcessList;
 
 	/**
-	* Constructs a core process.
-	* @param pCore			core class.
-	* @param id				process identifier for lookups.
-	* @param targetThreadId	target thread id to run this process on (THREAD_ID_NONE for any thread)
-	*/
+	 * Constructs a core process.
+	 * @param pCore			core class.
+	 * @param id				process identifier for lookups.
+	 * @param targetThreadId	target thread id to run this process on (THREAD_ID_NONE for any thread)
+	 */
 	Process(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_NORMAL);
 
 	/**
-	* Runs the process.
-	* @return if the process is added to the run queue after execution.
-	*/
+	 * Runs the process.
+	 * @return if the process is added to the run queue after execution.
+	 */
 	virtual Process *run(double delta) = 0;
 
 	/**
-	* Check if the process is ready for it's run.
-	*/
+	 * Check if the process is ready for it's run.
+	 */
 	bool isReady(double delta)
 	{
 		bool forceStart = m_forceStart;
@@ -40,8 +40,8 @@ public:
 	}
 
 	/**
-	* Check if other processes this process depends on have finished their execution.
-	*/
+	 * Check if other processes this process depends on have finished their execution.
+	 */
 	bool isDependencyDone() const;
 
 	//! Registers a dependency for this process.

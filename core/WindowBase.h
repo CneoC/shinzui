@@ -1,18 +1,18 @@
 #pragma once
 
-#ifndef __WINDOW_H__
-#define __WINDOW_H__
+#ifndef __WINDOW_BASE_H__
+#define __WINDOW_BASE_H__
 
 #include "core/ChainProcess.h"
 
 #include "math/Vector2.h"
 
-class Window :
+class WindowBase :
 	public ChainProcess
 {
 public:
-	Window(Core *pCore);
-	virtual ~Window();
+	WindowBase(Core *pCore);
+	virtual ~WindowBase();
 
 	virtual bool create() = 0;
 	virtual bool destroy() = 0;
@@ -43,5 +43,5 @@ protected:
 	int			m_bpp;
 };
 
-#endif //__WINDOW_H__
+#endif //__WINDOW_BASE_H__
 

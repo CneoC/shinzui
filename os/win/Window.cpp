@@ -1,23 +1,23 @@
 // Only compile on windows builds
 #ifdef _WIN32
 
-#include "Win32Window.h"
+#include "Window.h"
 
 #include "util/Log.h"
 
-Win32Window::Win32Window(Core *pCore)
-	: Window(pCore)
+Window::Window(Core *pCore)
+	: WindowBase(pCore)
 	, hDC(NULL)
 	, hRC(NULL)
 	, hWnd(NULL)
 {
 }
 
-Win32Window::~Win32Window()
+Window::~Window()
 {
 }
 
-bool Win32Window::create()
+bool Window::create()
 {
 	WNDCLASS	wc;
 	DWORD		dwExStyle;
@@ -117,7 +117,7 @@ bool Win32Window::create()
 	return true;
 }
 
-bool Win32Window::destroy()
+bool Window::destroy()
 {
 	// Reset fullscreen specific settings
 	if (isFullscreen())
@@ -149,12 +149,12 @@ bool Win32Window::destroy()
 	return true;
 }
 
-bool Win32Window::resize()
+bool Window::resize()
 {
 	return resizeContext();
 }
 
-Process *Win32Window::run(double delta)
+Process *Window::run(double delta)
 {
 	MSG msg;
 
@@ -171,10 +171,10 @@ Process *Win32Window::run(double delta)
 		}
 	}
 
-	return Window::run(delta);
+	return WindowBase::run(delta);
 }
 
-LRESULT CALLBACK Win32Window::wndProc(HWND hWnd, UINT uMsg,
+LRESULT CALLBACK Window::wndProc(HWND hWnd, UINT uMsg,
 										  WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
@@ -231,20 +231,20 @@ LRESULT CALLBACK Win32Window::wndProc(HWND hWnd, UINT uMsg,
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-LRESULT CALLBACK Win32Window::rerouteWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK Window::rerouteWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	Win32Window *pProc = NULL;
+	Window *pProc = NULL;
 
 	// associate instance from window message data
 	if (uMsg == WM_NCCREATE)
 	{
-		pProc = reinterpret_cast<Win32Window *>(((LPCREATESTRUCT)lParam)->lpCreateParams);
+		pProc = reinterpret_cast<Window *>(((LPCREATESTRUCT)lParam)->lpCreateParams);
 		::SetWindowLong(hWnd, GWL_USERDATA, reinterpret_cast<long>(pProc));
 	}
 	// retrieve previously associated instance
 	else
 	{
-		pProc = reinterpret_cast<Win32Window *>(GetWindowLong(hWnd, GWL_USERDATA));
+		pProc = reinterpret_cast<Window *>(GetWindowLong(hWnd, GWL_USERDATA));
 	}
 
 	return pProc->wndProc(hWnd, uMsg, wParam, lParam);
