@@ -1,5 +1,7 @@
 #include "DrawFPS.h"
 
+#include "resources/ResourceLoader.h"
+
 #include <gl/glew.h>
 
 DrawFPS::DrawFPS(Core *pCore)
@@ -18,6 +20,9 @@ DrawFPS::~DrawFPS()
 
 Process *DrawFPS::run(double delta)
 {
+// 	FontResource debugFont = m_pCore->getLoader()->getFont("2d/fonts/debug.ttf");
+// 	printf(debugFont->isLoaded() ? "loaded\n" : "not loaded\n");
+
 	m_frameCount++;
 	m_frameTime += delta;
 	if (m_frameTime > 0.5)

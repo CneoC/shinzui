@@ -42,6 +42,9 @@ public:
 	 */
 	virtual bool load(Resource &res, u32 flags = FLAG_NONE)
 	{
+		if (ResourceLoaderBase::load(res, flags))
+			return true;
+
 		FTFontResource font(res);
 	
 		if (FT_Init_FreeType(&font->getLibrary()))
@@ -55,7 +58,7 @@ public:
 		}
 
 		FT_Set_Char_Size(font->getFace(), 16 << 6, 16 << 6, 96, 96);
-
+	
 		font->setLoaded(true);
 
 		return true;
@@ -64,8 +67,11 @@ public:
 	/**
 	 * Unloads a resource (blocking).
 	 */
-	virtual void unload(Resource &res, u32 flags = FLAG_NONE)
+	virtual bool unload(Resource &res, u32 flags = FLAG_NONE)
 	{
+		if (ResourceLoaderBase::unload(res, flags))
+			return true;
+
 		FTFontResource font(res);
 
 		font->setLoaded(false);
@@ -73,6 +79,8 @@ public:
 		// Done with freetype
 		FT_Done_Face(font->getFace());
 		FT_Done_FreeType(font->getLibrary());
+
+		return true;
 	}
 
 };

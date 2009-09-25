@@ -9,20 +9,6 @@ class ResourceLoader
 	: public ResourceLoaderBase
 {
 public:
-	enum LoadFlags
-	{
-		FLAG_ASYNC				= FLAG_NEXT << 0,		// Mark the load (or unload) as asynchronous
-		FLAG_NEXT 				= FLAG_NEXT << 1,
-
-		ASYNC_PRIORITY_MASK		= 0xFF000000,	// Mask async priority value
-		ASYNC_PRIORITY_SHIFT	= 24,			// Shift async priority value
-
-		ASYNC_PRIORITY_CRITICAL	= 255 << ASYNC_PRIORITY_SHIFT,
-		ASYNC_PRIORITY_HIGH		= 128 << ASYNC_PRIORITY_SHIFT,
-		ASYNC_PRIORITY_NORMAL	= 64 << ASYNC_PRIORITY_SHIFT,
-		ASYNC_PRIORITY_LOW		= 1 << ASYNC_PRIORITY_SHIFT,
-	};
-
 	/**
 	 * Constructs a base resource loader.
 	 * @param pCache	the ResourceCache to use to manage cached and async loaded resources.
@@ -54,17 +40,12 @@ public:
 	 * Loads a resource (blocking).
 	 * @return if resource was properly loaded.
 	 */
-	virtual bool load(Resource &res, u32 flags = FLAG_NONE)
-	{
-
-		return false;
-	}
+	virtual bool load(Resource &res, u32 flags = FLAG_NONE)		{ return false; }
 
 	/**
 	 * Unloads a resource (blocking).
 	 */
-	virtual void unload(Resource &res, u32 flags = FLAG_NONE)
-	{}
+	virtual bool unload(Resource &res, u32 flags = FLAG_NONE)	{ return false; }
 
 protected:
 	ResourceCache*	m_pCache;

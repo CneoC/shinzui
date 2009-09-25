@@ -133,9 +133,9 @@ public:
 		return	m_pData &&  m_pData->getLoader()->load(ResourceRef<ResourceData>(*this), flags);
 	}
 
-	void unload(u32 flags = 0)
+	bool unload(u32 flags = 0)
 	{
-		return	m_pData &&  m_pData->getLoader()->unload(ResourceRef<ResourceData>(*this), flags);
+		return	m_pData && m_pData->getLoader()->unload(ResourceRef<ResourceData>(*this), flags);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

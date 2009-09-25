@@ -4,8 +4,6 @@
 #define __CORE_H__
 
 #include <boost/thread.hpp>
-#include <boost/timer.hpp>
-#include <boost/date_time/microsec_time_clock.hpp>
 
 #include <cassert>
 
@@ -15,6 +13,7 @@
 #include "core/Time.h"
 
 class Process;
+class ResourceLoader;
 
 /**
  * Core process handling class.
@@ -102,7 +101,10 @@ public:
 		return (time - m_startTime).getSeconds();
 	}
 
-	bool isRunning() const			{ return true; }
+	bool isRunning() const						{ return true; }
+
+	ResourceLoader *getLoader() const			{ return m_pLoader; }
+	void setLoader(ResourceLoader *pLoader)		{ m_pLoader = pLoader; }
 
 protected:
 	Time					m_startTime;			// start time of the core system.
@@ -114,6 +116,8 @@ protected:
 	boost::mutex			m_processesMutex;		// mutex used to lock list of processes.
 	ProcessList				m_processes;			// list of processes.
 	u32						m_processRunId;			// incremental identifier to determine process run order.
+
+	ResourceLoader*			m_pLoader;				// resource loader for access to resources.
 };
 
 // Log used for Core and related classes

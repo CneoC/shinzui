@@ -23,7 +23,15 @@ public:
 	enum LoadFlags
 	{
 		FLAG_NONE,
-		FLAG_NEXT	= 1 << 0
+		FLAG_ASYNC				= 1 << 0,		// Mark the load (or unload) as asynchronous
+
+		ASYNC_PRIORITY_MASK		= 0xFF000000,	// Mask async priority value
+		ASYNC_PRIORITY_SHIFT	= 24,			// Shift async priority value
+
+		ASYNC_PRIORITY_CRITICAL	= 255 << ASYNC_PRIORITY_SHIFT,
+		ASYNC_PRIORITY_HIGH		= 128 << ASYNC_PRIORITY_SHIFT,
+		ASYNC_PRIORITY_NORMAL	= 64 << ASYNC_PRIORITY_SHIFT,
+		ASYNC_PRIORITY_LOW		= 1 << ASYNC_PRIORITY_SHIFT,
 	};
 
 	/**
@@ -66,14 +74,32 @@ public:
 	 */
 	virtual bool load(Resource &res, u32 flags = FLAG_NONE)
 	{
+		if (res->isLoaded())
+			return true;
+
+		if (flags & FLAG_ASYNC)
+		{
+			res->setLoad(true);
+			return true;
+		}
 		return false;
 	}
 
 	/**
 	 * Unloads a resource (blocking).
 	 */
-	virtual void unload(Resource &res, u32 flags = FLAG_NONE)
-	{}
+	virtual bool unload(Resource &res, u32 flags = FLAG_NONE)
+	{
+		if (!res->isLoaded())
+			return true;
+
+		if (flags & FLAG_ASYNC)
+		{
+			res->setUnload(true);
+			return true;
+		}
+		return false;
+	}
 
 	//! Registers a child loader and puts it in a ResourceLoaderRef to manage more specific loading.
 	void addLoader(ResourceLoaderBase *pLoader)	{ m_loaders.push_front(SharedPtr(pLoader)); }

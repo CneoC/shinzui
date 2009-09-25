@@ -1,6 +1,5 @@
 #include <cstdio>
 
-
 #include "core/Core.h"
 //#include "util/LogTestProc.h"
 #include "core/gl/GLWindow.h"
@@ -20,12 +19,13 @@ void main(const char *argc, int argv)
 {
 	try
 	{
-		Core *pCore = new Core(0);
+		Core *pCore = new Core();
 
 		ResourceCache*	pCache	= new ResourceCache(pCore);
 		pCore->addProcess(pCache);
 
 		ResourceLoader*	pLoader	= new ResourceLoader(pCache);
+		pCore->setLoader(pLoader);
 
 		pLoader->addLoader(new FSResourceLoader(ResourceTypeSet().set(), "./data/"));
 
