@@ -5,16 +5,21 @@
 
 #include "util/Log.h"
 
+#define WINDOW_CLASS "GameWnd"
+
 Window::Window(Core *pCore)
 	: WindowBase(pCore)
-	, hDC(NULL)
-	, hRC(NULL)
-	, hWnd(NULL)
+	, m_hDC(NULL)
+	, m_hWnd(NULL)
+	, m_hInstance(NULL)
 {
 }
 
 Window::~Window()
 {
+	assert(!m_hDC);
+	assert(!m_hWnd);
+	assert(!m_hInstance);
 }
 
 bool Window::create()
@@ -29,13 +34,13 @@ bool Window::create()
 	rect.top	= (long)0;
 	rect.bottom	= (long)getSize().y;
 
-	hInstance			= GetModuleHandle(NULL);
+	m_hInstance			= GetModuleHandle(NULL);
 
 	wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc		= (WNDPROC)rerouteWndProc;
 	wc.cbClsExtra		= 0;
 	wc.cbWndExtra		= 0;
-	wc.hInstance		= hInstance;
+	wc.hInstance		= m_hInstance;
 	wc.hIcon			= LoadIcon(NULL, IDI_WINLOGO);
 	wc.hCursor			= LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground	= NULL;
@@ -91,28 +96,26 @@ bool Window::create()
 	AdjustWindowRectEx(&rect, dwStyle, FALSE, dwExStyle);
 
 	// Create the window
-	hWnd	= CreateWindowEx(dwExStyle, "GameWnd", getTitle().c_str(),
+	m_hWnd	= CreateWindowEx(dwExStyle, WINDOW_CLASS, getTitle().c_str(),
 							dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 							0, 0,
 							rect.right - rect.left,
 							rect.bottom - rect.top,
-							NULL, NULL, hInstance, (LPVOID)this);
-	if (!hWnd)
+							NULL, NULL, m_hInstance, (LPVOID)this);
+	if (!m_hWnd)
 	{
 		destroy();
 		MessageBox(NULL,"Window Creation Error.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return false;
 	}
 
-	if (!createContext())
+	m_hDC = GetDC(m_hWnd);
+	if (!m_hDC)
 	{
+		destroy();
+		MessageBox(NULL,"Can't Create A Device Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return false;
 	}
-
-	// Show the window
-	ShowWindow(hWnd, SW_SHOW);
-	SetForegroundWindow(hWnd);
-	SetFocus(hWnd);
 
 	return true;
 }
@@ -126,32 +129,37 @@ bool Window::destroy()
 		ShowCursor(TRUE);
 	}
 
-	destroyContext();
-
-	if (hDC && !ReleaseDC(hWnd,hDC))
+	if (m_hDC && !ReleaseDC(m_hWnd, m_hDC))
 	{
 		MessageBox(NULL,"Release Device Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
-		hDC = NULL;
 	}
+	m_hDC = NULL;
 
-	if (hWnd && !DestroyWindow(hWnd))
+	if (m_hWnd && !DestroyWindow(m_hWnd))
 	{
-		MessageBox(NULL,"Could Not Release hWnd.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
-		hWnd = NULL;
+		MessageBox(NULL,"Could Not Release m_hWnd.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
 	}
+	m_hWnd = NULL;
 
-	if (!UnregisterClass("GameWnd", hInstance))
+	if (!UnregisterClass(WINDOW_CLASS, m_hInstance))
 	{
 		MessageBox(NULL,"Could Not Unregister Class.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
-		hInstance = NULL;
 	}
+	m_hInstance = NULL;
 
 	return true;
 }
 
-bool Window::resize()
+void Window::show()
 {
-	return resizeContext();
+	ShowWindow(m_hWnd, SW_SHOW);
+	SetForegroundWindow(m_hWnd);
+	SetFocus(m_hWnd);
+}
+
+void Window::hide()
+{
+	ShowWindow(m_hWnd, SW_HIDE);
 }
 
 Process *Window::run(double delta)
@@ -171,10 +179,10 @@ Process *Window::run(double delta)
 		}
 	}
 
-	return WindowBase::run(delta);
+	return this;
 }
 
-LRESULT CALLBACK Window::wndProc(HWND hWnd, UINT uMsg,
+LRESULT CALLBACK Window::wndProc(HWND m_hWnd, UINT uMsg,
 										  WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
@@ -204,6 +212,7 @@ LRESULT CALLBACK Window::wndProc(HWND hWnd, UINT uMsg,
 	case WM_CLOSE:
 		{
 			PostQuitMessage(0);
+			m_pCore->stop();
 			return 0;
 		}
 
@@ -221,17 +230,16 @@ LRESULT CALLBACK Window::wndProc(HWND hWnd, UINT uMsg,
 
 	case WM_SIZE:
 		{
-			setSize(Vector2i(LOWORD(lParam), HIWORD(lParam)));
-			resizeContext();
+			resize(Vector2i(LOWORD(lParam), HIWORD(lParam)));
 			return 0;
 		}
 	}
 
 	// other messages to default window procedure
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	return DefWindowProc(m_hWnd, uMsg, wParam, lParam);
 }
 
-LRESULT CALLBACK Window::rerouteWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK Window::rerouteWndProc(HWND m_hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	Window *pProc = NULL;
 
@@ -239,15 +247,15 @@ LRESULT CALLBACK Window::rerouteWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 	if (uMsg == WM_NCCREATE)
 	{
 		pProc = reinterpret_cast<Window *>(((LPCREATESTRUCT)lParam)->lpCreateParams);
-		::SetWindowLong(hWnd, GWL_USERDATA, reinterpret_cast<long>(pProc));
+		::SetWindowLong(m_hWnd, GWL_USERDATA, reinterpret_cast<long>(pProc));
 	}
 	// retrieve previously associated instance
 	else
 	{
-		pProc = reinterpret_cast<Window *>(GetWindowLong(hWnd, GWL_USERDATA));
+		pProc = reinterpret_cast<Window *>(GetWindowLong(m_hWnd, GWL_USERDATA));
 	}
 
-	return pProc->wndProc(hWnd, uMsg, wParam, lParam);
+	return pProc->wndProc(m_hWnd, uMsg, wParam, lParam);
 }
 
 #endif //_WIN32

@@ -17,9 +17,9 @@ public:
 	 * Constructs a resource cache process.
 	 * @param pCore			core class.
 	 * @param id				process identifier for lookups.
-	 * @param targetThreadId	target thread id to run this process on (THREAD_ID_NONE for any thread)
+	 * @param targetThreadId	target thread id to run this process on (THREAD_ID_NORMAL_MASK for any thread)
 	 */
-	ResourceCache(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_NORMAL)
+	ResourceCache(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_NORMAL_MASK)
 		: Process(pCore, id, targetThreadId)
 	{
 	}
@@ -87,7 +87,7 @@ public:
 		m_resourcesMutex.unlock_shared();
 	}
 
-	virtual Process* run(double delta)
+	virtual Process *run(double delta)
 	{
 		clean();
 		unload();

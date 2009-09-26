@@ -2,7 +2,7 @@
 
 #include "core/Core.h"
 //#include "util/LogTestProc.h"
-#include "core/gl/GLWindow.h"
+#include "core/gl/GLContext.h"
 #include "render/2d/Console.h"
 #include "render/2d/DrawFPS.h"
 #include "render/scene/Scene.h"
@@ -21,6 +21,7 @@ void main(const char *argc, int argv)
 	{
 		Core *pCore = new Core();
 
+		/*
 		ResourceCache*	pCache	= new ResourceCache(pCore);
 		pCore->addProcess(pCache);
 
@@ -54,37 +55,47 @@ void main(const char *argc, int argv)
 		*/
 
 		// Create window before doing any other rendering related stuff
-		GLWindow		*pWindow		= new GLWindow(pCore);
+		Window		*pWindow		= new Window(pCore);
 		pWindow->setTitle("Engine");
 		pWindow->setSize(Vector2i(1024, 768));
 		pWindow->create();
 
-		StartRenderer		*pRenderStart	= new StartRenderer(pCore);
+		GLContext	*pMainContext	= new GLContext(pWindow);
+		GLContext	*pLoaderContext	= new GLContext(pWindow);
+
+		pMainContext->create();
+		StartRenderer		*pRenderStart	= new StartRenderer(pCore, pMainContext);
 		StartFrameBuffer	*pStartFBO		= new StartFrameBuffer(pCore);
 		Scene				*pScene			= new Scene(pCore);
 		EndFrameBuffer		*pEndFBO		= new EndFrameBuffer(pCore);
 		Console				*pConsole		= new Console(pCore);
 		DrawFPS				*pFps			= new DrawFPS(pCore);
-		EndRenderer			*pRenderEnd		= new EndRenderer(pCore);
+		EndRenderer			*pRenderEnd		= new EndRenderer(pCore, pMainContext);
 
-		// Link the render processes
-		pRenderStart
+		pLoaderContext->create();
+
+		// Add the window process
+		pCore->addProcess(pWindow);
+
+		// Add the render process chain
+		pCore->addProcess(
+			pRenderStart
 			->link(pStartFBO)
 			->link(pScene)
 			->link(pEndFBO)
 			->link(pConsole)
 			->link(pFps)
 			->link(pRenderEnd)
-			->link(pWindow)
-			->link(pRenderStart);
+			->link(pRenderStart)
+			);
 
-		pCore->addProcess(pRenderStart);
+		pWindow->show();
 
 		// Run process handling
 		pCore->run();
 
-		// Clean up
-		delete pWindow;
+		delete pCore;
+
 		delete pRenderEnd;
 		delete pFps;
 		delete pConsole;
@@ -93,7 +104,14 @@ void main(const char *argc, int argv)
 		delete pStartFBO;
 		delete pRenderStart;
 
-		delete pCore;
+		// Clean up
+		pMainContext->destroy();
+		pLoaderContext->destroy();
+		delete pMainContext;
+		delete pLoaderContext;
+
+		pWindow->destroy();
+		delete pWindow;
 	}
 	catch (std::runtime_error &e)
 	{

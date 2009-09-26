@@ -83,7 +83,7 @@ public:
 	{
 	}
 
-	ResourceRef(T* pData)
+	ResourceRef(T *pData)
 		: m_pData(pData)
 	{
 		assert(m_pData);
@@ -122,7 +122,7 @@ public:
 		return *this;
 	}
 
-	T* operator -> ()	{ return m_pData; }
+	T *operator -> ()	{ return m_pData; }
 
 	operator bool () const		{ return m_pData != NULL; }
 	
@@ -141,7 +141,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 
 	bool isType(u32 type) const	{ return m_pData && m_pData->isType(type); }
-	T* getData() const			{ return m_pData; }
+	T *getData() const			{ return m_pData; }
 
 
 protected:

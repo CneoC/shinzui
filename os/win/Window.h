@@ -20,22 +20,29 @@ public:
 	
 	virtual Process *run(double delta);
 
-	virtual bool create();
-	virtual bool destroy();
-	virtual bool resize();
+	bool create();
+	bool destroy();
+	
+	void show();
+	void hide();
+
+	HDC getHDC() const				{ return m_hDC; }
+	HWND getHWnd() const			{ return m_hWnd; }
+	HINSTANCE getHInstance() const	{ return m_hInstance; }
 
 protected:
-	virtual bool createContext() = 0;
-	virtual bool destroyContext() = 0;
-	virtual bool resizeContext() = 0;
-
 	LRESULT CALLBACK wndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK rerouteWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-	HDC			hDC;		// Private GDI Device Context
-	HGLRC		hRC;		// Permanent Rendering Context
-	HWND		hWnd;		// Holds Our Window Handle
-	HINSTANCE	hInstance;	// Holds The Instance Of The Application
+	bool resize(const Vector2i &size)
+	{
+		// resizeCallback(size);
+		return true;
+	}
+
+	HDC			m_hDC;			// Private GDI Device Context
+	HWND		m_hWnd;			// Holds Our Window Handle
+	HINSTANCE	m_hInstance;	// Holds The Instance Of The Application
 };
 
 #endif //__WINDOW_H__

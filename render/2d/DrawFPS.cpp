@@ -20,7 +20,7 @@ DrawFPS::~DrawFPS()
 
 Process *DrawFPS::run(double delta)
 {
-// 	FontResource debugFont = m_pCore->getLoader()->getFont("2d/fonts/debug.ttf");
+// 	FontResource debugFont = m_pCore->getResourceLoader()->getFont("2d/fonts/debug.ttf");
 // 	printf(debugFont->isLoaded() ? "loaded\n" : "not loaded\n");
 
 	m_frameCount++;
@@ -46,7 +46,7 @@ Process *DrawFPS::run(double delta)
 	glLoadIdentity();
 
 	glColor3f(1.0f, 1.0f, 1.0f);
-	m_font.printf(Vector2f(10, 10), "%03.3f FPS", getFPS());
+	m_font.printf(Vector2f(10, 10), "%04.2f FPS", getFPS());
 
 	glPushAttrib(GL_TRANSFORM_BIT);
 	glMatrixMode(GL_PROJECTION);

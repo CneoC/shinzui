@@ -168,7 +168,7 @@ public:
 
 		static const char *getLevelString(LogLevel level)
 		{
-			static const char* const buffer[] = {"ERROR  ", "WARNING", "INFO   ", "DEBUG  ", "DEBUG01", "DEBUG02", "DEBUG03", "DEBUG04", "DEBUG05"};
+			static const char *const buffer[] = {"ERROR  ", "WARNING", "INFO   ", "DEBUG  ", "DEBUG01", "DEBUG02", "DEBUG03", "DEBUG04", "DEBUG05"};
 			return buffer[level];
 		}
 
@@ -235,7 +235,7 @@ class LogOutputFile
 public:
 	static FILE*& getStream()
 	{
-		static FILE* pStream = stderr;
+		static FILE *pStream = stderr;
 		return pStream;
 	}
 
@@ -258,7 +258,7 @@ public:
 	{
 		friend std::ostringstream & operator << (std::ostringstream &os, end &)
 		{
-			FILE* pStream = getStream();
+			FILE *pStream = getStream();
 			if (pStream)
 			{
 				std::string str = os.str();

@@ -5,48 +5,100 @@
 
 Core::Core(s32 threadCount)
 	: m_startTime(Time::NOW)
-	, m_threadCount(threadCount)
 	, m_processRunId(0)
 {
 	// Determine thread count automatically
-	if (m_threadCount == -1)
+	if (threadCount == -1)
 	{
-		m_threadCount = boost::thread::hardware_concurrency();
+		threadCount = boost::thread::hardware_concurrency();
 	}
 
-	// Limit to 31 threads
-	if (m_threadCount > 31) m_threadCount = 31;
+	// Clamp thread count
+	if (threadCount < 1)	threadCount = 1;
+	if (threadCount > 31)	threadCount = 31;
 
 	// Create the thread pool
-	for (u32 i = 1; i <= m_threadCount; i++)
+	m_threads.resize(threadCount);
+	for (s32 i = 0; i < threadCount; i++)
 	{
-		m_threads.add_thread(new boost::thread(Thread(), this, 1 << i));
+		CoreThread *pThread = new CoreThread(this, 1 << i);
+		pThread->start();
+		m_threads[i] = pThread;
 	}
 }
 
 Core::~Core()
 {
+	ThreadList::iterator iter;
+	for (iter = m_threads.begin(); iter != m_threads.end(); ++iter)
+	{
+		CoreThread *pThread = *iter;
+		pThread->getCondition().notify_all();
+		pThread->stop(true);
+		delete pThread;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void Core::run()
 {
-	// Run the main thread processes
-	m_mainThread(this, -1);
+	s32 targetThread = 0;
+
+	while (isRunning())
+	{
+		// Run a core process if one is available
+		Process *pProcess = getNextProcess(THREAD_ID_CORE_BIT);
+		if (pProcess)
+		{
+			double elapsedTime	= getElapsedTime();
+			double delta		= elapsedTime - pProcess->getLastRunTime();
+
+			pProcess->setLastRunTime(elapsedTime);
+			Process *pAddProcess = pProcess->run(delta);
+			if (pAddProcess)
+				addProcess(pAddProcess);
+		}
+
+		boost::this_thread::yield();
+
+		// Handle load balancing of running threads
+		ThreadList::iterator iter;
+		for (iter = m_threads.begin(); iter != m_threads.end(); ++iter)
+		{
+			CoreThread *pThread = *iter;
+			if (!pThread->getProcess())
+			{
+				pProcess = getNextProcess(pThread->getId());
+				if (pProcess)
+				{
+					{
+						boost::lock_guard<boost::mutex> lock(pThread->getProcessMutex());
+						pThread->setProcess(pProcess);
+					}
+					pThread->getCondition().notify_all();
+				}
+
+			}
+		}
+
+		boost::this_thread::yield();
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-Process *Core::getNextProcess(u32 threadId)
+Process *Core::getNextProcess(u32 threadMask)
 {
-	boost::mutex::scoped_lock lock(m_processesMutex);
+	boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
+
 	ProcessList::iterator p = m_processes.begin();
 	while (p != m_processes.end())
 	{
 		Process *pProcess = *p;
+
 		// Do target thread id's match?
-		if (pProcess->getTargetThreadId() & threadId)
+		if (pProcess->getTargetThreadMask() & threadMask)
 		{
 			double delta = getElapsedTime() - pProcess->getLastRunTime();
 			if (pProcess->isReady(delta))
@@ -61,14 +113,14 @@ Process *Core::getNextProcess(u32 threadId)
 	return NULL;
 }
 
-Process *Core::findProcess(u32 id)
+Process *Core::getProcess(u32 processId)
 {
-	boost::mutex::scoped_lock lock(m_processesMutex);
+	boost::shared_lock<boost::shared_mutex> lock(m_processesMutex);
 
 	ProcessList::iterator i = m_processes.begin();
 	while (i != m_processes.end())
 	{
-		if ((*i)->getId() == id)
+		if ((*i)->getId() == processId)
 		{
 			return *i;
 		}
@@ -77,20 +129,28 @@ Process *Core::findProcess(u32 id)
 	return NULL;
 }
 
-void Core::Thread::operator () (Core *pCore, u32 threadId)
-{
-	while (pCore->isRunning())
-	{
-		Process *pProcess = pCore->getNextProcess(threadId);
-		if (pProcess)
-		{
-			double elapsedTime = pCore->getElapsedTime();
-			double delta = elapsedTime - pProcess->getLastRunTime();
+//////////////////////////////////////////////////////////////////////////
 
-			pProcess->setLastRunTime(elapsedTime);
-			pProcess = pProcess->run(delta);
-			if (pProcess) pCore->addProcess(pProcess);
-		}
-		boost::thread::yield();
+bool CoreThread::run()
+{
+	boost::unique_lock<boost::mutex> lock(m_mutex);
+	while (!m_pProcess && m_pCore->isRunning())
+	{
+		m_condition.wait(lock);
 	}
+
+	if (m_pProcess)
+	{
+		double elapsedTime	= m_pCore->getElapsedTime();
+		double delta		= elapsedTime - m_pProcess->getLastRunTime();
+
+		m_pProcess->setLastRunTime(elapsedTime);
+		Process *pAddProcess = m_pProcess->run(delta);
+		if (pAddProcess)
+			m_pCore->addProcess(pAddProcess);
+
+		m_pProcess = NULL;
+	}
+
+	return m_pCore->isRunning();
 }

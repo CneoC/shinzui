@@ -1,19 +1,18 @@
 // Only compile on windows builds
 #ifdef _WIN32
 
-#include "GLWindow.h"
+#include "GLContext.h"
 
 #include <gl/glew.h>
 #include <gl/wglew.h>
 
-Process *GLWindow::run(double delta)
+void GLContext::swapBuffers()
 {
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
-	SwapBuffers(hDC);
-	return Window::run(delta);
+	SwapBuffers(m_pWindow->getHDC());
 }
 
-bool GLWindow::createContext()
+bool GLContext::create()
 {
 	static	PIXELFORMATDESCRIPTOR pfd =
 	{
@@ -23,7 +22,7 @@ bool GLWindow::createContext()
 		PFD_SUPPORT_OPENGL |
 		PFD_DOUBLEBUFFER,
 		PFD_TYPE_RGBA,
-		getBpp(),
+		m_pWindow->getBpp(),
 		0, 0, 0, 0, 0, 0,
 		0,											// TODO: alpha buffer support
 		0,
@@ -37,16 +36,8 @@ bool GLWindow::createContext()
 		0, 0, 0
 	};
 
-	hDC = GetDC(hWnd);
-	if (!hDC)
-	{
-		destroy();
-		MessageBox(NULL,"Can't Create A GL Device Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
-		return false;
-	}
-
 	// Choose a pixel format
-	GLuint pixelFormat = ChoosePixelFormat(hDC, &pfd);
+	GLuint pixelFormat = ChoosePixelFormat(m_pWindow->getHDC(), &pfd);
 	if (!pixelFormat)
 	{
 		destroy();
@@ -55,7 +46,7 @@ bool GLWindow::createContext()
 	}
 
 	// Set the pixel format
-	if (!SetPixelFormat(hDC, pixelFormat, &pfd))
+	if (!SetPixelFormat(m_pWindow->getHDC(), pixelFormat, &pfd))
 	{
 		destroy();
 		MessageBox(NULL,"Can't Set The PixelFormat.","ERROR",MB_OK|MB_ICONEXCLAMATION);
@@ -63,16 +54,16 @@ bool GLWindow::createContext()
 	}
 
 	// Create rendering context
-	hRC = wglCreateContext(hDC);
-	if (!hRC)
+	m_hRC = wglCreateContext(m_pWindow->getHDC());
+	if (!m_hRC)
 	{
 		destroy();
 		MessageBox(NULL,"Can't Create A GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
 		return false;
 	}
 
-	// Activate rendering context
-	if (!wglMakeCurrent(hDC, hRC))
+	// Bind to current thread
+	if (!bind())
 	{
 		destroy();
 		MessageBox(NULL,"Can't Activate The GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
@@ -94,7 +85,7 @@ bool GLWindow::createContext()
 		wglSwapIntervalEXT(0);
 	}
 
-	if (!resizeContext())
+	if (!resize(m_pWindow->getSize()))
 	{
 		destroy();
 		return false;
@@ -103,34 +94,44 @@ bool GLWindow::createContext()
 	return true;
 }
 
-bool GLWindow::destroyContext()
+bool GLContext::destroy()
 {
 	// Release rendering context
-	if (hRC)
+	if (m_hRC)
 	{
-		if (!wglMakeCurrent(NULL, NULL))
+		if (wglGetCurrentContext() && !wglMakeCurrent(NULL, NULL))
 		{
 			MessageBox(NULL,"Release Of DC And RC Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
 		}
 
-		if (!wglDeleteContext(hRC))
+		if (!wglDeleteContext(m_hRC))
 		{
 			MessageBox(NULL,"Release Rendering Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
 		}
-		hRC = NULL;
+		m_hRC = NULL;
 	}
 
 	return true;
 }
 
-bool GLWindow::resizeContext()
+bool GLContext::bind()
 {
-	glViewport(0, 0, getSize().x ,getSize().y);
+	return wglMakeCurrent(m_pWindow->getHDC(), m_hRC) == TRUE;
+}
+
+bool GLContext::unbind()
+{
+	return wglMakeCurrent(m_pWindow->getHDC(), NULL) == TRUE;
+}
+
+bool GLContext::resize(const Vector2i &size)
+{
+	glViewport(0, 0, size.x, size.y);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluPerspective(45.0f, (GLfloat)getSize().x / (GLfloat)getSize().y, 0.1f, 100.0f);
+	gluPerspective(45.0f, (GLfloat)size.x / size.y, 0.1f, 100.0f);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

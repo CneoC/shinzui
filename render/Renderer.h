@@ -3,13 +3,13 @@
 #ifndef __RENDERER_H__
 #define __RENDERER_H__
 
-#include "core/ChainProcess.h"
+#include "core/ProcessChain.h"
 
 class Renderer :
-	public ChainProcess
+	public ProcessChain
 {
 protected:
-	Renderer(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_MAIN);
+	Renderer(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_MAIN_BIT);
 	~Renderer();
 
 public:

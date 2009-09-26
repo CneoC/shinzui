@@ -153,7 +153,7 @@ protected:
 
 		// Copy glyph texture data to a OpenGL texture format with both alpha and luminosity channels.
 		//::printf("Char: %c\n", c);
-		GLubyte* pTextureData = new GLubyte[(width * height) << 1];
+		GLubyte *pTextureData = new GLubyte[(width * height) << 1];
 		for (int y = 0; y < height; y++) 
 		{
 			for (int x = 0; x < width; x++)
@@ -215,7 +215,7 @@ protected:
 
 protected:
 	int		m_height;
-	GLuint	*m_pTextures;
+	GLuint *m_pTextures;
 	GLuint	m_displayLists;
 };
 

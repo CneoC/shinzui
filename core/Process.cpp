@@ -1,9 +1,9 @@
 #include "Process.h"
 
-Process::Process(Core *pCore, int id, int targetThreadId)
+Process::Process(Core *pCore, int id, int targetThreadMask)
 	: m_pCore(pCore)
 	, m_id(id)
-	, m_targetThreadId(targetThreadId)
+	, m_targetThreadMask(targetThreadMask)
 	, m_frameDelay(0)
 	, m_lastRunTime(0)
 {

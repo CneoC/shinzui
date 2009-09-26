@@ -42,7 +42,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include"
-				PreprocessorDefinitions="GLEW_STATIC"
+				PreprocessorDefinitions="GLEW_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -115,7 +115,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include"
-				PreprocessorDefinitions="GLEW_STATIC"
+				PreprocessorDefinitions="GLEW_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
@@ -191,7 +191,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLWindow.cpp"
+				RelativePath=".\os\win\gl\GLContext.cpp"
 				>
 			</File>
 			<File
@@ -245,11 +245,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\core\ChainProcess.h"
+				RelativePath=".\util\Callback.h"
 				>
 			</File>
 			<File
 				RelativePath=".\render\2d\Console.h"
+				>
+			</File>
+			<File
+				RelativePath=".\core\ContextBase.h"
 				>
 			</File>
 			<File
@@ -270,6 +274,14 @@
 			</File>
 			<File
 				RelativePath=".\render\EndRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\util\FastDelegate.h"
+				>
+			</File>
+			<File
+				RelativePath=".\util\FastDelegateBind.h"
 				>
 			</File>
 			<File
@@ -301,11 +313,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\io\FSFile.h"
+				RelativePath=".\core\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\core\io\FSFile.h"
+				RelativePath=".\os\win\io\FSFile.h"
 				>
 			</File>
 			<File
@@ -317,11 +329,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLWindow.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\core\gl\GLWindow.h"
+				RelativePath=".\core\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -342,6 +354,10 @@
 			</File>
 			<File
 				RelativePath=".\core\Process.h"
+				>
+			</File>
+			<File
+				RelativePath=".\core\ProcessChain.h"
 				>
 			</File>
 			<File
@@ -389,11 +405,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Time.h"
+				RelativePath=".\util\Thread.h"
 				>
 			</File>
 			<File
 				RelativePath=".\core\Time.h"
+				>
+			</File>
+			<File
+				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File
@@ -409,11 +429,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\core\Window.h"
+				RelativePath=".\os\win\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Window.h"
+				RelativePath=".\core\Window.h"
 				>
 			</File>
 			<File

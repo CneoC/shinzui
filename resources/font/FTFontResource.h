@@ -11,7 +11,7 @@ class FTFontData
 public:
 	enum { TYPE = RESOURCE_FT_FONT };
 
-	FTFontData(ResourceLoaderBase* pData)
+	FTFontData(ResourceLoaderBase *pData)
 		: FontData(pData)
 	{
 		setType(TYPE);

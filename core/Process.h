@@ -21,7 +21,14 @@ public:
 	 * @param id				process identifier for lookups.
 	 * @param targetThreadId	target thread id to run this process on (THREAD_ID_NONE for any thread)
 	 */
-	Process(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_NORMAL);
+	Process(Core *pCore, int id = 0, int targetThreadMask = Core::THREAD_ID_NORMAL_MASK);
+
+	/**
+	 * Initializes the process.
+	 * this function is called from a thread in the getTargetThreadMask()
+	 *  for thread specific initialization.
+	 */
+	virtual void init() {}
 
 	/**
 	 * Runs the process.
@@ -50,10 +57,12 @@ public:
 	void removeDependency(Process *pDependency)	{ m_dependencies.remove(pDependency); }
 
 	//! Get internal process identifier.
-	int getId() const					{ return m_id; }
+	u32 getId() const					{ return m_id; }
 
 	//! Gets the target thread the Process needs to be run on
-	int getTargetThreadId() const		{ return m_targetThreadId; }
+	u32 getTargetThreadMask() const		{ return m_targetThreadMask; }
+	//! Sets the target thread the Process needs to be run on
+	void setTargetThreadMask(u32 mask)	{ m_targetThreadMask = mask; }
 
 	//! Get time of last run.
 	double getLastRunId() const			{ return m_lastRunId; }
@@ -66,9 +75,9 @@ public:
 	void setLastRunTime(double time)	{ m_lastRunTime = time; }
 
 	//! Gets the frame delay time in seconds.
-	double getFrameDelay() const		{ return m_frameDelay; }
+	double getFrameDelay() const			{ return m_frameDelay; }
 	//! Sets the frame delay time in seconds.
-	void setFrameDelay(bool frameDelay)	{ m_frameDelay = frameDelay; }
+	void setFrameDelay(double frameDelay)	{ m_frameDelay = frameDelay; }
 
 	//! Forces the process ready (ignoring dependencies and frame delay).
 	void forceStart()					{ m_forceStart = true; }
@@ -77,7 +86,7 @@ protected:
 	Core					*m_pCore;
 
 	int						m_id;
-	int						m_targetThreadId;
+	int						m_targetThreadMask;
 
 	double					m_frameDelay;
 

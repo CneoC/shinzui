@@ -3,17 +3,62 @@
 #ifndef __CORE_H__
 #define __CORE_H__
 
-#include <boost/thread.hpp>
-
 #include <cassert>
 
 #include "types.h"
 
+#include "util/Thread.h"
 #include "util/Log.h"
 #include "core/Time.h"
 
 class Process;
+class Core;
 class ResourceLoader;
+
+/**
+ * Core thread class which is used by Core to run a Process.
+ */
+class CoreThread
+	: public Thread
+{
+public:
+	/**
+	 * Constructs a thread for use in Core.
+	 * @param pCore		core class this thread belongs to.
+	 * @param threadId	thread identifier for this core thread.
+	 */
+	CoreThread(Core *pCore, u32 id)
+		: m_pCore(pCore)
+		, m_id(id)
+		, m_pProcess(NULL)
+		, m_load(0)
+	{
+	}
+
+	virtual bool run();
+
+	Core *getCore() const						{ return m_pCore; }
+
+	u32 getId() const							{ return m_id; }
+
+	void setProcess(Process *pProcess)			{ m_pProcess = pProcess; }
+	Process *getProcess() const					{ return m_pProcess; }
+
+	boost::mutex &getProcessMutex()				{ return m_mutex; }
+	boost::condition_variable &getCondition()	{ return m_condition; }
+
+	float getLoad() const						{ return m_load; }
+	void setLoad(float load)					{ m_load = load; }
+
+protected:
+	Core *	m_pCore;		// parent core class.
+	u32		m_id;			// thread identifier bit.
+
+	boost::condition_variable	m_condition;
+	boost::mutex				m_mutex;
+	Process *					m_pProcess;
+	float						m_load;
+};
 
 /**
  * Core process handling class.
@@ -22,25 +67,23 @@ class ResourceLoader;
 class Core
 {
 public:
-	typedef std::list<Process *> ProcessList;
+	typedef std::list<Process *>		ProcessList;
+	typedef std::vector<CoreThread *>	ThreadList;
 
 	/**
 	 * Thread type identifiers.
 	 */
 	enum ThreadID
 	{
-		THREAD_ID_NONE		= 0x00000000,
-		THREAD_ID_MAIN		= 0x00000001,
-		THREAD_ID_NORMAL	= 0xFFFFFFFE,
-	};
+		THREAD_ID_MAIN,
+		THREAD_ID_NORMAL_START,
 
-	/**
-	 * Simple core thread class which calls the next queued process.
-	 */
-	class Thread
-	{
-	public:
-		void operator () (Core *pCore, u32 threadId);
+		// Thread mask bits
+		THREAD_ID_MAIN_BIT			= 1 << THREAD_ID_MAIN,
+		THREAD_ID_NORMAL_START_BIT	= 1 << THREAD_ID_NORMAL_START,
+		THREAD_ID_CORE_BIT			= 0x80000000,
+
+		THREAD_ID_NORMAL_MASK		= ~(THREAD_ID_NORMAL_START_BIT - 1) & ~THREAD_ID_CORE_BIT,
 	};
 
 	/**
@@ -58,6 +101,18 @@ public:
 	 */
 	void run();
 
+	//! Stops running the core.
+	void stop()	{ m_running = false; }
+
+
+	//////////////////////////////////////////////////////////////////////////
+
+	CoreThread *getThread(u32 threadId)
+	{
+		assert(m_threads.size() < threadId);
+		return m_threads[threadId];
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -71,7 +126,7 @@ public:
 	 */
 	void addProcess(Process *pProcess)
 	{
-		boost::mutex::scoped_lock lock(m_processesMutex);
+		boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
 		m_processes.push_back(pProcess);
 	}
 
@@ -81,7 +136,7 @@ public:
 	 */
 	void removeProcess(Process *pProcess)
 	{
-		boost::mutex::scoped_lock lock(m_processesMutex);
+		boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
 		m_processes.remove(pProcess);
 	}
 
@@ -89,7 +144,7 @@ public:
 	 * Finds a process in the execution list using it's identifier.
 	 * @param id	the process identifier to find.
 	 */
-	Process *findProcess(u32 id);
+	Process *getProcess(u32 processId);
 
 	/**
 	 * Returns the elapsed time since the core system started.
@@ -101,19 +156,21 @@ public:
 		return (time - m_startTime).getSeconds();
 	}
 
-	bool isRunning() const						{ return true; }
+	//! Gets if the core is still running.
+	bool isRunning() const						{ return m_running; }
 
+	//! Gets the base resource loader.
 	ResourceLoader *getLoader() const			{ return m_pLoader; }
+	//! Sets the base resource loader.
 	void setLoader(ResourceLoader *pLoader)		{ m_pLoader = pLoader; }
 
 protected:
 	Time					m_startTime;			// start time of the core system.
+	bool					m_running;				// is the core still running.
 
-	u32						m_threadCount;
-	Thread					m_mainThread;			// runs application main thread processes.
-	boost::thread_group		m_threads;				// pool of threads (can be empty).
+	ThreadList				m_threads;				// pool of active core threads.
 
-	boost::mutex			m_processesMutex;		// mutex used to lock list of processes.
+	boost::shared_mutex		m_processesMutex;		// mutex used to lock list of processes.
 	ProcessList				m_processes;			// list of processes.
 	u32						m_processRunId;			// incremental identifier to determine process run order.
 
