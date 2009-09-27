@@ -124,27 +124,13 @@ public:
 	 * Adds a process to the execution list.
 	 * @param pProcess	the process to add.
 	 */
-	void addProcess(Process *pProcess)
-	{
-		boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
-		m_processes.push_back(pProcess);
-	}
+	void addProcess(Process *pProcess);
 
 	/**
 	 * Adds a process from the execution list.
 	 * @param pProcess	the process to remove.
 	 */
-	void removeProcess(Process *pProcess)
-	{
-		boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
-		m_processes.remove(pProcess);
-	}
-
-	/**
-	 * Finds a process in the execution list using it's identifier.
-	 * @param id	the process identifier to find.
-	 */
-	Process *getProcess(u32 processId);
+	void removeProcess(Process *pProcess);
 
 	/**
 	 * Returns the elapsed time since the core system started.
@@ -171,7 +157,11 @@ protected:
 	ThreadList				m_threads;				// pool of active core threads.
 
 	boost::shared_mutex		m_processesMutex;		// mutex used to lock list of processes.
+	boost::shared_mutex		m_waitingProcessesMutex;// mutex used to lock list of processes.
+
 	ProcessList				m_processes;			// list of processes.
+	ProcessList				m_waitingProcesses;		// list of waiting processes.
+
 	u32						m_processRunId;			// incremental identifier to determine process run order.
 
 	ResourceLoader*			m_pLoader;				// resource loader for access to resources.

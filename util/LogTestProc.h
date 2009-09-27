@@ -11,14 +11,15 @@ class LogTestProc
 	: public Process
 {
 public:
-	LogTestProc(Core *pCore, int id = 0, int targetThread = Core::THREAD_ID_NORMAL)
+	LogTestProc(Core *pCore, int id = 0, int targetThread = Core::THREAD_ID_NORMAL_MASK)
 		: Process(pCore, id, targetThread)
 	{
 	}
 
 	virtual Process *run(double delta)
 	{
-		//LOG(FileLog, LOG_INFO) << "Testing process: " << getId();
+		logging::Log &log = logging::Root::getRoot();
+		//LOG_WARN(log, "TEST: " << getId() << " from " << boost::this_thread::get_id());
 		return this;
 	}
 };

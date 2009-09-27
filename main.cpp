@@ -1,7 +1,7 @@
 #include <cstdio>
 
 #include "core/Core.h"
-//#include "util/LogTestProc.h"
+#include "util/LogTestProc.h"
 #include "core/gl/GLContext.h"
 #include "render/2d/Console.h"
 #include "render/2d/DrawFPS.h"
@@ -15,13 +15,17 @@
 #include "resources/file/FSResourceLoader.h"
 #include "resources/font/FontResource.h"
 
+#define PROCESS_OVERHEAD_TEST 50000
+
 void main(const char *argc, int argv)
 {
 	try
 	{
+		logging::Root::getRoot().setWriter(new logging::ConsoleWriter());
+
+
 		Core *pCore = new Core();
 
-		/*
 		ResourceCache*	pCache	= new ResourceCache(pCore);
 		pCore->addProcess(pCache);
 
@@ -38,21 +42,16 @@ void main(const char *argc, int argv)
 		bloomFragShader.load();
 		bloomVertShader.load();
 
-		/*
-		LogTestProc t1(0, 5.00);
-		LogTestProc t2(1, 2.00);
-		LogTestProc t3(2, 1.00);
-		LogTestProc t4(3, 0.50);
-		LogTestProc t5(4, 0.20);
-
-		t5.addDependency(&t1);
-
-		core.addProcess(&t1);
-		core.addProcess(&t2);
-		core.addProcess(&t3);
-		core.addProcess(&t4);
-		core.addProcess(&t5);
-		*/
+#if PROCESS_OVERHEAD_TEST
+		LogTestProc **pTestLogs = new LogTestProc *[PROCESS_OVERHEAD_TEST];
+		for (u32 i = 0; i < PROCESS_OVERHEAD_TEST; i++)
+		{
+			LogTestProc *test = new LogTestProc(pCore, i);
+			test->setFrameDelay(1 + i * 0.01);
+			pCore->addProcess(test);
+			pTestLogs[i] = test;
+		}
+#endif
 
 		// Create window before doing any other rendering related stuff
 		Window		*pWindow		= new Window(pCore);
@@ -94,6 +93,18 @@ void main(const char *argc, int argv)
 		// Run process handling
 		pCore->run();
 
+#if PROCESS_OVERHEAD_TEST
+		logging::Log &log = logging::Root::getRoot();
+		if (LOG_CHECK(log, LEVEL_TRACE))
+		{
+			for (u32 i = 0; i < PROCESS_OVERHEAD_TEST; i++)
+			{
+				double diff = pCore->getElapsedTime() - pTestLogs[i]->getNextRunTime();
+				if (diff > 0.01) LOG_TRACE(log, "Process " << i << " hasn't been run in " << diff << " seconds.");
+			}
+		}
+		delete pTestLogs;
+#endif
 		delete pCore;
 
 		delete pRenderEnd;

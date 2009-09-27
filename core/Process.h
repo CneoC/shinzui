@@ -37,16 +37,6 @@ public:
 	virtual Process *run(double delta) = 0;
 
 	/**
-	 * Check if the process is ready for it's run.
-	 */
-	bool isReady(double delta)
-	{
-		bool forceStart = m_forceStart;
-		m_forceStart = false;
-		return forceStart || (delta > m_frameDelay && isDependencyDone());
-	}
-
-	/**
 	 * Check if other processes this process depends on have finished their execution.
 	 */
 	bool isDependencyDone() const;
@@ -73,6 +63,9 @@ public:
 	double getLastRunTime() const		{ return m_lastRunTime; }
 	//! Set time of last run.
 	void setLastRunTime(double time)	{ m_lastRunTime = time; }
+
+	//! Gets the next time the process wants to be run.
+	double getNextRunTime() const		{ return m_lastRunTime + m_frameDelay; }
 
 	//! Gets the frame delay time in seconds.
 	double getFrameDelay() const			{ return m_frameDelay; }

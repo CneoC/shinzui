@@ -1,8 +1,6 @@
 #include "Core.h"
 #include "Process.h"
 
-//Log<LogOutputFile, LogOutputText> CoreLog();
-
 Core::Core(s32 threadCount)
 	: m_startTime(Time::NOW)
 	, m_processRunId(0)
@@ -60,7 +58,27 @@ void Core::run()
 				addProcess(pAddProcess);
 		}
 
-		boost::this_thread::yield();
+		// Copy waiting processes that have passed their frame delay to the main processes list.		
+		{
+			double elapsed = getElapsedTime();
+			boost::lock_guard<boost::shared_mutex> lock(m_waitingProcessesMutex);
+			ProcessList::iterator p = m_waitingProcesses.begin();
+			while (p != m_waitingProcesses.end())
+			{
+				pProcess = *p;
+				double delta = elapsed - pProcess->getLastRunTime();
+				if (delta >= pProcess->getFrameDelay())
+				{
+					boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
+					m_processes.push_back(pProcess);
+					p = m_waitingProcesses.erase(p);
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
 
 		// Handle load balancing of running threads
 		ThreadList::iterator iter;
@@ -78,7 +96,6 @@ void Core::run()
 					}
 					pThread->getCondition().notify_all();
 				}
-
 			}
 		}
 
@@ -88,9 +105,12 @@ void Core::run()
 
 //////////////////////////////////////////////////////////////////////////
 
+// TODO: optimization point - threading
 Process *Core::getNextProcess(u32 threadMask)
 {
 	boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
+
+	double elapsed = getElapsedTime();
 
 	ProcessList::iterator p = m_processes.begin();
 	while (p != m_processes.end())
@@ -100,9 +120,16 @@ Process *Core::getNextProcess(u32 threadMask)
 		// Do target thread id's match?
 		if (pProcess->getTargetThreadMask() & threadMask)
 		{
-			double delta = getElapsedTime() - pProcess->getLastRunTime();
-			if (pProcess->isReady(delta))
+			double delta = elapsed - pProcess->getLastRunTime();
+			if (delta > pProcess->getFrameDelay() && pProcess->isDependencyDone())
 			{
+				logging::Log &log = logging::Root::getRoot();
+				if (LOG_CHECK(log, LEVEL_WARN))
+				{
+					double diff = elapsed - pProcess->getNextRunTime();
+					if (diff > 0.1) LOG_WARN(log, "Process expected execution time exceeded by: " << diff);
+				}
+
 				m_processes.erase(p);
 				pProcess->setLastRunId(m_processRunId++);
 				return pProcess;
@@ -113,20 +140,71 @@ Process *Core::getNextProcess(u32 threadMask)
 	return NULL;
 }
 
-Process *Core::getProcess(u32 processId)
+// TODO: optimization point - threading
+void Core::addProcess(Process *pProcess)
 {
-	boost::shared_lock<boost::shared_mutex> lock(m_processesMutex);
+	boost::lock_guard<boost::shared_mutex> lock(m_waitingProcessesMutex);
 
-	ProcessList::iterator i = m_processes.begin();
-	while (i != m_processes.end())
+	// TODO: don't use insertion sort?
+
+	if (m_waitingProcesses.empty())
 	{
-		if ((*i)->getId() == processId)
-		{
-			return *i;
-		}
-		i++;
+		m_waitingProcesses.push_front(pProcess);
+		return;
 	}
-	return NULL;
+
+	// pick side to start insertion sort at
+	double nextRun = pProcess->getNextRunTime();
+	double frontTime = m_waitingProcesses.front()->getNextRunTime();
+	double backTime = m_waitingProcesses.back()->getNextRunTime();
+	double halfLength = (backTime - frontTime) / 2;
+
+	// Start insertion sort from first entry
+	if (nextRun - frontTime <= halfLength)
+	{
+		ProcessList::iterator p = m_waitingProcesses.begin();
+		while (p != m_waitingProcesses.end())
+		{
+			if (nextRun < (*p)->getNextRunTime())
+			{
+				m_waitingProcesses.insert(p, pProcess);
+				return;
+			}
+			++p;
+		}
+
+		// Process not added yet, so put it in the back
+		m_waitingProcesses.push_back(pProcess);
+	}
+	// Start insertion sort from last entry
+	else
+	{
+		ProcessList::reverse_iterator p = m_waitingProcesses.rbegin();
+		while (p != m_waitingProcesses.rend())
+		{
+			if (nextRun >= (*p)->getNextRunTime())
+			{
+				m_waitingProcesses.insert(p.base(), pProcess);
+				return;
+			}
+			++p;
+		}
+
+		// Process not added yet, so put it in the front
+		m_waitingProcesses.push_front(pProcess);
+	}
+}
+
+void Core::removeProcess(Process *pProcess)
+{
+	{
+		boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
+		m_processes.remove(pProcess);
+	}
+	{
+		boost::lock_guard<boost::shared_mutex> lock(m_waitingProcessesMutex);
+		m_waitingProcesses.remove(pProcess);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
