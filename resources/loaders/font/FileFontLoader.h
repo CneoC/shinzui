@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __FILE_FONT_LOADER_H__
-#define __FILE_FONT_LOADER_H__
+#ifndef __RESOUCRES_LOADERS_FONT_FILEFONTLOADER_H__
+#define __RESOUCRES_LOADERS_FONT_FILEFONTLOADER_H__
 
 #include "resources/ResourceLoaderBase.h"
 #include "FileFTFontLoader.h"
@@ -21,4 +21,4 @@ public:
 
 };
 
-#endif //__FS_FONT_LOADER_H__
+#endif //__RESOUCRES_LOADERS_FONT_FILEFONTLOADER_H__

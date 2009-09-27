@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __FONT_RESOURCE_H__
-#define __FONT_RESOURCE_H__
+#ifndef __RESOURCES_FONT_FONTRESOURCE_H__
+#define __RESOURCES_FONT_FONTRESOURCE_H__
 
 #include "resources/Resource.h"
 
@@ -20,4 +20,4 @@ public:
 
 typedef ResourceRef<FontData>		FontResource;
 
-#endif //__FONT_RESOURCE_H__
+#endif //__RESOURCES_FONT_FONTRESOURCE_H__

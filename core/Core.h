@@ -8,7 +8,7 @@
 #include "types.h"
 
 #include "util/Thread.h"
-#include "util/Log.h"
+#include "util/logging/LogManager.h"
 #include "core/Time.h"
 
 class Process;
@@ -164,10 +164,9 @@ protected:
 
 	u32						m_processRunId;			// incremental identifier to determine process run order.
 
-	ResourceLoader*			m_pLoader;				// resource loader for access to resources.
-};
+	ResourceLoader *		m_pLoader;				// resource loader for access to resources.
 
-// Log used for Core and related classes
-//extern Log<LogFormatText, LogOutputFile> CoreLog;
+	logging::Log *			m_log;					// logger used for core
+};
 
 #endif //__CORE_H__

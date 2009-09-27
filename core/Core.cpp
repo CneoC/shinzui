@@ -4,7 +4,9 @@
 Core::Core(s32 threadCount)
 	: m_startTime(Time::NOW)
 	, m_processRunId(0)
+	, m_log(LOG_GET("Core"))
 {
+
 	// Determine thread count automatically
 	if (threadCount == -1)
 	{
@@ -123,11 +125,10 @@ Process *Core::getNextProcess(u32 threadMask)
 			double delta = elapsed - pProcess->getLastRunTime();
 			if (delta > pProcess->getFrameDelay() && pProcess->isDependencyDone())
 			{
-				logging::Log &log = logging::Root::getRoot();
-				if (LOG_CHECK(log, LEVEL_WARN))
+				if (LOG_CHECK(m_log, LEVEL_WARN))
 				{
 					double diff = elapsed - pProcess->getNextRunTime();
-					if (diff > 0.1) LOG_WARN(log, "Process expected execution time exceeded by: " << diff);
+					if (diff > 0.1) LOG_WARN(m_log, "Process expected execution time exceeded by: " << diff);
 				}
 
 				m_processes.erase(p);

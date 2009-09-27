@@ -40,9 +40,10 @@ protected:
 		return true;
 	}
 
-	HDC			m_hDC;			// Private GDI Device Context
-	HWND		m_hWnd;			// Holds Our Window Handle
-	HINSTANCE	m_hInstance;	// Holds The Instance Of The Application
+	HDC				m_hDC;			// GDI device context.
+	HWND			m_hWnd;			// window handle.
+	HINSTANCE		m_hInstance;	// instance of the program.
+	logging::Log *	m_log;
 };
 
 #endif //__WINDOW_H__

@@ -19,7 +19,8 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="4"
+			UseOfMFC="0"
 			CharacterSet="2"
 			>
 			<Tool
@@ -59,17 +60,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib"
-				AdditionalLibraryDirectories="../libraries/boost_1_40_0/lib"
-				GenerateDebugInformation="true"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -81,9 +75,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -91,7 +82,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="4"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -131,19 +122,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib"
-				AdditionalLibraryDirectories="../libraries/boost_1_40_0/lib"
-				GenerateDebugInformation="true"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -153,9 +135,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -179,6 +158,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\render\2d\DebugFont.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\render\2d\DrawFPS.cpp"
 				>
 			</File>
@@ -195,7 +178,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\util\Log.cpp"
+				RelativePath=".\util\logging\Log.cpp"
 				>
 			</File>
 			<File
@@ -236,6 +219,10 @@
 			</File>
 			<File
 				RelativePath=".\core\WindowBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\logging\Writer.cpp"
 				>
 			</File>
 		</Filter>
@@ -289,23 +276,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resources\file\font\FileFontLoader.h"
+				RelativePath=".\resources\loaders\font\FileFontLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resources\file\font\FileFTFontLoader.h"
+				RelativePath=".\resources\loaders\font\FileFTFontLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resources\file\FileResourceLoader.h"
+				RelativePath=".\resources\loaders\FileResourceLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resources\file\shader\FileShaderLoader.h"
+				RelativePath=".\resources\loaders\shader\FileShaderLoader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resources\file\texture\FileTextureLoader.h"
+				RelativePath=".\resources\loaders\texture\FileTextureLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\loaders\font\FontConverter.h"
 				>
 			</File>
 			<File
@@ -313,7 +304,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\core\io\FSFile.h"
+				RelativePath=".\util\logging\Formatter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\util\logging\FormatUtil.h"
 				>
 			</File>
 			<File
@@ -321,7 +316,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resources\file\FSResourceLoader.h"
+				RelativePath=".\core\io\FSFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\loaders\FSResourceLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\loaders\font\FTFontConverter.h"
 				>
 			</File>
 			<File
@@ -337,19 +340,31 @@
 				>
 			</File>
 			<File
-				RelativePath=".\util\Log.h"
+				RelativePath=".\resources\font\GLFontResource.h"
 				>
 			</File>
 			<File
-				RelativePath=".\util\LogTestProc.h"
+				RelativePath=".\util\logging\Level.h"
 				>
 			</File>
 			<File
-				RelativePath=".\main.cpp"
+				RelativePath=".\util\logging\Log.h"
+				>
+			</File>
+			<File
+				RelativePath=".\util\logging\LogManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test\LogTestProc.h"
 				>
 			</File>
 			<File
 				RelativePath=".\math\Math.h"
+				>
+			</File>
+			<File
+				RelativePath=".\util\logging\Message.h"
 				>
 			</File>
 			<File
@@ -429,15 +444,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Window.h"
-				>
-			</File>
-			<File
 				RelativePath=".\core\Window.h"
 				>
 			</File>
 			<File
+				RelativePath=".\os\win\Window.h"
+				>
+			</File>
+			<File
 				RelativePath=".\core\WindowBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\util\logging\Writer.h"
 				>
 			</File>
 		</Filter>

@@ -15,24 +15,42 @@ public:
 	 */
 	ResourceLoader(ResourceCache *pCache = NULL)
 		: m_pCache(pCache)
+		, m_log(LOG_GET("Resource.Loader"))
 	{
 	}
 
 	/**
-	 * Gets a resource object (possibly not yet loaded)
-	 * @return the requested resource (a NULL resource when unable to load)
+	 * @see ResourceLoaderBase::find
 	 */
 	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL)
 	{
+		LOG_INFO(m_log, '\'' << id << '\'');
+
 		Resource result;
 		if (m_pCache)
 		{
-			result = m_pCache->get(id);
+			result = m_pCache->find(id, type);
 			if (result) return result;
 		}
 		result = ResourceLoaderBase::get(id, type);
 		if (m_pCache && result)
-			m_pCache->put(id, result);
+			m_pCache->add(result);
+		return result;
+	}
+
+	virtual Resource convert(const Resource &resource, ResourceType type)
+	{
+		LOG_INFO(m_log, '\'' << resource->getId() << '\'');
+
+		Resource result;
+		if (m_pCache)
+		{
+			result = m_pCache->find(resource->getId(), type);
+			if (result) return result;
+		}
+		result = ResourceLoaderBase::convert(resource, type);
+		if (m_pCache && result)
+			m_pCache->add(result);
 		return result;
 	}
 
@@ -48,7 +66,8 @@ public:
 	virtual bool unload(Resource &res, u32 flags = FLAG_NONE)	{ return false; }
 
 protected:
-	ResourceCache*	m_pCache;
+	ResourceCache *	m_pCache;
+	logging::Log *	m_log;
 };
 
 #endif //__RESOURCE_LOADER_H__

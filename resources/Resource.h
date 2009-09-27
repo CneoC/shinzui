@@ -37,6 +37,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 
 	bool isType(u32 type) const				{ return m_type[type]; }
+	ResourceTypeSet getType() const			{ return m_type; }
 
 	bool isLoaded() const					{ return m_flags[FLAG_LOADED]; }
 	void setLoaded(bool loaded)				{ m_flags[FLAG_LOADED] = loaded; }
@@ -122,20 +123,21 @@ public:
 		return *this;
 	}
 
-	T *operator -> ()	{ return m_pData; }
+	T *operator -> ()				{ return m_pData; }
+	const T *operator -> () const	{ return m_pData; }
 
-	operator bool () const		{ return m_pData != NULL; }
+	operator bool () const			{ return m_pData != NULL; }
 	
 	//////////////////////////////////////////////////////////////////////////
 
 	bool load(u32 flags = 0)
 	{
-		return	m_pData &&  m_pData->getLoader()->load(ResourceRef<ResourceData>(*this), flags);
+		return m_pData && m_pData->getLoader()->load(ResourceRef<ResourceData>(*this), flags);
 	}
 
 	bool unload(u32 flags = 0)
 	{
-		return	m_pData && m_pData->getLoader()->unload(ResourceRef<ResourceData>(*this), flags);
+		return m_pData && m_pData->getLoader()->unload(ResourceRef<ResourceData>(*this), flags);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

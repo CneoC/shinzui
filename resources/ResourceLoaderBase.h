@@ -35,8 +35,10 @@ public:
 	};
 
 	/**
-	 * Gets a resource object (possibly not yet loaded)
-	 * @return the requested resource (a NULL resource when unable to load)
+	 * Gets a resource object by name (possibly not yet loaded).
+	 * @param id	Identifier of the resource.
+	 * @param type	Resource type used as a hint for loaders (some loaders might require this!)
+	 * @return The requested resource (a NULL resource when unable to load).
 	 */
 	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL)
 	{
@@ -50,19 +52,31 @@ public:
 		return Resource();
 	}
 
-	//! Gets a texture resource definition (possibly not yet loaded)
+	/**
+	 * Converts a resource from one type to another if possible.
+	 * @param resource	The resource to convert.
+	 * @param type		The type to convert the resource to.
+	 */
+	virtual Resource convert(const Resource &resource, ResourceType type)
+	{
+		if (resource.isType(type))
+			return resource;
+		return Resource();
+	}
+
+	//! Gets a texture resource definition.
 	TextureResource getTexture(const std::string &id)
 	{
 		return get(id, RESOURCE_TEXTURE);
 	}
 
-	//! Gets a shader resource definition (possibly not yet loaded)
+	//! Gets a shader resource definition.
 	ShaderResource getShader(const std::string &id)
 	{
 		return get(id, RESOURCE_SHADER);
 	}
 
-	//! Gets a font resource definition (possibly not yet loaded)
+	//! Gets a font resource definition.
 	FontResource getFont(const std::string &id)
 	{
 		return get(id, RESOURCE_FONT);
@@ -111,7 +125,7 @@ public:
 	void clearLoaders()							{ m_loaders.clear(); }
 
 protected:
-	LoaderList	m_loaders;
+	LoaderList		m_loaders;
 };
 
 #endif //__RESOURCE_LOADER_BASE_H__

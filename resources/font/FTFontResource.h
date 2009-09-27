@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __FT_FONT_RESOURCE_H__
-#define __FT_FONT_RESOURCE_H__
+#ifndef __RESOURCES_FONT_FTFONTRESOURCE_H__
+#define __RESOURCES_FONT_FTFONTRESOURCE_H__
 
 #include "FontResource.h"
 
@@ -20,6 +20,11 @@ public:
 	FT_Library &getLibrary()	{ return m_library; }
 	FT_Face &getFace()			{ return m_face; }
 
+	void setSize(int size, int resolution = 128)
+	{ 
+		FT_Set_Char_Size(m_face, size << 6, size << 6, resolution, resolution);
+	}
+
 protected:
 	FT_Library	m_library;
 	FT_Face		m_face;
@@ -27,4 +32,4 @@ protected:
 
 typedef ResourceRef<FTFontData>		FTFontResource;
 
-#endif //__FT_FONT_RESOURCE_H__
+#endif //__RESOURCES_FONT_FTFONTRESOURCE_H__

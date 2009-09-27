@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __FILE_FT_FONT_LOADER_H__
-#define __FILE_FT_FONT_LOADER_H__
+#ifndef __RESOUCRES_LOADERS_FONT_FILEFTFONTLOADER_H__
+#define __RESOUCRES_LOADERS_FONT_FILEFTFONTLOADER_H__
 
 #include "resources/ResourceLoaderBase.h"
 
@@ -36,6 +36,16 @@ public:
 		return Resource();
 	}
 
+	virtual bool canConvert(Resource &res)
+	{
+		return false;
+	}
+
+	virtual bool convert(Resource &res)
+	{
+		return false;
+	}
+
 	/**
 	 * Loads the freetype2 font resource (blocking).
 	 * @return if resource was properly loaded.
@@ -56,8 +66,6 @@ public:
 		{
 			throw std::runtime_error(std::string("FT_New_Face failed. file '") + font->getId() + "' probably doesn't exist.");
 		}
-
-		FT_Set_Char_Size(font->getFace(), 16 << 6, 16 << 6, 96, 96);
 	
 		font->setLoaded(true);
 
@@ -85,4 +93,4 @@ public:
 
 };
 
-#endif //__FS_FONT_LOADER_H__
+#endif //__RESOUCRES_LOADERS_FONT_FILEFTFONTLOADER_H__

@@ -3,7 +3,7 @@
 
 #include "Window.h"
 
-#include "util/Log.h"
+#include "util/logging/Log.h"
 
 #define WINDOW_CLASS "GameWnd"
 
@@ -12,6 +12,7 @@ Window::Window(Core *pCore)
 	, m_hDC(NULL)
 	, m_hWnd(NULL)
 	, m_hInstance(NULL)
+	, m_log(LOG_GET("OS.Win32.Window"))
 {
 }
 
@@ -183,8 +184,10 @@ Process *Window::run(double delta)
 }
 
 LRESULT CALLBACK Window::wndProc(HWND m_hWnd, UINT uMsg,
-										  WPARAM wParam, LPARAM lParam)
+								 WPARAM wParam, LPARAM lParam)
 {
+	LOG_TRACE(m_log, LOG_FMT("window event  msg=%d  wParam=0x%X lParam=0x%X", uMsg % wParam % lParam));
+
 	switch (uMsg)
 	{
 	case WM_ACTIVATE:
