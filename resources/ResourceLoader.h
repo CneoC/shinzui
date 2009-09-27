@@ -40,7 +40,7 @@ public:
 
 	virtual Resource convert(const Resource &resource, ResourceType type)
 	{
-		LOG_INFO(m_log, '\'' << resource->getId() << '\'');
+		LOG_INFO(m_log, '\'' << resource->getId() << "' to type " << type);
 
 		Resource result;
 		if (m_pCache)

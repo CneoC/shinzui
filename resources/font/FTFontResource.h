@@ -5,6 +5,9 @@
 
 #include "FontResource.h"
 
+#include <ft2build.h>
+#include <freetype/freetype.h>
+
 class FTFontData
 	: public FontData
 {
@@ -13,6 +16,10 @@ public:
 
 	FTFontData(ResourceLoaderBase *pData)
 		: FontData(pData)
+		, m_face(NULL)
+		, m_library(NULL)
+		, m_size(14)
+		, m_resolution(128)
 	{
 		setType(TYPE);
 	}
@@ -22,10 +29,16 @@ public:
 
 	void setSize(int size, int resolution = 128)
 	{ 
-		FT_Set_Char_Size(m_face, size << 6, size << 6, resolution, resolution);
+		m_size = size;
+		m_resolution = resolution;
+
+		if (m_face) FT_Set_Char_Size(m_face, m_size << 6, m_size << 6, m_resolution, m_resolution);
 	}
 
 protected:
+	int			m_size;
+	int			m_resolution;
+
 	FT_Library	m_library;
 	FT_Face		m_face;
 };

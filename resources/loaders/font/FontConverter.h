@@ -1,10 +1,11 @@
 #pragma once
 
-#ifndef __RESOUCRES_LOADERS_FONT_FONTCONVERTER_H__
-#define __RESOUCRES_LOADERS_FONT_FONTCONVERTER_H__
+#ifndef __RESOURCES_FONTCONVERTER_H__
+#define __RESOURCES_FONTCONVERTER_H__
 
 #include "resources/ResourceLoaderBase.h"
-#include "FTFontConverter.h"
+#include "FTFontConverters.h"
+#include "GLFontConverters.h"
 
 class FontConverter
 	: public ResourceLoaderBase
@@ -16,10 +17,10 @@ public:
 	 */
 	FontConverter(ResourceTypeSet &types)
 	{
-		if (types[RESOURCE_FT_FONT] && types[RESOURCE_GL_FONT])
-			addLoader(new FTFontConverter());
+		if (types[RESOURCE_FT_FONT]) addLoader(new FTFontConverters::ConvertFromFile());
+		if (types[RESOURCE_GL_FONT]) addLoader(new GLFontConverters::ConvertFromFT());
 	}
 
 };
 
-#endif //__RESOUCRES_LOADERS_FONT_FONTCONVERTER_H__
+#endif //__RESOURCES_FONTCONVERTER_H__

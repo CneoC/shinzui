@@ -7,21 +7,24 @@
 
 #include "util/logging/LogManager.h"
 
-class LogTestProc
-	: public Process
+namespace test
 {
-public:
-	LogTestProc(Core *pCore, int id = 0, int targetThread = Core::THREAD_ID_NORMAL_MASK)
-		: Process(pCore, id, targetThread)
+	class LogTestProc
+		: public Process
 	{
-	}
+	public:
+		LogTestProc(Core *pCore, int id = 0, int targetThread = Core::THREAD_ID_NORMAL_MASK)
+			: Process(pCore, id, targetThread)
+		{
+		}
 
-	virtual Process *run(double delta)
-	{
-		logging::Log *log = LOG_GET_ROOT;
-		//LOG_WARN(log, "TEST: " << getId() << " from " << boost::this_thread::get_id());
-		return this;
-	}
-};
+		virtual Process *run(double delta)
+		{
+			logging::Log *log = LOG_GET_ROOT;
+			//LOG_WARN(log, "TEST: " << getId() << " from " << boost::this_thread::get_id());
+			return this;
+		}
+	};
+} //namespace test
 
 #endif //__TEST_LOGTESTPROC_H__

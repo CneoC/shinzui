@@ -115,10 +115,7 @@ public:
 			{
 				Resource resource = *j;
 				if (resource->isLoading())
-				{
 					resource.load(0);
-					resource->setLoad(false);
-				}
 			}
 		}
 	}
@@ -135,10 +132,7 @@ public:
 			{
 				Resource resource = *j;
 				if (resource->isUnloading())
-				{
 					resource.unload(0);
-					resource->setUnload(false);
-				}
 			}
 		}
 	}

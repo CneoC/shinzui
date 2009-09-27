@@ -10,12 +10,15 @@ DrawFPS::DrawFPS(Core *pCore)
 	, m_frameTime(0)
 	, m_fps(0)
 {
-	m_font.load("data/2d/fonts/debug.ttf", 14);
+	GLFontResource font = pCore->getLoader()->get("2d/fonts/debug.ttf");
+	FTFontResource ftFont = font->getSource();
+	ftFont->setSize(16);
+	font.load();
+	m_font.setResource(font);
 }
 
 DrawFPS::~DrawFPS()
 {
-	m_font.unload();
 }
 
 Process *DrawFPS::run(double delta)

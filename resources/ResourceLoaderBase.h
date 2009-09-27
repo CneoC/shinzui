@@ -24,6 +24,7 @@ public:
 	{
 		FLAG_NONE,
 		FLAG_ASYNC				= 1 << 0,		// Mark the load (or unload) as asynchronous
+		FLAG_DONT_RECURSE		= 1 << 1,		// Mark the load (or unload) as none recursive (Resource::getSource())
 
 		ASYNC_PRIORITY_MASK		= 0xFF000000,	// Mask async priority value
 		ASYNC_PRIORITY_SHIFT	= 24,			// Shift async priority value
@@ -32,7 +33,14 @@ public:
 		ASYNC_PRIORITY_HIGH		= 128 << ASYNC_PRIORITY_SHIFT,
 		ASYNC_PRIORITY_NORMAL	= 64 << ASYNC_PRIORITY_SHIFT,
 		ASYNC_PRIORITY_LOW		= 1 << ASYNC_PRIORITY_SHIFT,
+
+		FLAG_LOAD_DEFAULT		= FLAG_NONE,
+		FLAG_UNLOAD_DEFAULT		= FLAG_DONT_RECURSE
 	};
+
+	ResourceLoaderBase()
+		: m_pParent(NULL)
+	{}
 
 	/**
 	 * Gets a resource object by name (possibly not yet loaded).
@@ -42,6 +50,7 @@ public:
 	 */
 	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL)
 	{
+		// try if the child loaders can get the resource
 		LoaderList::iterator iter;
 		for (iter = m_loaders.begin(); iter != m_loaders.end(); ++iter)
 		{
@@ -57,10 +66,20 @@ public:
 	 * @param resource	The resource to convert.
 	 * @param type		The type to convert the resource to.
 	 */
-	virtual Resource convert(const Resource &resource, ResourceType type)
+	virtual Resource convert(const Resource &res, ResourceType type)
 	{
-		if (resource.isType(type))
-			return resource;
+		// no conversion needed
+		if (res.isType(type))
+			return res;
+
+		// try if the child loaders can convert the resource
+		LoaderList::iterator iter;
+		for (iter = m_loaders.begin(); iter != m_loaders.end(); ++iter)
+		{
+			Resource result = (*iter)->convert(res, type);
+			if (result)
+				return result;
+		}
 		return Resource();
 	}
 
@@ -86,46 +105,98 @@ public:
 	 * Loads a resource (blocking).
 	 * @return if resource was properly loaded.
 	 */
-	virtual bool load(Resource &res, u32 flags = FLAG_NONE)
+	virtual bool load(Resource &res, u32 flags = FLAG_LOAD_DEFAULT)
 	{
 		if (res->isLoaded())
 			return true;
 
 		if (flags & FLAG_ASYNC)
 		{
-			res->setLoad(true);
+			if (flags & FLAG_DONT_RECURSE)
+			{
+				if (!res->isLoaded()) res->setLoad(true);
+			}
+			else
+			{
+				Resource loadRes = res;
+				while (loadRes)
+				{
+					if (!loadRes->isLoaded()) loadRes->setLoad(true);
+					loadRes = loadRes->getSource();
+				}
+			}
+
 			return true;
 		}
+		else if (!(flags & FLAG_DONT_RECURSE))
+		{
+			Resource loadRes = res->getSource();
+			while (loadRes)
+			{
+				if (!loadRes->isLoaded()) loadRes.load(flags);
+				loadRes = loadRes->getSource();
+			}
+		}
+
 		return false;
 	}
 
 	/**
 	 * Unloads a resource (blocking).
 	 */
-	virtual bool unload(Resource &res, u32 flags = FLAG_NONE)
-	{
+	virtual bool unload(Resource &res, u32 flags = FLAG_UNLOAD_DEFAULT)
+	{		
 		if (!res->isLoaded())
 			return true;
 
 		if (flags & FLAG_ASYNC)
 		{
-			res->setUnload(true);
+			if (flags & FLAG_DONT_RECURSE)
+			{
+				if (res->isLoaded()) res->setUnload(true);
+			}
+			else
+			{
+				Resource loadRes = res;
+				while (loadRes)
+				{
+					if (loadRes->isLoaded()) loadRes->setUnload(true);
+					loadRes = loadRes->getSource();
+				}
+			}
+
 			return true;
 		}
+		else if (!(flags & FLAG_DONT_RECURSE))
+		{
+			Resource loadRes = res->getSource();
+			while (loadRes)
+			{
+				if (loadRes->isLoaded()) loadRes.unload(flags);
+				loadRes = loadRes->getSource();
+			}
+		}
+
 		return false;
 	}
 
-	//! Registers a child loader and puts it in a ResourceLoaderRef to manage more specific loading.
-	void addLoader(ResourceLoaderBase *pLoader)	{ m_loaders.push_front(SharedPtr(pLoader)); }
 	//! Registers a child loader to manage more specific loading.
-	void addLoader(const SharedPtr &loader)		{ m_loaders.push_front(loader); }
+	void addLoader(const SharedPtr &loader)		{ m_loaders.push_front(loader); loader->setParent(this); }
+	//! Registers a child loader and puts it in a ResourceLoaderRef to manage more specific loading.
+	void addLoader(ResourceLoaderBase *pLoader)	{ addLoader(SharedPtr(pLoader)); }
 	//! Removes a child loader.
 	void removeLoader(const SharedPtr &loader)	{ m_loaders.remove(loader); }
 	//! Clear all child loaders
 	void clearLoaders()							{ m_loaders.clear(); }
 
+	ResourceLoaderBase *getRoot()				{ return m_pParent? m_pParent->getRoot(): this; }
+	ResourceLoaderBase *getParent() const		{ return m_pParent; }
+
 protected:
-	LoaderList		m_loaders;
+	void setParent(ResourceLoaderBase *pParent) { m_pParent = pParent; }
+
+	ResourceLoaderBase *m_pParent;
+	LoaderList			m_loaders;
 };
 
 #endif //__RESOURCE_LOADER_BASE_H__

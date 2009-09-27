@@ -1,34 +1,68 @@
 #pragma once
 
-#ifndef __FILE_RESOURCE_LOADER_H__
-#define __FILE_RESOURCE_LOADER_H__
+#ifndef __RESOURCES_FILERESOURCELOADER_H__
+#define __RESOURCES_FILERESOURCELOADER_H__
 
 #include "resources/ResourceLoaderBase.h"
+#include "resources/FileResource.h"
+#include "resources/ResourceTypes.h"
 
-#include "font/FileFontLoader.h"
-#include "shader/FileShaderLoader.h"
-#include "texture/FileTextureLoader.h"
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
 
 class FileResourceLoader
 	: public ResourceLoaderBase
 {
 public:
 	/**
-	 * Constructs a file based resource loader.
-	 * This loader basically contains a set of the loaders that
-	 * load the actual resources using the File class (or subclasses thereof).
-	 * @param types the types of resource loaders to support.
+	 * Constructs a new file resource loader for raw disk access resources.
 	 */
-	FileResourceLoader(ResourceTypeSet &types)
-		: m_types(types)
+	FileResourceLoader(const fs::path &base = "./")
+		: m_basePath(base)
 	{
-		if (types[RESOURCE_FONT])		addLoader(new FileFontLoader(types));
-		if (types[RESOURCE_SHADER])		addLoader(new FileShaderLoader(types));
-		if (types[RESOURCE_TEXTURE])	addLoader(new FileTextureLoader(types));
+	}
+
+	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL)
+	{
+		fs::path p((m_basePath / id).native_directory_string());
+
+		if (fs::exists(p))
+		{
+			FileData *pData = new FileData(this);
+			pData->setId(id);
+			pData->setPath(p);
+			return FileResource(pData);
+		}
+		return Resource();
+	}
+
+	/**
+	 * Loads a file resource.
+	 * @return if resource was properly loaded.
+	 */
+	virtual bool load(Resource &res, u32 flags)
+	{
+		if (ResourceLoaderBase::load(res, flags))
+			return true;
+
+		FileResource file = res;
+		res->setLoaded(fs::exists(file->getPath()));
+		return res->isLoaded();
+	}
+
+	/**
+	 * Unloads a resource (blocking).
+	 */
+	virtual bool unload(Resource &res, u32 flags)
+	{
+		if (ResourceLoaderBase::unload(res, flags))
+			return true;
+
+		return true;
 	}
 
 protected:
-	ResourceTypeSet	m_types;
+	fs::path		m_basePath;
 };
 
-#endif //__FS_RESOURCE_LOADER_H__
+#endif //__RESOURCES_FILERESOURCELOADER_H__

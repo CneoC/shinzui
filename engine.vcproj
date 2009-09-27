@@ -178,6 +178,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\render\2d\GLFont.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\util\logging\Log.cpp"
 				>
 			</File>
@@ -276,23 +280,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resources\loaders\font\FileFontLoader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\resources\loaders\font\FileFTFontLoader.h"
+				RelativePath=".\resources\FileResource.h"
 				>
 			</File>
 			<File
 				RelativePath=".\resources\loaders\FileResourceLoader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\resources\loaders\shader\FileShaderLoader.h"
-				>
-			</File>
-			<File
-				RelativePath=".\resources\loaders\texture\FileTextureLoader.h"
 				>
 			</File>
 			<File
@@ -312,19 +304,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\io\FSFile.h"
-				>
-			</File>
-			<File
 				RelativePath=".\core\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resources\loaders\FSResourceLoader.h"
+				RelativePath=".\os\win\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resources\loaders\font\FTFontConverter.h"
+				RelativePath=".\resources\loaders\font\FTFontConverters.h"
 				>
 			</File>
 			<File
@@ -337,6 +325,14 @@
 			</File>
 			<File
 				RelativePath=".\core\gl\GLContext.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\2d\GLFont.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\loaders\font\GLFontConverters.h"
 				>
 			</File>
 			<File
@@ -376,6 +372,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resources\RawResource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\render\Renderer.h"
 				>
 			</File>
@@ -385,6 +385,10 @@
 			</File>
 			<File
 				RelativePath=".\resources\ResourceCache.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\loaders\ResourceConverters.h"
 				>
 			</File>
 			<File
@@ -404,6 +408,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resources\loaders\shader\ShaderConverter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resources\shader\ShaderResource.h"
 				>
 			</File>
@@ -416,6 +424,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resources\loaders\texture\TextureConverter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resources\texture\TextureResource.h"
 				>
 			</File>
@@ -424,11 +436,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\core\Time.h"
+				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Time.h"
+				RelativePath=".\core\Time.h"
 				>
 			</File>
 			<File
