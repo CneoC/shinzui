@@ -5,6 +5,10 @@
 
 #include "ResourceLoaderBase.h"
 
+#include "util/logging/Log.h"
+
+class ResourceCache;
+
 class ResourceLoader
 	: public ResourceLoaderBase
 {
@@ -13,46 +17,13 @@ public:
 	 * Constructs a base resource loader.
 	 * @param pCache	the ResourceCache to use to manage cached and async loaded resources.
 	 */
-	ResourceLoader(ResourceCache *pCache = NULL)
-		: m_pCache(pCache)
-		, m_log(LOG_GET("Resource.Loader"))
-	{
-	}
+	ResourceLoader(ResourceCache *pCache = NULL);
 
 	/**
 	 * @see ResourceLoaderBase::find
 	 */
-	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL)
-	{
-		LOG_INFO(m_log, '\'' << id << '\'');
-
-		Resource result;
-		if (m_pCache)
-		{
-			result = m_pCache->find(id, type);
-			if (result) return result;
-		}
-		result = ResourceLoaderBase::get(id, type);
-		if (m_pCache && result)
-			m_pCache->add(result);
-		return result;
-	}
-
-	virtual Resource convert(const Resource &resource, ResourceType type)
-	{
-		LOG_INFO(m_log, '\'' << resource->getId() << "' to type " << type);
-
-		Resource result;
-		if (m_pCache)
-		{
-			result = m_pCache->find(resource->getId(), type);
-			if (result) return result;
-		}
-		result = ResourceLoaderBase::convert(resource, type);
-		if (m_pCache && result)
-			m_pCache->add(result);
-		return result;
-	}
+	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL);
+	virtual Resource convert(const Resource &resource, ResourceType type);
 
 	/**
 	 * Loads a resource (blocking).

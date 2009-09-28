@@ -38,6 +38,7 @@ Process *Scene::run(double delta)
 
 	glDisable(GL_TEXTURE_2D);
 
+
 	glColor3f(1.0f, 1.0f, 0.0f);
 	glBegin(GL_QUADS);
 		// front

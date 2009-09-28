@@ -1,10 +1,9 @@
 #pragma once
 
-#ifndef __RESOURCE_LOADER_BASE_H__
-#define __RESOURCE_LOADER_BASE_H__
+#ifndef __RESOURCES_RESOURCELOADERBASE_H__
+#define __RESOURCES_RESOURCELOADERBASE_H__
 
 #include "Resource.h"
-#include "ResourceCache.h"
 
 #include "texture/TextureResource.h"
 #include "shader/ShaderResource.h"
@@ -48,41 +47,13 @@ public:
 	 * @param type	Resource type used as a hint for loaders (some loaders might require this!)
 	 * @return The requested resource (a NULL resource when unable to load).
 	 */
-	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL)
-	{
-		// try if the child loaders can get the resource
-		LoaderList::iterator iter;
-		for (iter = m_loaders.begin(); iter != m_loaders.end(); ++iter)
-		{
-			Resource result = (*iter)->get(id, type);
-			if (result)
-				return result;
-		}
-		return Resource();
-	}
-
+	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL);
 	/**
 	 * Converts a resource from one type to another if possible.
 	 * @param resource	The resource to convert.
 	 * @param type		The type to convert the resource to.
 	 */
-	virtual Resource convert(const Resource &res, ResourceType type)
-	{
-		// no conversion needed
-		if (res.isType(type))
-			return res;
-
-		// try if the child loaders can convert the resource
-		LoaderList::iterator iter;
-		for (iter = m_loaders.begin(); iter != m_loaders.end(); ++iter)
-		{
-			Resource result = (*iter)->convert(res, type);
-			if (result)
-				return result;
-		}
-		return Resource();
-	}
-
+	virtual Resource convert(const Resource &res, ResourceType type);
 	//! Gets a texture resource definition.
 	TextureResource getTexture(const std::string &id)
 	{
@@ -105,80 +76,12 @@ public:
 	 * Loads a resource (blocking).
 	 * @return if resource was properly loaded.
 	 */
-	virtual bool load(Resource &res, u32 flags = FLAG_LOAD_DEFAULT)
-	{
-		if (res->isLoaded())
-			return true;
-
-		if (flags & FLAG_ASYNC)
-		{
-			if (flags & FLAG_DONT_RECURSE)
-			{
-				if (!res->isLoaded()) res->setLoad(true);
-			}
-			else
-			{
-				Resource loadRes = res;
-				while (loadRes)
-				{
-					if (!loadRes->isLoaded()) loadRes->setLoad(true);
-					loadRes = loadRes->getSource();
-				}
-			}
-
-			return true;
-		}
-		else if (!(flags & FLAG_DONT_RECURSE))
-		{
-			Resource loadRes = res->getSource();
-			while (loadRes)
-			{
-				if (!loadRes->isLoaded()) loadRes.load(flags);
-				loadRes = loadRes->getSource();
-			}
-		}
-
-		return false;
-	}
+	virtual bool load(Resource &res, u32 flags = FLAG_LOAD_DEFAULT);
 
 	/**
 	 * Unloads a resource (blocking).
 	 */
-	virtual bool unload(Resource &res, u32 flags = FLAG_UNLOAD_DEFAULT)
-	{		
-		if (!res->isLoaded())
-			return true;
-
-		if (flags & FLAG_ASYNC)
-		{
-			if (flags & FLAG_DONT_RECURSE)
-			{
-				if (res->isLoaded()) res->setUnload(true);
-			}
-			else
-			{
-				Resource loadRes = res;
-				while (loadRes)
-				{
-					if (loadRes->isLoaded()) loadRes->setUnload(true);
-					loadRes = loadRes->getSource();
-				}
-			}
-
-			return true;
-		}
-		else if (!(flags & FLAG_DONT_RECURSE))
-		{
-			Resource loadRes = res->getSource();
-			while (loadRes)
-			{
-				if (loadRes->isLoaded()) loadRes.unload(flags);
-				loadRes = loadRes->getSource();
-			}
-		}
-
-		return false;
-	}
+	virtual bool unload(Resource &res, u32 flags = FLAG_UNLOAD_DEFAULT);
 
 	//! Registers a child loader to manage more specific loading.
 	void addLoader(const SharedPtr &loader)		{ m_loaders.push_front(loader); loader->setParent(this); }
@@ -199,4 +102,4 @@ protected:
 	LoaderList			m_loaders;
 };
 
-#endif //__RESOURCE_LOADER_BASE_H__
+#endif //__RESOURCES_RESOURCELOADERBASE_H__

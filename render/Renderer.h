@@ -5,6 +5,8 @@
 
 #include "core/ProcessChain.h"
 
+#include "RenderFactory.h"
+
 class Renderer :
 	public ProcessChain
 {

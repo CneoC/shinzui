@@ -13,6 +13,7 @@ class ResourceData;
 
 /**
  * Reference counter for resource data objects.
+ * @template T	Type of resource data
  */
 template <class T>
 class ResourceRef
@@ -21,6 +22,15 @@ public:
 	ResourceRef()
 		: m_pData(NULL)
 	{
+	}
+
+	/**
+	 * Constructor used for cleaner user created resources.
+	 */
+	ResourceRef(ResourceLoaderBase *pLoader)
+		: m_pData(new T(pLoader))
+	{
+		reference();
 	}
 
 	ResourceRef(T *pData)
@@ -36,7 +46,7 @@ public:
 		// Cast compatible resource types
 		if (cast && cast.isType(T::TYPE))
 		{
-			m_pData = static_cast<T *>(cast.getData());
+			m_pData = reinterpret_cast<T *>(cast.getData());
 			reference();
 		}
 		// Try to convert incompatible resource types
@@ -54,12 +64,18 @@ public:
 		}
 	}
 
+	/**
+	 * Copy constructor.
+	 */
 	ResourceRef(const ResourceRef& copy)
 		: m_pData(copy.m_pData)
 	{
 		reference();
 	}
 
+	/**
+	 * Destructor
+	 */
 	~ResourceRef()
 	{
 		dereference();

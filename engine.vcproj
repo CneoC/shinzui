@@ -47,6 +47,7 @@
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				RuntimeTypeInfo="false"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -107,8 +108,12 @@
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include"
 				PreprocessorDefinitions="GLEW_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
+				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="2"
+				FloatingPointModel="2"
+				RuntimeTypeInfo="false"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -158,19 +163,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\2d\DebugFont.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\render\2d\DrawFPS.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\render\EndFrameBuffer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\render\EndRenderer.cpp"
+				RelativePath=".\render\2d\Font.cpp"
 				>
 			</File>
 			<File
@@ -178,7 +175,23 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\2d\GLFont.cpp"
+				RelativePath=".\render\gl\GLEndFrameBuffer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\GLEndRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\2d\GLFont.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\GLStartFrameBuffer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\GLStartRenderer.cpp"
 				>
 			</File>
 			<File
@@ -198,15 +211,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\scene\Scene.cpp"
+				RelativePath=".\resources\ResourceLoader.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\render\StartFrameBuffer.cpp"
+				RelativePath=".\resources\ResourceLoaderBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\render\StartRenderer.cpp"
+				RelativePath=".\scene\Scene.cpp"
 				>
 			</File>
 			<File
@@ -222,7 +235,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\core\WindowBase.cpp"
+				RelativePath=".\os\interface\WindowBase.cpp"
 				>
 			</File>
 			<File
@@ -244,7 +257,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\core\ContextBase.h"
+				RelativePath=".\os\interface\ContextBase.h"
 				>
 			</File>
 			<File
@@ -252,19 +265,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\2d\DebugFont.h"
-				>
-			</File>
-			<File
 				RelativePath=".\render\2d\DrawFPS.h"
-				>
-			</File>
-			<File
-				RelativePath=".\render\EndFrameBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\render\EndRenderer.h"
 				>
 			</File>
 			<File
@@ -285,6 +286,10 @@
 			</File>
 			<File
 				RelativePath=".\resources\loaders\FileResourceLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\2d\Font.h"
 				>
 			</File>
 			<File
@@ -320,15 +325,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\os\current\gl\GLContext.h"
+				>
+			</File>
+			<File
 				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\core\gl\GLContext.h"
+				RelativePath=".\render\gl\GLEndFrameBuffer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\2d\GLFont.h"
+				RelativePath=".\render\gl\GLEndRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\2d\GLFont.h"
 				>
 			</File>
 			<File
@@ -337,6 +350,34 @@
 			</File>
 			<File
 				RelativePath=".\resources\font\GLFontResource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\loaders\shader\GLProgramConverters.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\shader\GLProgramResource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\GLRenderFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\loaders\shader\GLShaderConverters.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\shader\GLShaderResource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\GLStartFrameBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\GLStartRenderer.h"
 				>
 			</File>
 			<File
@@ -380,6 +421,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\render\RenderFactory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resources\Resource.h"
 				>
 			</File>
@@ -404,7 +449,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\scene\Scene.h"
+				RelativePath=".\scene\Scene.h"
 				>
 			</File>
 			<File
@@ -413,14 +458,6 @@
 			</File>
 			<File
 				RelativePath=".\resources\shader\ShaderResource.h"
-				>
-			</File>
-			<File
-				RelativePath=".\render\StartFrameBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\render\StartRenderer.h"
 				>
 			</File>
 			<File
@@ -456,15 +493,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\core\Window.h"
-				>
-			</File>
-			<File
 				RelativePath=".\os\win\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\core\WindowBase.h"
+				RelativePath=".\os\current\Window.h"
+				>
+			</File>
+			<File
+				RelativePath=".\os\interface\WindowBase.h"
 				>
 			</File>
 			<File

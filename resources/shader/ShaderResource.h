@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __SHADER_RESOURCE_H__
-#define __SHADER_RESOURCE_H__
+#ifndef __RESOURCES_SHADERRESOURCE_H__
+#define __RESOURCES_SHADERRESOURCE_H__
 
 #include "resources/Resource.h"
 
@@ -11,7 +11,8 @@ class ShaderData
 public:
 	enum { TYPE = RESOURCE_SHADER };
 
-	ShaderData()
+	ShaderData(ResourceLoaderBase *pLoader)
+		: ResourceData(pLoader)
 	{
 		setType(TYPE);
 	}
@@ -19,13 +20,6 @@ public:
 protected:
 };
 
-class GLShaderData
-	: public ShaderData
-{
-public:
-
-};
-
 typedef ResourceRef<ShaderData>		ShaderResource;
 
-#endif //__SHADER_RESOURCE_H__
+#endif //__RESOURCES_SHADERRESOURCE_H__

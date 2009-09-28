@@ -1,18 +1,18 @@
 #pragma once
 
-#ifndef __START_FRAME_BUFFER_H__
-#define __START_FRAME_BUFFER_H__
+#ifndef __RENDER_GLSTARTFRAMEBUFFER_H__
+#define __RENDER_GLSTARTFRAMEBUFFER_H__
 
-#include "Renderer.h"
+#include "render/Renderer.h"
 
 #include <gl/glew.h>
 
-class StartFrameBuffer
+class GLStartFrameBuffer
 	: public Renderer
 {
 public:
-	StartFrameBuffer(Core *pCore);
-	~StartFrameBuffer();
+	GLStartFrameBuffer(Core *pCore);
+	~GLStartFrameBuffer();
 
 	virtual Process *run(double delta);
 
@@ -28,4 +28,4 @@ protected:
 	GLuint fbo;
 };
 
-#endif //__START_FRAME_BUFFER_H__
+#endif //__RENDER_GLSTARTFRAMEBUFFER_H__

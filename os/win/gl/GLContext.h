@@ -3,8 +3,8 @@
 #ifndef __GL_CONTEXT_H__
 #define __GL_CONTEXT_H__
 
-#include "core/ContextBase.h"
-#include "core/WindowBase.h"
+#include "os/interface/ContextBase.h"
+#include "os/current/Window.h"
 
 class GLContext :
 	public ContextBase

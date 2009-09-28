@@ -3,7 +3,7 @@
 #ifndef __CONTEXT_BASE_H__
 #define __CONTEXT_BASE_H__
 
-#include "core/Window.h"
+#include "os/current/Window.h"
 
 class ContextBase
 {

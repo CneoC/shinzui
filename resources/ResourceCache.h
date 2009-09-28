@@ -3,6 +3,10 @@
 #ifndef __RESOURCE_CACHE_H__
 #define __RESOURCE_CACHE_H__
 
+#include "core/Process.h"
+
+#include "resources/Resource.h"
+
 #include "util/Util.h"
 
 #include <boost/thread.hpp>
@@ -19,7 +23,6 @@ public:
 	};
 
 	typedef std::map<u32, Entry>	ResourceList;
-
 
 public:
 	/**

@@ -1,20 +1,20 @@
-#include "EndRenderer.h"
+#include "GLEndRenderer.h"
 
-#include "core/ContextBase.h"
+#include "os/interface/ContextBase.h"
 
 #include <gl/glew.h>
 
-EndRenderer::EndRenderer(Core *pCore, ContextBase *pContext)
+GLEndRenderer::GLEndRenderer(Core *pCore, ContextBase *pContext)
 	: Renderer(pCore)
 	, m_pContext(pContext)
 {
 }
 
-EndRenderer::~EndRenderer()
+GLEndRenderer::~GLEndRenderer()
 {
 }
 
-Process *EndRenderer::run(double delta)
+Process *GLEndRenderer::run(double delta)
 {
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
 	m_pContext->swapBuffers();

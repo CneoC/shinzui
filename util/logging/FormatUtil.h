@@ -7,8 +7,6 @@
 #include "Level.h"
 #include "Log.h"
 
-#include <varargs.h>
-
 #include <boost/thread.hpp>
 #include <boost/date_time.hpp>
 

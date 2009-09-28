@@ -1,6 +1,8 @@
 #include "DrawFPS.h"
 
 #include "resources/ResourceLoader.h"
+#include "resources/font/GLFontResource.h"
+#include "resources/font/FTFontResource.h"
 
 #include <gl/glew.h>
 

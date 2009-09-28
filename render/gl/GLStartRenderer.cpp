@@ -1,18 +1,18 @@
-#include "StartRenderer.h"
+#include "GLStartRenderer.h"
 
 #include <gl/glew.h>
 
-StartRenderer::StartRenderer(Core *pCore, ContextBase *pContext)
+GLStartRenderer::GLStartRenderer(Core *pCore, ContextBase *pContext)
 	: Renderer(pCore)
 	, m_pContext(pContext)
 {
 }
 
-StartRenderer::~StartRenderer()
+GLStartRenderer::~GLStartRenderer()
 {
 }
 
-Process *StartRenderer::run(double delta)
+Process *GLStartRenderer::run(double delta)
 {
 	//if (delta == 0)
 		m_pContext->bind();

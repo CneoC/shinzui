@@ -6,7 +6,7 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
-#include "core/WindowBase.h"
+#include "os/interface/WindowBase.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

@@ -5,12 +5,10 @@
 Console::Console(Core *pCore)
 	: Renderer(pCore)
 {
-	m_font.load("data/2d/fonts/debug.ttf", 14);
 }
 
 Console::~Console()
 {
-	m_font.unload();
 }
 
 Process *Console::run(double delta)
@@ -29,7 +27,6 @@ Process *Console::run(double delta)
 	glLoadIdentity();
 
 	glColor3f(1.0f, 1.0f, 1.0f);
-	m_font.printf(Vector2f(100, 100), "abcdefghijklmnopqrstuvwxyz");
 
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glTranslatef(100.0f, 100.0f, 0.0f);

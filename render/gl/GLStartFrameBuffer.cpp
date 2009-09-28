@@ -1,4 +1,4 @@
-#include "StartFrameBuffer.h"
+#include "GLStartFrameBuffer.h"
 
 #include <gl/glew.h>
 
@@ -9,7 +9,7 @@ public:
 
 };
 
-StartFrameBuffer::StartFrameBuffer(Core *pCore)
+GLStartFrameBuffer::GLStartFrameBuffer(Core *pCore)
 	: Renderer(pCore)
 {
 	width = 800;
@@ -50,11 +50,11 @@ StartFrameBuffer::StartFrameBuffer(Core *pCore)
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
 
-StartFrameBuffer::~StartFrameBuffer()
+GLStartFrameBuffer::~GLStartFrameBuffer()
 {
 }
 
-Process *StartFrameBuffer::run(double delta)
+Process *GLStartFrameBuffer::run(double delta)
 {
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 1);
 
