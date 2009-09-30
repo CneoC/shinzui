@@ -155,7 +155,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\render\2d\Console.cpp"
+				RelativePath=".\util\console\Console.cpp"
 				>
 			</File>
 			<File
@@ -163,11 +163,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\2d\DrawFPS.cpp"
+				RelativePath=".\util\console\DrawFPS.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\render\2d\Font.cpp"
+				RelativePath=".\render\2d\FontUtil.cpp"
 				>
 			</File>
 			<File
@@ -183,7 +183,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\2d\GLFont.cpp"
+				RelativePath=".\render\gl\2d\GLFontUtil.cpp"
 				>
 			</File>
 			<File
@@ -204,6 +204,10 @@
 			</File>
 			<File
 				RelativePath=".\render\Renderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\RendererLoaderBase.cpp"
 				>
 			</File>
 			<File
@@ -249,7 +253,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\2d\Console.h"
+				RelativePath=".\util\console\Console.h"
 				>
 			</File>
 			<File
@@ -261,7 +265,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\2d\DrawFPS.h"
+				RelativePath=".\util\console\DrawFPS.h"
 				>
 			</File>
 			<File
@@ -285,15 +289,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\2d\Font.h"
-				>
-			</File>
-			<File
 				RelativePath=".\resources\converters\font\FontConverter.h"
 				>
 			</File>
 			<File
 				RelativePath=".\resources\font\FontResource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\2d\FontUtil.h"
 				>
 			</File>
 			<File
@@ -337,15 +341,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\2d\GLFont.h"
-				>
-			</File>
-			<File
 				RelativePath=".\resources\converters\font\GLFontConverters.h"
 				>
 			</File>
 			<File
 				RelativePath=".\resources\font\GLFontResource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\2d\GLFontUtil.h"
 				>
 			</File>
 			<File
@@ -357,7 +361,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLRenderFactory.h"
+				RelativePath=".\render\gl\GLRenderDriver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\GLRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\GLRendererLoader.h"
 				>
 			</File>
 			<File
@@ -413,11 +425,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\render\RenderChain.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\RenderDriver.h"
+				>
+			</File>
+			<File
 				RelativePath=".\render\Renderer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\RenderFactory.h"
+				RelativePath=".\render\RendererLoaderBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\RenderProc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\RenderUtil.h"
 				>
 			</File>
 			<File
@@ -461,6 +489,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test\TestCase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resources\converters\texture\TextureConverter.h"
 				>
 			</File>
@@ -493,11 +525,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Window.h"
+				RelativePath=".\os\current\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Window.h"
+				RelativePath=".\os\win\Window.h"
 				>
 			</File>
 			<File

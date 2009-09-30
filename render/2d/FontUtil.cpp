@@ -1,14 +1,18 @@
-#include "Font.h"
+#include "FontUtil.h"
 
 #include <assert.h>
 #include <stdarg.h>
 
-Font::Font(FontResource font)
+using namespace render;
+
+#pragma warning(disable: 4996)
+
+FontUtil::FontUtil(FontResource font)
 	: m_font(font)
 {
 }
 
-void Font::printf(const Vector2f &p, const char *fmt, ...) const
+void FontUtil::printf(const Vector2f &p, const char *fmt, ...) const
 {
 	assert(fmt);
 

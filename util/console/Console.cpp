@@ -11,7 +11,7 @@ Console::~Console()
 {
 }
 
-Process *Console::run(double delta)
+void Console::render(double delta)
 {
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
 
@@ -40,6 +40,4 @@ Process *Console::run(double delta)
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glPopAttrib();
-
-	return Renderer::run(delta);
 }

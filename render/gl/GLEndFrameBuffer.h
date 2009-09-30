@@ -3,23 +3,26 @@
 #ifndef __RENDER_GLENDFRAMEBUFFER_H__
 #define __RENDER_GLENDFRAMEBUFFER_H__
 
-#include "render/Renderer.h"
+#include "GLRenderer.h"
 
 #include "resources/shader/GLProgramResource.h"
 
-class GLEndFrameBuffer
-	: public Renderer
+namespace render
 {
-public:
-	GLEndFrameBuffer(Core *pCore);
-	~GLEndFrameBuffer();
+	class GLEndFrameBuffer
+		: public GLRenderer
+	{
+	public:
+		GLEndFrameBuffer(Core *pCore);
+		~GLEndFrameBuffer();
 
-	virtual Process *run(double delta);
+		virtual void render(double delta);
 
-	void setProgram(const GLProgramResource &program)	{ m_program = program; }
+		void setProgram(const GLProgramResource &program)	{ m_program = program; }
 
-protected:
-	GLProgramResource	m_program;
-};
+	protected:
+		GLProgramResource	m_program;
+	};
+}
 
 #endif //__RENDER_GLENDFRAMEBUFFER_H__

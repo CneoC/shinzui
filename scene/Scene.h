@@ -1,20 +1,25 @@
 #pragma once
 
-#ifndef __SCENE_H__
-#define __SCENE_H__
+#ifndef __SCENE_SCENE_H__
+#define __SCENE_SCENE_H__
 
 #include "render/Renderer.h"
 
-class Scene
-	: public Renderer
+class Core;
+
+namespace scene
 {
-public:
-	Scene(Core *pCore);
-	~Scene();
+	class Scene
+		: public render::Renderer
+	{
+	public:
+		Scene(Core *pCore);
+		~Scene();
 
-	virtual Process *run(double delta);
+		virtual void render(double delta);
 
-protected:
-};
+	protected:
+	};
+}
 
-#endif //__SCENE_H__
+#endif //__SCENE_SCENE_H__

@@ -3,21 +3,23 @@
 #ifndef __RENDER_GLENDRENDERER_H__
 #define __RENDER_GLENDRENDERER_H__
 
-#include "render/Renderer.h"
+#include "GLRenderer.h"
 
 class ContextBase;
 
-class GLEndRenderer :
-	public Renderer
+namespace render
 {
-public:
-	GLEndRenderer(Core *pCore, ContextBase *pContext);
-	~GLEndRenderer();
+	class GLEndRenderer :
+		public GLRenderer
+	{
+	public:
+		GLEndRenderer(Core *pCore);
+		~GLEndRenderer();
 
-	virtual Process *run(double delta);
+		virtual void render(double delta);
 
-protected:
-	ContextBase *m_pContext;
-};
+	protected:
+	};
+}
 
 #endif //__RENDER_GLENDRENDERER_H__

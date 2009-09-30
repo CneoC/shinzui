@@ -9,6 +9,7 @@
 
 #include "util/Util.h"
 
+#include <map>
 #include <boost/thread.hpp>
 #include <boost/thread/shared_mutex.hpp>
 
@@ -22,6 +23,7 @@ public:
 		List	resources;
 	};
 
+	// TODO: use actual hash map
 	typedef std::map<u32, Entry>	ResourceList;
 
 public:

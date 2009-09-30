@@ -7,6 +7,7 @@
 
 #include <string>
 
+// TODO: Optimize to use hashes instead of string find.
 class ResourceType
 {
 public:
@@ -22,7 +23,7 @@ public:
 	 * Constructs a resource type from a type name.
 	 */
 	ResourceType(const std::string &type)
-		: m_types("." + type)
+		: m_types("." + type + ".")
 //		, m_hash(0)
 	{
 	}
@@ -45,8 +46,8 @@ public:
 	{
 		if (!type.empty())
 		{
-			m_types.push_back('.');
 			m_types += type;
+			m_types.push_back('.');
 		}
 		return *this;
 	}
@@ -79,7 +80,7 @@ public:
 	}
 	bool operator & (const char *type) const
 	{
-		return type && m_types.find(std::string(".") + type) != std::string::npos;
+		return type && m_types.find(std::string(".") + type + '.') != std::string::npos;
 	}
 
 	/**
@@ -96,8 +97,17 @@ public:
 	 */
 	std::string getTop() const
 	{
-		u32 pos = m_types.find_last_of('.');
-		return pos == std::string::npos? "": m_types.substr(pos + 1);
+		std::string result = "";
+		if (!m_types.empty())
+		{
+			u32 pos = m_types.find_last_of('.', m_types.length() - 2);
+			if (pos != std::string::npos)
+			{
+				pos++;
+				result = m_types.substr(pos, m_types.length() - pos - 1);
+			}
+		}
+		return result;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -107,8 +117,9 @@ public:
 
 
 protected:
-//	u32			m_hash;
-	std::string m_types;
+//	std::vector<u16>			m_hashes;
+//	std::vector<std::string>	m_types;
+	std::string			m_types;
 };
 
 /*

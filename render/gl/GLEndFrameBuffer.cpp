@@ -5,8 +5,10 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+using namespace render;
+
 GLEndFrameBuffer::GLEndFrameBuffer(Core *pCore)
-	: Renderer(pCore)
+	: GLRenderer(pCore)
 {
 }
 
@@ -14,7 +16,7 @@ GLEndFrameBuffer::~GLEndFrameBuffer()
 {
 }
 
-Process *GLEndFrameBuffer::run(double delta)
+void GLEndFrameBuffer::render(double delta)
 {
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
@@ -46,6 +48,4 @@ Process *GLEndFrameBuffer::run(double delta)
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();
-
-	return Renderer::run(delta);
 }

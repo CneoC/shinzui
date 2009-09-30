@@ -4,9 +4,10 @@
 
 #include <gl/glew.h>
 
-GLEndRenderer::GLEndRenderer(Core *pCore, ContextBase *pContext)
-	: Renderer(pCore)
-	, m_pContext(pContext)
+using namespace render;
+
+GLEndRenderer::GLEndRenderer(Core *pCore)
+	: GLRenderer(pCore)
 {
 }
 
@@ -14,9 +15,8 @@ GLEndRenderer::~GLEndRenderer()
 {
 }
 
-Process *GLEndRenderer::run(double delta)
+void GLEndRenderer::render(double delta)
 {
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
-	m_pContext->swapBuffers();
-	return Renderer::run(delta);
+	getGLContext()->swapBuffers();
 }

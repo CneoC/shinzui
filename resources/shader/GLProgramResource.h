@@ -5,13 +5,15 @@
 
 #include "resources/Resource.h"
 
+#include <list>
+
 #include <gl/glew.h>
 
 class GLProgramData
 	: public ResourceData
 {
 public:
-	static const char *getName()	{ return "GLProgram_"; }
+	static const char *getName()	{ return "GLProgram"; }
 
 	GLProgramData(ResourceLoaderBase *pLoader)
 		: ResourceData(pLoader)

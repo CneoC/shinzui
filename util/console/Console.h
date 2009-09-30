@@ -6,13 +6,13 @@
 #include "render/Renderer.h"
 
 class Console
-	: public Renderer
+	: public render::Renderer
 {
 public:
 	Console(Core *pCore);
 	~Console();
 
-	virtual Process *run(double delta);
+	virtual void render(double delta);
 
 protected:
 };

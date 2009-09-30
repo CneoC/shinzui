@@ -64,7 +64,7 @@ namespace logging
 
 #undef DEFINE_UTIL_START
 #undef DEFINE_UTIL_END
-} //namespace logging
+}
 
 
 #endif //__LOGGING_FORMATUTIL_H__

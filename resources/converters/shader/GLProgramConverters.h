@@ -16,8 +16,8 @@ namespace fs = boost::filesystem;
 namespace GLProgramConverters
 {
 	/**
-	* Loader class that can convert file resources to gl shader resources.
-	*/
+	 * Loader class that can convert file resources to gl shader resources.
+	 */
 	class ConvertFromFile
 		: public ResourceLoaderBase
 	{
@@ -25,7 +25,7 @@ namespace GLProgramConverters
 		{
 			FileResource file(res, DONT_CONVERT);
 			GLProgramDefinition def(res, DONT_CONVERT);
-			if ((file && (type & GLProgramData::getName() || file->getPath().extension() == ".prog")) || def)
+			if ((file && (type & GLProgramData::getName() || file->getPath().extension() == ".glsl")) || def)
 			{
 				GLProgramData *pData = new GLProgramData(this);
 				pData->setId(ResourceId(GLProgramData::getName(), res->getId().getName()));
@@ -92,8 +92,8 @@ namespace GLProgramConverters
 		}
 
 		/**
-		* Unloads a resource (blocking).
-		*/
+		 * Unloads a resource (blocking).
+		 */
 		virtual bool unload(Resource &res, u32 flags)
 		{
 			if (ResourceLoaderBase::unload(res, flags))

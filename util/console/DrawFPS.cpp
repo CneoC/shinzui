@@ -1,5 +1,10 @@
 #include "DrawFPS.h"
 
+#include "core/Core.h"
+
+#include "render/RenderDriver.h"
+#include "render/2d/FontUtil.h"
+
 #include "resources/ResourceLoader.h"
 #include "resources/font/GLFontResource.h"
 #include "resources/font/FTFontResource.h"
@@ -7,26 +12,31 @@
 #include <gl/glew.h>
 
 DrawFPS::DrawFPS(Core *pCore)
-	: Renderer(pCore)
+	: render::Renderer(pCore)
 	, m_frameCount(0)
 	, m_frameTime(0)
 	, m_fps(0)
 {
-	GLFontResource font(pCore->getLoader(), "File::2d/fonts/debug.ttf");
-	FTFontResource ftFont = font->getSource();
+	m_pFontUtil = m_pCore->getDriver()->getUtil("Font")->as<render::FontUtil>();
+
+	FTFontResource ftFont(m_pCore->getLoader(), "File::2d/fonts/debug.ttf", "fps");
 	ftFont->setSize(16);
+
+	GLFontResource font(m_pCore->getLoader(), "FTFont::fps");
 	font.load();
-	m_font.setResource(font);
 }
 
 DrawFPS::~DrawFPS()
 {
 }
 
-Process *DrawFPS::run(double delta)
+void DrawFPS::render(double delta)
 {
 // 	FontResource debugFont = m_pCore->getResourceLoader()->getFont("2d/fonts/debug.ttf");
 // 	printf(debugFont->isLoaded() ? "loaded\n" : "not loaded\n");
+
+	GLFontResource font(m_pCore->getLoader(), "GLFont::fps");
+	m_pFontUtil->setResource(font);
 
 	m_frameCount++;
 	m_frameTime += delta;
@@ -51,12 +61,10 @@ Process *DrawFPS::run(double delta)
 	glLoadIdentity();
 
 	glColor3f(1.0f, 1.0f, 1.0f);
-	m_font.printf(Vector2f(10, 10), "%04.2f FPS", getFPS());
+	m_pFontUtil->printf(Vector2f(10, 10), "%04.2f FPS", getFPS());
 
 	glPushAttrib(GL_TRANSFORM_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glPopAttrib();
-
-	return Renderer::run(delta);
 }

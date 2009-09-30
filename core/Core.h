@@ -14,6 +14,7 @@
 class Process;
 class Core;
 class ResourceLoader;
+namespace render	{ class RenderDriver; }
 
 /**
  * Core thread class which is used by Core to run a Process.
@@ -143,12 +144,17 @@ public:
 	}
 
 	//! Gets if the core is still running.
-	bool isRunning() const						{ return m_running; }
+	bool isRunning() const							{ return m_running; }
 
-	//! Gets the base resource loader.
-	ResourceLoader *getLoader() const			{ return m_pLoader; }
-	//! Sets the base resource loader.
-	void setLoader(ResourceLoader *pLoader)		{ m_pLoader = pLoader; }
+	//! Gets the current resource loader.
+	ResourceLoader *getLoader() const				{ return m_pLoader; }
+	//! Sets the current resource loader.
+	void setLoader(ResourceLoader *pLoader)			{ m_pLoader = pLoader; }
+
+	//! Gets the current render driver.
+	render::RenderDriver *getDriver() const			{ return m_pDriver; }
+	//! Sets the current render driver.
+	void setDriver(render::RenderDriver *pDriver)	{ m_pDriver = pDriver; }
 
 protected:
 	Time					m_startTime;			// start time of the core system.
@@ -164,7 +170,8 @@ protected:
 
 	u32						m_processRunId;			// incremental identifier to determine process run order.
 
-	ResourceLoader *		m_pLoader;				// resource loader for access to resources.
+	ResourceLoader *		m_pLoader;				// current resource loader.
+	render::RenderDriver *	m_pDriver;				// current render driver.
 
 	logging::Log *			m_log;					// logger used for core
 };

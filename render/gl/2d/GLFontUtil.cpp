@@ -1,15 +1,17 @@
-#include "GLFont.h"
+#include "GLFontUtil.h"
 
 #include "resources/ResourceLoaderBase.h"
 
 #include <stdexcept>
 
-GLFont::GLFont(GLFontResource font)
-	: Font(font)
+using namespace render;
+
+GLFontUtil::GLFontUtil(GLFontResource font)
+	: FontUtil(font)
 {
 }
 
-void GLFont::print(const Vector2f &p, size_t length, const char *text) const
+void GLFontUtil::print(const Vector2f &p, size_t length, const char *text) const
 {
 	GLFontResource font(m_font);
 	if (!font) throw std::runtime_error("Invalid font resource, expected GLFontResource.");

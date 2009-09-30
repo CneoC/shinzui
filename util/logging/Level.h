@@ -66,6 +66,6 @@ namespace logging
 	#define LEVEL_TRACE	logging::Levels::getTrace()
 #define LEVEL_ALL	logging::Levels::getAll()
 
-} //namespace logging
+}
 
 #endif //__LOGGING_LEVEL_H__

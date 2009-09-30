@@ -2,15 +2,10 @@
 
 #include <gl/glew.h>
 
-
-class GLFrameBuffer
-{
-public:
-
-};
+using namespace render;
 
 GLStartFrameBuffer::GLStartFrameBuffer(Core *pCore)
-	: Renderer(pCore)
+	: GLRenderer(pCore)
 {
 	width = 800;
 	height = 800;
@@ -54,7 +49,7 @@ GLStartFrameBuffer::~GLStartFrameBuffer()
 {
 }
 
-Process *GLStartFrameBuffer::run(double delta)
+void GLStartFrameBuffer::render(double delta)
 {
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 1);
 
@@ -62,6 +57,4 @@ Process *GLStartFrameBuffer::run(double delta)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //	phCheckFBO();
 //	phCheckError("Creation of the FBO itself");
-
-	return Renderer::run(delta);
 }

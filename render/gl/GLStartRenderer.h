@@ -3,21 +3,23 @@
 #ifndef __RENDER_GLSTARTRENDERER_H__
 #define __RENDER_GLSTARTRENDERER_H__
 
-#include "render/Renderer.h"
+#include "GLRenderer.h"
 
 #include "os/interface/ContextBase.h"
 
-class GLStartRenderer :
-	public Renderer
+namespace render
 {
-public:
-	GLStartRenderer(Core *pCore, ContextBase *pContext);
-	~GLStartRenderer();
+	class GLStartRenderer :
+		public GLRenderer
+	{
+	public:
+		GLStartRenderer(Core *pCore);
+		~GLStartRenderer();
 
-	virtual Process *run(double delta);
+		virtual void render(double delta);
 
-protected:
-	ContextBase *m_pContext;
-};
+	protected:
+	};
+}
 
 #endif //__RENDER_GLSTARTRENDERER_H__

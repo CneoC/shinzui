@@ -9,6 +9,10 @@
 
 class ResourceCache;
 
+/**
+ * Root class for resource loaders.
+ * Uses a ResourceCache instance to cache and stream loaded resources.
+ */
 class ResourceLoader
 	: public ResourceLoaderBase
 {
@@ -21,11 +25,11 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 
-	/**
-	 * @see ResourceLoaderBase::get
-	 */
+	//! @see ResourceLoaderBase::get
 	virtual Resource get(const ResourceId &id);
+	//! @see ResourceLoaderBase::convert
 	virtual Resource convert(const Resource &resource, const ResourceType &type);
+	//! @see ResourceLoaderBase::clone
 	virtual void clone(const Resource &src, Resource dst);
 
 	//////////////////////////////////////////////////////////////////////////

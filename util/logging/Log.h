@@ -62,6 +62,6 @@ namespace logging
 
 		Log *			m_pParent;
 	};
-} //namespace log
+}
 
 #endif //__LOGGING_LOG_H__

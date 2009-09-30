@@ -1,10 +1,13 @@
 #include "GLStartRenderer.h"
 
+#include "render/RenderDriver.h"
+
 #include <gl/glew.h>
 
-GLStartRenderer::GLStartRenderer(Core *pCore, ContextBase *pContext)
-	: Renderer(pCore)
-	, m_pContext(pContext)
+using namespace render;
+
+GLStartRenderer::GLStartRenderer(Core *pCore)
+	: GLRenderer(pCore)
 {
 }
 
@@ -12,14 +15,14 @@ GLStartRenderer::~GLStartRenderer()
 {
 }
 
-Process *GLStartRenderer::run(double delta)
+void GLStartRenderer::render(double delta)
 {
 	//if (delta == 0)
-		m_pContext->bind();
+	m_pCore->getDriver()->getContext()->bind();
 
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
-	glClearColor(0, 0, 0, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear The Screen And The Depth Buffer
 
-	return Renderer::run(delta);
+	// Clear The Screen And The Depth Buffer
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

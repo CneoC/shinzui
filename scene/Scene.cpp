@@ -5,8 +5,10 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+using namespace scene;
+
 Scene::Scene(Core *pCore)
-	: Renderer(pCore)
+	: render::Renderer(pCore)
 {
 }
 
@@ -14,7 +16,7 @@ Scene::~Scene()
 {
 }
 
-Process *Scene::run(double delta)
+void Scene::render(double delta)
 {
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
 
@@ -77,6 +79,4 @@ Process *Scene::run(double delta)
 		glVertex3f(-0.5f, 0.5f, 0.5f);
 		glVertex3f(-0.5f,-0.5f, 0.5f);
 	glEnd();
-
-	return Renderer::run(delta);
 }

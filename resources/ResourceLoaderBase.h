@@ -9,9 +9,21 @@
 
 #include <boost/shared_ptr.hpp>
 
+/**
+ * Base class for resource loaders.
+ */
 class ResourceLoaderBase
 {
+protected:
+	// Don't allow construction.
+	ResourceLoaderBase()
+		: m_pParent(NULL)
+	{}
+
 public:
+	// Shared ResourceLoaderBase pointer for proper cleanup.
+	// shared_ptr is used because ResourceLoaderBase instances
+	// are allowed to be used in multiple resource loader trees.
 	typedef boost::shared_ptr<ResourceLoaderBase>	SharedPtr;
 	typedef std::list<SharedPtr>					LoaderList;
 
@@ -24,6 +36,7 @@ public:
 		ASYNC_PRIORITY_MASK		= 0xFF000000,	// Mask async priority value
 		ASYNC_PRIORITY_SHIFT	= 24,			// Shift async priority value
 
+		// Asynchronous load/unload priority
 		ASYNC_PRIORITY_CRITICAL	= 255 << ASYNC_PRIORITY_SHIFT,
 		ASYNC_PRIORITY_HIGH		= 128 << ASYNC_PRIORITY_SHIFT,
 		ASYNC_PRIORITY_NORMAL	= 64 << ASYNC_PRIORITY_SHIFT,
@@ -32,12 +45,6 @@ public:
 		FLAG_LOAD_DEFAULT		= FLAG_NONE,
 		FLAG_UNLOAD_DEFAULT		= FLAG_DONT_RECURSE
 	};
-
-	//////////////////////////////////////////////////////////////////////////
-
-	ResourceLoaderBase()
-		: m_pParent(NULL)
-	{}
 
 	//////////////////////////////////////////////////////////////////////////
 

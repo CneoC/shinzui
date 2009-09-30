@@ -50,6 +50,6 @@ namespace logging
 
 	};
 
-} //namespace logging
+}
 
 #endif //__LOGGING_FORMATTER_H__
