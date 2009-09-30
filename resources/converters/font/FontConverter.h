@@ -15,10 +15,10 @@ public:
 	 * Constructs a font converter.
 	 * @param types the types of font resource loaders to support.
 	 */
-	FontConverter(ResourceTypeSet &types)
+	FontConverter()
 	{
-		if (types[RESOURCE_FT_FONT]) addLoader(new FTFontConverters::ConvertFromFile());
-		if (types[RESOURCE_GL_FONT]) addLoader(new GLFontConverters::ConvertFromFT());
+		addLoader(new FTFontConverters::ConvertFromFile);
+		addLoader(new GLFontConverters::ConvertFromFT);
 	}
 
 };

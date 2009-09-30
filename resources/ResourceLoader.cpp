@@ -8,34 +8,63 @@ ResourceLoader::ResourceLoader(ResourceCache *pCache)
 {
 }
 
-Resource ResourceLoader::get(const std::string &id, ResourceType type)
+Resource ResourceLoader::get(const ResourceId &id)
 {
-	LOG_INFO(m_log, '\'' << id << '\'');
+	LOG_INFO(m_log, '\'' << id.toString() << '\'');
 
 	Resource result;
+
+	// Find existing resources with the identifier
 	if (m_pCache)
 	{
-		result = m_pCache->find(id, type);
-		if (result) return result;
+		result = m_pCache->find(id);
 	}
-	result = ResourceLoaderBase::get(id, type);
-	if (m_pCache && result)
-		m_pCache->add(result);
+
+	// Haven't found a resource
+	if (!result)
+	{
+		// Try to retrieve the resource
+		result = ResourceLoaderBase::get(id);
+
+		// Add a successfully loaded resource to the cache
+		if (m_pCache && result)
+			m_pCache->add(result);
+	}
+
 	return result;
 }
 
-Resource ResourceLoader::convert(const Resource &resource, ResourceType type)
+Resource ResourceLoader::convert(const Resource &resource, const ResourceType &type)
 {
-	LOG_INFO(m_log, '\'' << resource->getId() << "' to type " << type);
+	LOG_INFO(m_log, '\'' << resource->getId().getType().getTop() << "::" << resource->getId().getName() << "' to type " << type.toString());
+
+	// Resource id we want to convert to
+	ResourceId id(type.getTop() + "::" + resource->getId().getName());
 
 	Resource result;
+	// Find existing resources with the identifier
 	if (m_pCache)
+		result = m_pCache->find(id);
+	
+	// Haven't found a resource
+	if (!result)
 	{
-		result = m_pCache->find(resource->getId(), type);
-		if (result) return result;
+		// Try to convert the resource
+		result = ResourceLoaderBase::convert(resource, type);
+		if (result)
+		{
+			// Cache the converted resource
+			if (m_pCache)
+				m_pCache->add(result);
+		}
 	}
-	result = ResourceLoaderBase::convert(resource, type);
-	if (m_pCache && result)
-		m_pCache->add(result);
+
 	return result;
+}
+
+void ResourceLoader::clone(const Resource &src, Resource dst)
+{
+	LOG_INFO(m_log, '\'' << src->getId().getType().getTop() << "::" << src->getId().getName() << "' -> '" << dst->getId().getType().getTop() << "::" << dst->getId().getName());
+
+	ResourceLoaderBase::clone(src, dst);
 }

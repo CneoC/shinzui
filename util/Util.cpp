@@ -7,12 +7,12 @@
 #define GET_16_BITS(d) (*((const u16 *) (d)))
 #else
 #define GET_16_BITS(d) ((((u32)(((const u8 *)(d))[1])) << 8) \
-					  +  (u32)(((const u8 *)(d))[0]) )
+						+ (u32)(((const u8 *)(d))[0]) )
 #endif
 
-u32 Util::hashString(const char * data, u32 len)
+u32 Util::hashString(const char * data, u32 len, u32 hash)
 {
-	u32 hash = len;
+	if (hash == 0) hash = len;
 	u32 tmp;
 	int rem;
 

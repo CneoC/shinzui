@@ -40,9 +40,9 @@ public:
 	/**
 	 * Finds a resource with a specific identifier and type
 	 */
-	Resource find(const std::string &id, const ResourceType type)
+	Resource find(const ResourceId &id)
 	{
-		LOG_INFO(m_log, LOG_FMT("'%s' with type %d", id % type));
+		LOG_INFO(m_log, LOG_FMT("'%s'", id.toString()));
 
 		// early exit
 		if (m_resources.empty()) return Resource();
@@ -50,7 +50,7 @@ public:
 		boost::shared_lock<boost::shared_mutex> lock(m_resourcesMutex);
 
 		// calculate string hash
-		u32 hash = Util::hashString(id.c_str(), id.length());
+		u32 hash = id.getHash();
 
 		// find hash in resource map
 		ResourceList::iterator found = m_resources.find(hash);
@@ -64,13 +64,8 @@ public:
 			{
 				Resource resource = *iter;
 
-				// check if the resource has the expected type
-				bool valid = type == RESOURCE_NULL || resource->isType(type);
-				
 				// check if it's actually the resource we're looking for
-				valid &= resource->getId() == id;
-
-				if (valid)
+				if (resource->getId() == id)
 					return *iter;
 
 				++iter;
@@ -81,13 +76,13 @@ public:
 
 	void add(const Resource &resource)
 	{
-		LOG_INFO(m_log, LOG_FMT("'%s' with type %s", resource->getId() % resource->getType().to_string()));
+		LOG_INFO(m_log, LOG_FMT("'%s' with type %s", resource->getId().toString() % resource->getType().toString()));
 
 		assert(resource);
 		boost::lock_guard<boost::shared_mutex> lock(m_resourcesMutex);
 
 		// calculate string hash
-		u32 hash = Util::hashString(resource->getId().c_str(), resource->getId().length());
+		u32 hash = resource->getId().getHash();
 
 		// find hash in resource map
 		Entry &entry = m_resources[hash];

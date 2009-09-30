@@ -9,12 +9,12 @@ class FontData
 	: public ResourceData
 {
 public:
-	enum { TYPE = RESOURCE_FONT };
+	static const char *getName()	{ return "Font"; }
 
 	FontData(ResourceLoaderBase *pData)
 		: ResourceData(pData)
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 };
 

@@ -9,12 +9,12 @@ class RawData
 	: public ResourceData
 {
 public:
-	enum { TYPE = RESOURCE_RAW };
+	static const char *getName()	{ return "Raw"; }
 
 	RawData(ResourceLoaderBase *pData)
 		: ResourceData(pData)
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 };
 

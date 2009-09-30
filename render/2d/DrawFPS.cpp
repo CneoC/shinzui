@@ -12,7 +12,7 @@ DrawFPS::DrawFPS(Core *pCore)
 	, m_frameTime(0)
 	, m_fps(0)
 {
-	GLFontResource font = pCore->getLoader()->get("2d/fonts/debug.ttf");
+	GLFontResource font(pCore->getLoader(), "File::2d/fonts/debug.ttf");
 	FTFontResource ftFont = font->getSource();
 	ftFont->setSize(16);
 	font.load();

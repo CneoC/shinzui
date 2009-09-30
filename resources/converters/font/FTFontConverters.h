@@ -20,13 +20,13 @@ namespace FTFontConverters
 	class ConvertFromFile
 		: public ResourceLoaderBase
 	{
-		virtual Resource convert(const Resource &res, ResourceType type)
+		virtual Resource convert(const Resource &res, const ResourceType &type)
 		{
-			FileResource file(res, false);
-			if (file && (type == RESOURCE_FT_FONT || file->getPath().extension() == ".ttf"))
+			FileResource file(res, DONT_CONVERT);
+			if (file && (type & FTFontData::getName() || file->getPath().extension() == ".ttf"))
 			{
 				FTFontData *pData = new FTFontData(this);
-				pData->setId(res->getId());
+				pData->setId(ResourceId(FTFontData::getName(), res->getId().getName()));
 				pData->setSource(res);
 				return FTFontResource(pData);
 			}
@@ -55,7 +55,7 @@ namespace FTFontConverters
 
 			if (FT_New_Face(font->getLibrary(), file->getPath().native_file_string().c_str(), 0, &font->getFace()))
 			{
-				throw std::runtime_error(std::string("FT_New_Face failed. file '") + font->getId() + "' probably doesn't exist.");
+				throw std::runtime_error(std::string("FT_New_Face failed. file '") + font->getId().toString() + "' probably doesn't exist.");
 			}
 
 			font->setSize(14, 128);

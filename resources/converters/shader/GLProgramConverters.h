@@ -21,14 +21,14 @@ namespace GLProgramConverters
 	class ConvertFromFile
 		: public ResourceLoaderBase
 	{
-		virtual Resource convert(const Resource &res, ResourceType type)
+		virtual Resource convert(const Resource &res, const ResourceType &type)
 		{
-			FileResource file(res, false);
-			GLProgramDefinition def(res, false);
-			if ((file && (type == RESOURCE_GL_PROGRAM || file->getPath().extension() == ".prog")) || def)
+			FileResource file(res, DONT_CONVERT);
+			GLProgramDefinition def(res, DONT_CONVERT);
+			if ((file && (type & GLProgramData::getName() || file->getPath().extension() == ".prog")) || def)
 			{
 				GLProgramData *pData = new GLProgramData(this);
-				pData->setId(res->getId());
+				pData->setId(ResourceId(GLProgramData::getName(), res->getId().getName()));
 				pData->setSource(res);
 				return GLProgramResource(pData);
 			}
@@ -65,7 +65,7 @@ namespace GLProgramConverters
 				GLProgramDataDef::ShaderList::const_iterator iter = def->getShaders().begin();
 				while (iter != def->getShaders().end())
 				{
-					GLShaderResource shader = pRootLoader->get(*iter, RESOURCE_GL_SHADER);
+					GLShaderResource shader = pRootLoader->get(*iter);
 					if (shader.load())
 						glAttachShader(program->getProgram(), shader->getShader());
 					++iter;

@@ -29,13 +29,13 @@ namespace GLFontConverters
 	class ConvertFromFT
 		: public ResourceLoaderBase
 	{
-		virtual Resource convert(const Resource &res, ResourceType type)
+		virtual Resource convert(const Resource &res, const ResourceType &type)
 		{
-			FTFontResource font(res, false);
-			if (font && type == RESOURCE_GL_FONT)
+			FTFontResource font(res, DONT_CONVERT);
+			if (font && type & GLFontData::getName())
 			{
 				GLFontData *pData = new GLFontData(this);
-				pData->setId(res->getId());
+				pData->setId(ResourceId(GLFontData::getName(), res->getId().getName()));
 				pData->setSource(res);
 				return GLFontResource(pData);
 			}

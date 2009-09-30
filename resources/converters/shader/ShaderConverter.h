@@ -15,13 +15,10 @@ public:
 	 * Constructs a font converter.
 	 * @param types the types of font resource loaders to support.
 	 */
-	ShaderConverter(ResourceTypeSet &types)
+	ShaderConverter()
 	{
- 		if (types[RESOURCE_GL_VERT_SHADER] || types[RESOURCE_GL_FRAG_SHADER])
-		{
-			addLoader(new GLShaderConverters::ConvertFromFile());
-		}
-		if (types[RESOURCE_GL_PROGRAM]) addLoader(new GLProgramConverters::ConvertFromFile);
+		addLoader(new GLShaderConverters::ConvertFromFile);
+		addLoader(new GLProgramConverters::ConvertFromFile);
 	}
 
 };

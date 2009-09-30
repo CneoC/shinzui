@@ -9,11 +9,11 @@ class TextureData
 	: public ResourceData
 {
 public:
-	enum { TYPE = RESOURCE_TEXTURE };
+	static const char *getName()	{ return "Texture"; }
 
 	TextureData()
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 };
 

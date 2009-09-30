@@ -5,7 +5,7 @@
 
 #include "resources/ResourceLoaderBase.h"
 #include "resources/FileResource.h"
-#include "resources/ResourceTypes.h"
+#include "resources/ResourceType.h"
 
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
@@ -22,16 +22,19 @@ public:
 	{
 	}
 
-	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL)
+	virtual Resource get(const ResourceId &id)
 	{
-		fs::path p((m_basePath / id).native_directory_string());
-
-		if (fs::exists(p))
+		if (id.getType() & "File")
 		{
-			FileData *pData = new FileData(this);
-			pData->setId(id);
-			pData->setPath(p);
-			return FileResource(pData);
+			fs::path p((m_basePath / id.getName()).native_directory_string());
+
+			if (fs::exists(p))
+			{
+				FileData *pData = new FileData(this);
+				pData->setId(id);
+				pData->setPath(p);
+				return FileResource(pData);
+			}
 		}
 		return Resource();
 	}

@@ -21,23 +21,23 @@ namespace GLShaderConverters
 	class ConvertFromFile
 		: public ResourceLoaderBase
 	{
-		virtual Resource convert(const Resource &res, ResourceType type)
+		virtual Resource convert(const Resource &res, const ResourceType &type)
 		{
-			FileResource file(res, false);
+			FileResource file(res, DONT_CONVERT);
 			if (file)
 			{
-				GLShaderData::ShaderType type = GLShaderData::TYPE_NONE;
-				if (type == RESOURCE_GL_VERT_SHADER || file->getPath().extension() == ".vert")
-					type = GLShaderData::TYPE_VERTEX;
-				else if (type == RESOURCE_GL_FRAG_SHADER || file->getPath().extension() == ".frag")
-					type = GLShaderData::TYPE_FRAGMENT;
+				GLShaderData::ShaderType shaderType = GLShaderData::TYPE_NONE;
+				if (type & GLShaderData::getVertName() || file->getPath().extension() == ".vert")
+					shaderType = GLShaderData::TYPE_VERTEX;
+				else if (type & GLShaderData::getFragName() || file->getPath().extension() == ".frag")
+					shaderType = GLShaderData::TYPE_FRAGMENT;
 
-				if (type != GLShaderData::TYPE_NONE)
+				if (shaderType != GLShaderData::TYPE_NONE)
 				{
 					GLShaderData *pData = new GLShaderData(this);
-					pData->setId(res->getId());
+					pData->setId(ResourceId(GLShaderData::getName(), res->getId().getName()));
 					pData->setSource(res);
-					pData->setShaderType(type);
+					pData->setShaderType(shaderType);
 					return GLShaderResource(pData);
 				}
 			}

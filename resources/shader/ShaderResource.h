@@ -9,12 +9,12 @@ class ShaderData
 	: public ResourceData
 {
 public:
-	enum { TYPE = RESOURCE_SHADER };
+	static const char *getName()	{ return "Shader"; }
 
 	ShaderData(ResourceLoaderBase *pLoader)
 		: ResourceData(pLoader)
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 
 protected:

@@ -5,10 +5,6 @@
 
 #include "Resource.h"
 
-#include "texture/TextureResource.h"
-#include "shader/ShaderResource.h"
-#include "font/FontResource.h"
-
 #include <list>
 
 #include <boost/shared_ptr.hpp>
@@ -22,8 +18,8 @@ public:
 	enum LoadFlags
 	{
 		FLAG_NONE,
-		FLAG_ASYNC				= 1 << 0,		// Mark the load (or unload) as asynchronous
-		FLAG_DONT_RECURSE		= 1 << 1,		// Mark the load (or unload) as none recursive (Resource::getSource())
+		FLAG_ASYNC				= 1 << 0,		// Mark the (un)load as asynchronous
+		FLAG_DONT_RECURSE		= 1 << 1,		// Mark the (un)load as none recursive (Resource::getSource())
 
 		ASYNC_PRIORITY_MASK		= 0xFF000000,	// Mask async priority value
 		ASYNC_PRIORITY_SHIFT	= 24,			// Shift async priority value
@@ -37,40 +33,39 @@ public:
 		FLAG_UNLOAD_DEFAULT		= FLAG_DONT_RECURSE
 	};
 
+	//////////////////////////////////////////////////////////////////////////
+
 	ResourceLoaderBase()
 		: m_pParent(NULL)
 	{}
 
+	//////////////////////////////////////////////////////////////////////////
+
 	/**
 	 * Gets a resource object by name (possibly not yet loaded).
-	 * @param id	Identifier of the resource.
-	 * @param type	Resource type used as a hint for loaders (some loaders might require this!)
+	 * @param id		Identifier of the resource.
+	 * @param rename	Copies the resource if valid and gives it this new id.
 	 * @return The requested resource (a NULL resource when unable to load).
 	 */
-	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL);
+	virtual Resource get(const ResourceId &id);
+
 	/**
 	 * Converts a resource from one type to another if possible.
 	 * @param resource	The resource to convert.
 	 * @param type		The type to convert the resource to.
 	 */
-	virtual Resource convert(const Resource &res, ResourceType type);
-	//! Gets a texture resource definition.
-	TextureResource getTexture(const std::string &id)
-	{
-		return get(id, RESOURCE_TEXTURE);
-	}
+	virtual Resource convert(const Resource &res, const ResourceType &type);
 
-	//! Gets a shader resource definition.
-	ShaderResource getShader(const std::string &id)
-	{
-		return get(id, RESOURCE_SHADER);
-	}
+	/**
+	 * Clones an existing resource.
+	 * This is a very limited implementation and most loaders will need to
+	 * implement their own versions.
+	 * @param src	Source resource to clone.
+	 * @param dst	Destination resource to clone to.
+	 */
+	virtual void clone(const Resource &src, Resource dst);
 
-	//! Gets a font resource definition.
-	FontResource getFont(const std::string &id)
-	{
-		return get(id, RESOURCE_FONT);
-	}
+	//////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Loads a resource (blocking).
@@ -83,6 +78,8 @@ public:
 	 */
 	virtual bool unload(Resource &res, u32 flags = FLAG_UNLOAD_DEFAULT);
 
+	//////////////////////////////////////////////////////////////////////////
+
 	//! Registers a child loader to manage more specific loading.
 	void addLoader(const SharedPtr &loader)		{ m_loaders.push_front(loader); loader->setParent(this); }
 	//! Registers a child loader and puts it in a ResourceLoaderRef to manage more specific loading.
@@ -92,12 +89,18 @@ public:
 	//! Clear all child loaders
 	void clearLoaders()							{ m_loaders.clear(); }
 
-	ResourceLoaderBase *getRoot()				{ return m_pParent? m_pParent->getRoot(): this; }
+	//////////////////////////////////////////////////////////////////////////
+
+	//! Gets this loaders parent loader.
 	ResourceLoaderBase *getParent() const		{ return m_pParent; }
+	//! Returns the root loader of the current loader tree.
+	ResourceLoaderBase *getRoot()				{ return m_pParent? m_pParent->getRoot(): this; }
 
 protected:
+	//! Sets this loaders parent loader.
 	void setParent(ResourceLoaderBase *pParent) { m_pParent = pParent; }
 
+protected:
 	ResourceLoaderBase *m_pParent;
 	LoaderList			m_loaders;
 };

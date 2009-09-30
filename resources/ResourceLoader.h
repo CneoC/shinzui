@@ -19,11 +19,16 @@ public:
 	 */
 	ResourceLoader(ResourceCache *pCache = NULL);
 
+	//////////////////////////////////////////////////////////////////////////
+
 	/**
-	 * @see ResourceLoaderBase::find
+	 * @see ResourceLoaderBase::get
 	 */
-	virtual Resource get(const std::string &id, ResourceType type = RESOURCE_NULL);
-	virtual Resource convert(const Resource &resource, ResourceType type);
+	virtual Resource get(const ResourceId &id);
+	virtual Resource convert(const Resource &resource, const ResourceType &type);
+	virtual void clone(const Resource &src, Resource dst);
+
+	//////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Loads a resource (blocking).

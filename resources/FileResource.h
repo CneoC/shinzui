@@ -12,12 +12,12 @@ class FileData
 	: public RawData
 {
 public:
-	enum { TYPE = RESOURCE_FILE };
+	static const char *getName()	{ return "File"; }
 
 	FileData(ResourceLoaderBase *pData)
 		: RawData(pData)
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 
 	void setPath(const fs::path &path)	{ m_path = path; }

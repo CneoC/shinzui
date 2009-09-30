@@ -12,7 +12,7 @@ class FTFontData
 	: public FontData
 {
 public:
-	enum { TYPE = RESOURCE_FT_FONT };
+	static const char *getName()	{ return "FTFont"; }
 
 	FTFontData(ResourceLoaderBase *pData)
 		: FontData(pData)
@@ -21,7 +21,7 @@ public:
 		, m_size(14)
 		, m_resolution(128)
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 
 	FT_Library &getLibrary()	{ return m_library; }

@@ -11,12 +11,12 @@ class GLFontData
 	: public FontData
 {
 public:
-	enum { TYPE = RESOURCE_GL_FONT };
+	static const char *getName()	{ return "GLFont"; }
 
 	GLFontData(ResourceLoaderBase *pData)
 		: FontData(pData)
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 
 	void setTextures(GLuint *pTextures)	{ m_pTextures = pTextures; }

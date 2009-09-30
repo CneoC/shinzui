@@ -11,13 +11,13 @@ class GLProgramData
 	: public ResourceData
 {
 public:
-	enum { TYPE = RESOURCE_GL_PROGRAM };
+	static const char *getName()	{ return "GLProgram_"; }
 
 	GLProgramData(ResourceLoaderBase *pLoader)
 		: ResourceData(pLoader)
 		, m_program(0)
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 
 	void setProgram(GLuint program)		{ m_program = program; }
@@ -35,12 +35,12 @@ class GLProgramDataDef
 public:
 	typedef std::list<std::string> ShaderList;
 
-	enum { TYPE = RESOURCE_GL_PROGRAM_DEFINITION };
+	static const char *getName()	{ return "GLProgramDef"; }
 
 	GLProgramDataDef(ResourceLoaderBase *pLoader)
 		: ResourceData(pLoader)
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 
 	void addShader(const std::string &shader)	{ m_shaders.push_back(shader); }

@@ -11,8 +11,6 @@ class GLShaderData
 	: public ShaderData
 {
 public:
-	enum { TYPE = RESOURCE_GL_SHADER };
-
 	enum ShaderType
 	{
 		TYPE_NONE,
@@ -20,12 +18,16 @@ public:
 		TYPE_FRAGMENT
 	};
 
+	static const char *getName()		{ return "GLShader"; }
+	static const char *getVertName()	{ return "GLVertShader"; }
+	static const char *getFragName()	{ return "GLFragShader"; }
+
 	GLShaderData(ResourceLoaderBase *pLoader)
 		: ShaderData(pLoader)
 		, m_shaderType(TYPE_NONE)
 		, m_shader(0)
 	{
-		setType(TYPE);
+		getType() += getName();
 	}
 
 	void setShaderType(ShaderType type)	{ m_shaderType = type; }
