@@ -18,6 +18,7 @@ public:
 
 	virtual bool bind() = 0;
 	virtual bool unbind() = 0;
+	virtual bool link(ContextBase *pOther) = 0;
 
 	virtual void swapBuffers() = 0;
 

@@ -12,7 +12,6 @@ Log::Log()
 	, m_pLevel(&LEVEL_ALL)
 	, m_pParent(NULL)
 	, m_recurseWrite(false)
-	, m_pWriter(NULL)
 {}
 
 Log::Log(const char *pName)
@@ -20,7 +19,6 @@ Log::Log(const char *pName)
 	, m_pLevel(NULL)
 	, m_pParent(NULL)
 	, m_recurseWrite(true)
-	, m_pWriter(NULL)
 {
 	LOG_MANAGER.addLog(*this);
 }
@@ -30,7 +28,6 @@ Log::Log(const char *pName, const Level &level)
 	, m_pLevel(&level)
 	, m_pParent(NULL)
 	, m_recurseWrite(true)
-	, m_pWriter(NULL)
 {
 	LOG_MANAGER.addLog(*this);
 }
@@ -39,10 +36,33 @@ Log::~Log()
 {
 	if (m_pName)
 		LOG_MANAGER.removeLog(*this);
+	clearWriters();
 }
 
 void Log::write(Message &message)
 {
 	if (m_recurseWrite && m_pParent)	m_pParent->write(message);
-	if (m_pWriter)						m_pWriter->write(message);
+	WriterList::iterator writer;
+	for (writer = m_writers.begin(); writer != m_writers.end(); ++writer)
+	{
+		Writer *pWriter = *writer;
+		if (!pWriter->getLevel() || *pWriter->getLevel() <= message.getLevel())
+			pWriter->write(message);
+	}
+}
+
+void Log::addWriter(Writer *pWriter)
+{
+	m_writers.push_back(pWriter);
+	pWriter->open();
+}
+
+void Log::clearWriters()
+{
+	WriterList::iterator writer;
+	for (writer = m_writers.begin(); writer != m_writers.end(); ++writer)
+	{
+		(*writer)->close();
+	}
+	m_writers.clear();
 }

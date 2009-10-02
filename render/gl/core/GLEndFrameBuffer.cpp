@@ -1,5 +1,7 @@
 #include "GLEndFrameBuffer.h"
 
+#include "resources/ResourceLoaderBase.h"
+
 #include <gl/glew.h>
 
 #define _USE_MATH_DEFINES
@@ -8,7 +10,7 @@
 using namespace render;
 
 GLEndFrameBuffer::GLEndFrameBuffer(Core *pCore)
-	: GLRenderer(pCore)
+	: EndFrameBuffer(pCore)
 {
 }
 
@@ -28,7 +30,10 @@ void GLEndFrameBuffer::render(double delta)
 	gluOrtho2D(	viewportRect[0], viewportRect[2],
 				viewportRect[1], viewportRect[3]);
 
-	if (m_program) glUseProgram(m_program->getProgram());
+	if (m_program.isLoaded())
+	{
+		glUseProgram(GLProgramResource(m_program)->getProgram());
+	}
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -44,7 +49,8 @@ void GLEndFrameBuffer::render(double delta)
 		glTexCoord2i(0, 1); glVertex2i(0, 500);
 	glEnd();
 
-	if (m_program) glUseProgram(0);
+	glUseProgram(0);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();

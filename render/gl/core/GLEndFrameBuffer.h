@@ -3,25 +3,24 @@
 #ifndef __RENDER_GLENDFRAMEBUFFER_H__
 #define __RENDER_GLENDFRAMEBUFFER_H__
 
-#include "GLRenderer.h"
+#include "render/core/EndFrameBuffer.h"
 
 #include "resources/shader/GLProgramResource.h"
 
 namespace render
 {
 	class GLEndFrameBuffer
-		: public GLRenderer
+		: public EndFrameBuffer
 	{
 	public:
+		static Renderer *create(Core *pCore)	{ return new GLEndFrameBuffer(pCore); }
+
+		//////////////////////////////////////////////////////////////////////////
+
 		GLEndFrameBuffer(Core *pCore);
 		~GLEndFrameBuffer();
 
 		virtual void render(double delta);
-
-		void setProgram(const GLProgramResource &program)	{ m_program = program; }
-
-	protected:
-		GLProgramResource	m_program;
 	};
 }
 

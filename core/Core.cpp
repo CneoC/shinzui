@@ -54,6 +54,8 @@ void Core::run()
 			double elapsedTime	= getElapsedTime();
 			double delta		= elapsedTime - pProcess->getLastRunTime();
 
+			if (pProcess->getLastRunTime() == 0)
+				pProcess->init();
 			pProcess->setLastRunTime(elapsedTime);
 			Process *pAddProcess = pProcess->run(delta);
 			if (pAddProcess)
@@ -223,6 +225,8 @@ bool CoreThread::run()
 		double elapsedTime	= m_pCore->getElapsedTime();
 		double delta		= elapsedTime - m_pProcess->getLastRunTime();
 
+		if (m_pProcess->getLastRunTime() == 0)
+			m_pProcess->init();
 		m_pProcess->setLastRunTime(elapsedTime);
 		Process *pAddProcess = m_pProcess->run(delta);
 		if (pAddProcess)

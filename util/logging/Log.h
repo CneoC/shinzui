@@ -8,6 +8,7 @@
 #include "Level.h"
 #include "Message.h"
 
+#include <list>
 #include <sstream>
 
 namespace logging
@@ -29,9 +30,15 @@ namespace logging
 		Log(const Log &) {}
 
 	public:
+		typedef std::list<Writer *>	WriterList;
+
+		//////////////////////////////////////////////////////////////////////////
+
 		Log(const char *pName);
 		Log(const char *pName, const Level &level);
 		~Log();
+
+		//////////////////////////////////////////////////////////////////////////
 
 		const char *getName() const				{ return m_pName; }
 		
@@ -42,11 +49,13 @@ namespace logging
 
 		Log *getParent() const					{ return m_pParent; }
 
-		Writer *getWriter() const				{ return m_pWriter; }
-		void setWriter(Writer *pWriter) 		{ m_pWriter = pWriter; }
+		void addWriter(Writer *pWriter);
+		void clearWriters();
 
 		bool isRecurseWrite() const				{ return m_recurseWrite; }
 		void setRecurseWrite(bool recurse)		{ m_recurseWrite = recurse; }
+
+		//////////////////////////////////////////////////////////////////////////
 
 		void write(Message &message);
 
@@ -58,7 +67,7 @@ namespace logging
 		const Level *	m_pLevel;
 
 		bool			m_recurseWrite;
-		Writer *		m_pWriter;
+		WriterList		m_writers;
 
 		Log *			m_pParent;
 	};

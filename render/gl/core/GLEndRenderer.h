@@ -3,16 +3,20 @@
 #ifndef __RENDER_GLENDRENDERER_H__
 #define __RENDER_GLENDRENDERER_H__
 
-#include "GLRenderer.h"
+#include "render/core/EndRenderer.h"
 
 class ContextBase;
 
 namespace render
 {
 	class GLEndRenderer :
-		public GLRenderer
+		public EndRenderer
 	{
 	public:
+		static Renderer *create(Core *pCore)	{ return new GLEndRenderer(pCore); }
+
+		//////////////////////////////////////////////////////////////////////////
+
 		GLEndRenderer(Core *pCore);
 		~GLEndRenderer();
 

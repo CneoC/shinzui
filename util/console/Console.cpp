@@ -2,6 +2,10 @@
 
 #include <gl/glew.h>
 
+using namespace console;
+
+//////////////////////////////////////////////////////////////////////////
+
 Console::Console(Core *pCore)
 	: Renderer(pCore)
 {

@@ -124,6 +124,11 @@ bool GLContext::unbind()
 	return wglMakeCurrent(m_pWindow->getHDC(), NULL) == TRUE;
 }
 
+bool GLContext::link(ContextBase *pOther)
+{
+	return wglShareLists(m_hRC, static_cast<GLContext *>(pOther)->getHRC());
+}
+
 bool GLContext::resize(const Vector2i &size)
 {
 	glViewport(0, 0, size.x, size.y);

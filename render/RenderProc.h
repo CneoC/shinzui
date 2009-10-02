@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __RENDER_RENDERER_H__
-#define __RENDER_RENDERER_H__
+#ifndef __RENDER_RENDERERPROC_H__
+#define __RENDER_RENDERERPROC_H__
 
 #include "core/Process.h"
 
@@ -15,14 +15,22 @@ namespace render
 	{
 	public:
 		RendererProc(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_MAIN_BIT)
-			: m_pRenderer(NULL)
+			: Process(pCore, id, targetThreadId)
+			, m_pRenderer(NULL)
 		{}
 
 	public:
+		virtual void init()
+		{
+			if (m_pRenderer)
+				m_pRenderer->init();
+		}
+
 		virtual Process *run(double delta)
 		{
 			if (m_pRenderer)
 				m_pRenderer->render(delta);
+			return this;
 		}
 
 		//! Sets the active renderer.
@@ -32,7 +40,7 @@ namespace render
 
 	protected:
 		Renderer *m_pRenderer;
-	}
+	};
 }
 
-#endif __RENDER_RENDERER_H__
+#endif __RENDER_RENDERERPROC_H__

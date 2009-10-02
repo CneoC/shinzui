@@ -15,6 +15,8 @@ namespace logging
 	class Formatter
 	{
 	public:
+		virtual std::string getHeader() = 0;
+		virtual std::string getFooter() = 0;
 		virtual std::string format(Message &message) = 0;
 	};
 
@@ -22,6 +24,26 @@ namespace logging
 		: public Formatter
 	{
 	public:
+		virtual std::string getHeader()
+		{
+			std::ostringstream out;
+			out << std::endl;
+			out << "//////////////////////////////////////////////////////////////////////////" << std::endl;
+			out << "// ";
+			out << FormatUtil::datetime() << std::endl;
+			out << "//////////////////////////////////////////////////////////////////////////" << std::endl;
+			out << std::endl;
+			return out.str();
+		}
+
+		virtual std::string getFooter()
+		{
+			std::ostringstream out;
+			out << std::endl;
+			out << "//////////////////////////////////////////////////////////////////////////" << std::endl;
+			return out.str();
+		}
+
 		virtual std::string format(Message &message)
 		{
 			std::ostringstream out;

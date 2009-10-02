@@ -26,6 +26,7 @@ public:
 
 	bool bind();
 	bool unbind();
+	bool link(ContextBase *pOther);
 
 	void swapBuffers();
 

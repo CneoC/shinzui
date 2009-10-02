@@ -30,7 +30,7 @@ public:
 	//! @see ResourceLoaderBase::convert
 	virtual Resource convert(const Resource &resource, const ResourceType &type);
 	//! @see ResourceLoaderBase::clone
-	virtual void clone(const Resource &src, Resource dst);
+	virtual Resource clone(const Resource &src, Resource dst);
 
 	//////////////////////////////////////////////////////////////////////////
 

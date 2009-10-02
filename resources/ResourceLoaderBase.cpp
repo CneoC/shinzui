@@ -2,6 +2,8 @@
 
 #include "ResourceCache.h"
 
+#include <stack>
+
 Resource ResourceLoaderBase::get(const ResourceId &id)
 {
 	// Try to get the resource with each of the child loaders
@@ -58,11 +60,23 @@ bool ResourceLoaderBase::load(Resource &res, u32 flags)
 	// Load recursively and blocking
 	else if (!(flags & FLAG_DONT_RECURSE))
 	{
+		std::stack<Resource> loadStack;
+
+		// For all sources
 		Resource loadRes = res->getSource();
 		while (loadRes)
 		{
-			if (!loadRes->isLoaded()) loadRes.load(flags);
+			// Add unloaded resources to load stack
+			if (!loadRes->isLoaded())
+				loadStack.push(loadRes);
 			loadRes = loadRes->getSource();
+		}
+
+		// Load the resource dependencies in proper order
+		while (!loadStack.empty())
+		{
+			loadStack.top().load(flags);
+			loadStack.pop();
 		}
 	}
 
@@ -110,10 +124,10 @@ bool ResourceLoaderBase::unload(Resource &res, u32 flags)
 	return false;
 }
 
-void ResourceLoaderBase::clone(const Resource &src, Resource dst)
+Resource ResourceLoaderBase::clone(const Resource &src, Resource dst)
 {
-	bool loaded	= dst->isLoaded() && !dst->isUnloading();
-	bool loadAsync = dst->isLoading();
+	bool loaded	= src->isLoaded() && !src->isUnloading();
+	bool loadAsync = src->isLoading();
 
 	// Reset load/unload flags
 	dst->resetFlags();
@@ -123,4 +137,6 @@ void ResourceLoaderBase::clone(const Resource &src, Resource dst)
 
 	if (loaded)
 		load(dst, loadAsync? FLAG_ASYNC: FLAG_NONE);
+
+	return dst;
 }

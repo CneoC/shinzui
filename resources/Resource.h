@@ -80,12 +80,12 @@ public:
 				id = copy;
 
 			// Create data with proper id
-			m_pData = new T(pLoader);
+			m_pData = new T(src->getLoader());
 			m_pData->setId(id);
 			reference();
 
-			// Let loader handle cloning
-			pLoader->clone(src, *this);
+			// Let loader handle the rest of the cloning
+			*this = pLoader->clone(src, *this);
 		}
 	}
 
@@ -97,7 +97,7 @@ public:
 		: m_pData(pData)
 	{
 		assert(m_pData);
-		m_pData->incRefCount();
+		reference();
 	}
 
 	/**
@@ -167,9 +167,11 @@ public:
 
 	ResourceRef &operator = (const ResourceRef &copy)
 	{
-		dereference();
-		m_pData = copy.m_pData;
-		reference();
+		if (m_pData != copy.m_pData)
+		{
+			m_pData = copy.m_pData;
+			reference();
+		}
 		return *this;
 	}
 
@@ -197,6 +199,9 @@ public:
 	{
 		return m_pData && m_pData->getLoader()->unload(ResourceRef<ResourceData>(*this, DONT_CONVERT), flags);
 	}
+
+	//! Safe check to see if the data is loaded.
+	bool isLoaded() const	{ return m_pData && m_pData->isLoaded(); }
 
 	//////////////////////////////////////////////////////////////////////////
 

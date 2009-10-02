@@ -70,7 +70,7 @@ public:
 	 * @param src	Source resource to clone.
 	 * @param dst	Destination resource to clone to.
 	 */
-	virtual void clone(const Resource &src, Resource dst);
+	virtual Resource clone(const Resource &src, Resource dst);
 
 	//////////////////////////////////////////////////////////////////////////
 

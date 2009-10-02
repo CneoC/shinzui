@@ -26,7 +26,7 @@ Resource ResourceLoader::get(const ResourceId &id)
 		// Try to retrieve the resource
 		result = ResourceLoaderBase::get(id);
 
-		// Add a successfully loaded resource to the cache
+		// Cache the retrieved resource
 		if (m_pCache && result)
 			m_pCache->add(result);
 	}
@@ -51,20 +51,35 @@ Resource ResourceLoader::convert(const Resource &resource, const ResourceType &t
 	{
 		// Try to convert the resource
 		result = ResourceLoaderBase::convert(resource, type);
-		if (result)
-		{
-			// Cache the converted resource
-			if (m_pCache)
-				m_pCache->add(result);
-		}
+
+		// Cache the converted resource
+		if (m_pCache && result)
+			m_pCache->add(result);
 	}
 
 	return result;
 }
 
-void ResourceLoader::clone(const Resource &src, Resource dst)
+Resource ResourceLoader::clone(const Resource &src, Resource dst)
 {
 	LOG_INFO(m_log, '\'' << src->getId().getType().getTop() << "::" << src->getId().getName() << "' -> '" << dst->getId().getType().getTop() << "::" << dst->getId().getName());
 
-	ResourceLoaderBase::clone(src, dst);
+	Resource result;
+
+	// Find existing resources with the identifier
+	if (m_pCache)
+	{
+		result = m_pCache->find(dst->getId());
+	}
+
+	if (!result)
+	{
+		result = ResourceLoaderBase::clone(src, dst);
+
+		// Cache the cloned resource
+		if (m_pCache && result)
+			m_pCache->add(result);
+	}
+
+	return result;
 }

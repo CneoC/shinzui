@@ -14,17 +14,44 @@ namespace render
 		: public Renderer
 	{
 	public:
+		typedef std::list<Renderer *>	RendererList;
+
+		//////////////////////////////////////////////////////////////////////////
+
+		RenderChain(Core *pCore)
+			: Renderer(pCore)
+		{}
+
+		//////////////////////////////////////////////////////////////////////////
+
 		/**
 		 * Links a renderer to the chain.
 		 * @param pRenderer	The renderer to link.
 		 */
 		RenderChain *link(Renderer *pRenderer)
 		{
-			if (!m_pFirst)
-				m_pFirst = pRenderer;
-			m_pLast->setNext(pRenderer);
-			m_pLast = pRenderer;
-			return *this;
+			m_renderers.push_back(pRenderer);
+			return this;
+		}
+
+		//! Clears the render chain.
+		void clear()
+		{
+			m_renderers.clear();
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		/**
+		 * Initializes the entire chain of renderers.
+		 */
+		virtual void init()
+		{
+			RendererList::const_iterator renderer;
+			for (renderer = m_renderers.begin(); renderer != m_renderers.end(); ++renderer)
+			{
+				(*renderer)->init();
+			}
 		}
 
 		/**
@@ -32,17 +59,15 @@ namespace render
 		 */
 		void render(double delta)
 		{
-			Renderer *pRenderer = m_pFirst;
-			while (pRenderer)
+			RendererList::const_iterator renderer;
+			for (renderer = m_renderers.begin(); renderer != m_renderers.end(); ++renderer)
 			{
-				pRenderer->render(delta);
-				pRenderer = pRenderer->getNext();
+				(*renderer)->render(delta);
 			}
 		}
 
 	protected:
-		Renderer *m_pFirst;	// first renderer in the chain
-		Renderer *m_pLast;	// last renderer in the chain
+		RendererList	m_renderers;
 	};
 }
 

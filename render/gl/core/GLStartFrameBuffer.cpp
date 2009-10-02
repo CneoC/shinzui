@@ -5,7 +5,7 @@
 using namespace render;
 
 GLStartFrameBuffer::GLStartFrameBuffer(Core *pCore)
-	: GLRenderer(pCore)
+	: StartFrameBuffer(pCore)
 {
 	width = 800;
 	height = 800;
@@ -29,7 +29,7 @@ GLStartFrameBuffer::GLStartFrameBuffer(Core *pCore)
 		glGenRenderbuffersEXT(1, &depth);
 		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depth);
 		glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, width, height);
-		//		phCheckError("Creation of the depth renderbuffer for the FBO");
+		//phCheckError("Creation of the depth renderbuffer for the FBO");
 	}
 	else
 	{
@@ -51,7 +51,7 @@ GLStartFrameBuffer::~GLStartFrameBuffer()
 
 void GLStartFrameBuffer::render(double delta)
 {
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 1);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -11,8 +11,8 @@
 namespace render
 {
 	/**
-	* Base class for a renderer.
-	*/
+	 * Base class for a OpenGL based renderer renderer.
+	 */
 	class GLRenderer
 		: public Renderer
 	{
@@ -21,11 +21,6 @@ namespace render
 		GLRenderer(Core *pCore)
 			: Renderer(pCore)
 		{}
-
-	public:
-
-		//! Get context.
-		GLContext *getGLContext() const	{ return static_cast<GLContext *>(m_pCore->getDriver()->getContext()); }
 	};
 }
 

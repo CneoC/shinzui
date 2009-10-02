@@ -3,7 +3,10 @@
 #ifndef __RENDER_RENDERER_H__
 #define __RENDER_RENDERER_H__
 
-class Core;
+#include "core/types.h"
+
+#include "render/RenderDriver.h"
+#include "os/interface/ContextBase.h"
 
 namespace render
 {
@@ -20,15 +23,15 @@ namespace render
 
 	public:
 		/**
+		 * Initialize renderer.
+		 */
+		virtual void init() {}
+
+		/**
 		 * Renders this renderer.
 		 * @param delta	time delta since last render
 		 */
 		virtual void render(double delta) = 0;
-
-		//! Gets the next renderer.
-		Renderer *getNext() const		{ return m_pNext; }
-		//! Sets the next renderer.
-		void setNext(Renderer *pNext)	{ m_pNext = pNext; }
 
 		/**
 		 * Cast to different renderer.
@@ -37,8 +40,12 @@ namespace render
 		T *as()	{ return static_cast<T *>(this); }
 
 	protected:
+		//! Get context.
+		ContextBase *getContext() const			{ return m_pCore->getDriver()->getContext(); }
+		ContextBase *getLoaderContext() const	{ return m_pCore->getDriver()->getLoaderContext(); }
+
+	protected:
 		Core *		m_pCore;	// core class.
-		Renderer *	m_pNext;	// next renderer in the chain.
 	};
 }
 

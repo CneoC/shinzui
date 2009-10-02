@@ -14,11 +14,12 @@ namespace logging
 {
 #define DEFINE_UTIL_START(NAME)	struct NAME \
 								{ \
-									const Message &m; \
-									NAME(const Message &message) : m(message) {} \
+									const Message *m; \
+									NAME(const Message &message) : m(&message) {} \
+									NAME() : m(NULL) {} \
 									friend std::ostringstream & operator << (std::ostringstream &out, const NAME &value) \
 									{ \
-										const Message &m = value.m;
+										const Message &m = *value.m;
 
 #define DEFINE_UTIL_END					return out; \
 									} \
@@ -38,6 +39,14 @@ namespace logging
 
 			out.imbue(std::locale(std::locale::classic(), facet));
 			out << '[' << time << "] ";
+		DEFINE_UTIL_END
+			
+		DEFINE_UTIL_START(datetime)
+			boost::posix_time::ptime date = boost::posix_time::microsec_clock::local_time();
+			boost::posix_time::time_facet *facet = new boost::posix_time::time_facet("%d-%m-%y %H:%M:%S.%f");
+
+			out.imbue(std::locale(std::locale::classic(), facet));
+			out << '[' << date << "] ";
 		DEFINE_UTIL_END
 
 		DEFINE_UTIL_START(thread)

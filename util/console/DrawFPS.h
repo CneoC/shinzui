@@ -1,28 +1,35 @@
 #pragma once
 
-#ifndef __DRAW_FPS_H__
-#define __DRAW_FPS_H__
+#ifndef __CONSOLE_DRAWFPS_H__
+#define __CONSOLE_DRAWFPS_H__
 
 #include "render/Renderer.h"
 #include "render/2d/FontUtil.h"
 
-class DrawFPS
-	: public render::Renderer
+#include "resources/font/FontResource.h"
+
+namespace console
 {
-public:
-	DrawFPS(Core *pCore);
-	~DrawFPS();
+	class DrawFPS
+		: public render::Renderer
+	{
+	public:
+		DrawFPS(Core *pCore);
+		~DrawFPS();
 
-	virtual void render(double delta);
+		virtual void render(double delta);
 
-	double getFPS() const	{ return m_fps; }
+		double getFPS() const	{ return m_fps; }
 
-protected:
-	render::FontUtil *m_pFontUtil;
+	protected:
+		render::FontUtil *m_pFontUtil;
 
-	double	m_fps;
-	u32		m_frameCount;
-	double	m_frameTime;
-};
+		FontResource	m_font;
 
-#endif //__DRAW_FPS_H__
+		double	m_fps;
+		u32		m_frameCount;
+		double	m_frameTime;
+	};
+}
+
+#endif //__CONSOLE_DRAWFPS_H__

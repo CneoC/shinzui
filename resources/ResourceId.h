@@ -60,7 +60,12 @@ public:
 	std::string toString() const
 	{
 		if (m_type.isEmpty())
-			return m_name;
+		{
+			if (m_name.empty())
+				return "<unnamed>";
+			else
+				return m_name;
+		}
 		return m_type.getTop() + "::" + m_name;
 	}
 

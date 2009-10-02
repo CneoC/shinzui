@@ -17,14 +17,18 @@ namespace render
 		RenderDriver(Core *pCore)
 			: RendererLoaderBase(pCore)
 			, m_pContext(NULL)
+			, m_pLoaderContext(NULL)
 		{}
 
 	public:
 		//! Gets the context.
-		ContextBase *getContext() const	{ return m_pContext; }
+		ContextBase *getContext() const			{ return m_pContext; }
+		//! Gets the context for the loader thread(s).
+		ContextBase *getLoaderContext() const	{ return m_pLoaderContext; }
 
 	protected:
 		ContextBase *m_pContext;
+		ContextBase *m_pLoaderContext;
 	};
 }
 

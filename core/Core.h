@@ -77,10 +77,12 @@ public:
 	enum ThreadID
 	{
 		THREAD_ID_MAIN,
+		THREAD_ID_LOAD,
 		THREAD_ID_NORMAL_START,
 
 		// Thread mask bits
 		THREAD_ID_MAIN_BIT			= 1 << THREAD_ID_MAIN,
+		THREAD_ID_LOAD_BIT			= 1 << THREAD_ID_LOAD,
 		THREAD_ID_NORMAL_START_BIT	= 1 << THREAD_ID_NORMAL_START,
 		THREAD_ID_CORE_BIT			= 0x80000000,
 
@@ -89,7 +91,7 @@ public:
 
 	/**
 	 * Core process handling class
-	 * @param threadCount	number of threads used for processes, -1 is recommended (2 * #cpu's)
+	 * @param threadCount	number of threads used for processes, -1 is #cpu cores
 	 */
 	Core(s32 threadCount = -1);
 	~Core();

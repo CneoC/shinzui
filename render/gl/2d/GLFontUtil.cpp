@@ -14,7 +14,8 @@ GLFontUtil::GLFontUtil(GLFontResource font)
 void GLFontUtil::print(const Vector2f &p, size_t length, const char *text) const
 {
 	GLFontResource font(m_font);
-	if (!font) throw std::runtime_error("Invalid font resource, expected GLFontResource.");
+	if (!font)
+		throw std::runtime_error("Invalid font resource, expected GLFontResource.");
 
 	// Set proper render settings for font rendering.
 	glPushAttrib(GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_ENABLE_BIT | GL_LIST_BIT); 

@@ -24,7 +24,7 @@ namespace GLProgramConverters
 		virtual Resource convert(const Resource &res, const ResourceType &type)
 		{
 			FileResource file(res, DONT_CONVERT);
-			GLProgramDefinition def(res, DONT_CONVERT);
+			ProgramDefinition def(res, DONT_CONVERT);
 			if ((file && (type & GLProgramData::getName() || file->getPath().extension() == ".glsl")) || def)
 			{
 				GLProgramData *pData = new GLProgramData(this);
@@ -45,9 +45,11 @@ namespace GLProgramConverters
 			if (ResourceLoaderBase::load(res, flags))
 				return true;
 
+			logging::Log *log = LOG_GET("Resources.Converters.Program");
+
 			GLProgramResource program(res);
 
-			GLProgramDefinition def = res->getSource();
+			ProgramDefinition def = res->getSource();
 			if (!def)
 			{
 				FileResource file = res->getSource();
@@ -62,7 +64,7 @@ namespace GLProgramConverters
 
 				ResourceLoaderBase *pRootLoader = def->getLoader()->getRoot();
 
-				GLProgramDataDef::ShaderList::const_iterator iter = def->getShaders().begin();
+				ProgramDataDef::ShaderList::const_iterator iter = def->getShaders().begin();
 				while (iter != def->getShaders().end())
 				{
 					GLShaderResource shader = pRootLoader->get(*iter);
@@ -81,11 +83,12 @@ namespace GLProgramConverters
 				char buf[512];
 				glGetProgramInfoLog(program, sizeof(buf), 0, buf);
 
-				logging::Log *log = LOG_GET("Resources.Converters.Program");
-				LOG_ERROR(log, "Unable to link program: " << std::endl << buf);
+				LOG_ERROR(log, "Unable to link program " << program->getId().toString() << ':' << std::endl << buf);
 				
 				return false;
 			}
+
+			LOG_TRACE(log, "Linked program: " << program->getId());
 			program->setLoaded(true);
 
 			return true;

@@ -7,6 +7,9 @@
 
 #include "resources/Resource.h"
 
+#include "render/RenderDriver.h"
+#include "os/interface/ContextBase.h"
+
 #include "util/Util.h"
 
 #include <map>
@@ -33,7 +36,7 @@ public:
 	 * @param id				Process identifier for lookups.
 	 * @param targetThreadId	Target thread id to run this process on (THREAD_ID_NORMAL_MASK for any thread)
 	 */
-	ResourceCache(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_NORMAL_MASK)
+	ResourceCache(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_LOAD)
 		: Process(pCore, id, targetThreadId)
 		, m_log(LOG_GET("Resources.Cache"))
 	{
@@ -81,14 +84,17 @@ public:
 		LOG_INFO(m_log, LOG_FMT("'%s' with type %s", resource->getId().toString() % resource->getType().toString()));
 
 		assert(resource);
-		boost::lock_guard<boost::shared_mutex> lock(m_resourcesMutex);
 
 		// calculate string hash
 		u32 hash = resource->getId().getHash();
 
-		// find hash in resource map
-		Entry &entry = m_resources[hash];
-		entry.resources.push_back(resource);
+		{
+			boost::lock_guard<boost::shared_mutex> lock(m_resourcesMutex);
+
+			// find hash in resource map
+			Entry &entry = m_resources[hash];
+			entry.resources.push_back(resource);
+		}
 	}
 
 	void clean()
@@ -105,18 +111,35 @@ public:
 
 	void load()
 	{
-		boost::shared_lock<boost::shared_mutex> lock(m_resourcesMutex);
-
-		ResourceList::iterator i;
-		for (i = m_resources.begin(); i != m_resources.end(); ++i)
+		// List of resources we need to load
+		typedef std::list<Resource> LoadList;
+		LoadList loads;
 		{
-			Entry::List::iterator j;
-			for (j = i->second.resources.begin(); j != i->second.resources.end(); ++j)
+			boost::shared_lock<boost::shared_mutex> lock(m_resourcesMutex);
+
+			// For all resources
+			ResourceList::iterator i;
+			for (i = m_resources.begin(); i != m_resources.end(); ++i)
 			{
-				Resource resource = *j;
-				if (resource->isLoading())
-					resource.load(0);
+				// And all non-unique hashes
+				Entry::List::iterator j;
+				for (j = i->second.resources.begin(); j != i->second.resources.end(); ++j)
+				{
+					Resource resource = *j;
+					// If the resources is marked for loading insert it in the load list.
+					if (resource->isLoading())
+						loads.push_back(resource);
+				}
 			}
+		}
+
+		// Load all resources marked for loading.
+		// This is done separately because of the m_resourcesMutex lock 
+		// since add() will likely get called from inside the load.
+		LoadList::iterator l = loads.begin();
+		for (l = loads.begin(); l != loads.end(); ++l)
+		{
+			(*l).load(0);
 		}
 	}
 
@@ -124,17 +147,25 @@ public:
 	{
 		boost::shared_lock<boost::shared_mutex> lock(m_resourcesMutex);
 
+		// For all resources
 		ResourceList::iterator i;
 		for (i = m_resources.begin(); i != m_resources.end(); ++i)
 		{
+			// And all non-unique hashes
 			Entry::List::iterator j;
 			for (j = i->second.resources.begin(); j != i->second.resources.end(); ++j)
 			{
 				Resource resource = *j;
+				// If the resources is marked for unloading unload it.
 				if (resource->isUnloading())
 					resource.unload(0);
 			}
 		}
+	}
+
+	virtual void init()
+	{
+		m_pCore->getDriver()->getLoaderContext()->bind();
 	}
 
 	virtual Process *run(double delta)
@@ -142,6 +173,7 @@ public:
 		clean();
 		unload();
 		load();
+
 		return this;
 	}
 

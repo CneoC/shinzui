@@ -1,20 +1,23 @@
 #pragma once
 
-#ifndef __CONSOLE_H__
-#define __CONSOLE_H__
+#ifndef __CONSOLE_CONSOLE_H__
+#define __CONSOLE_CONSOLE_H__
 
 #include "render/Renderer.h"
 
-class Console
-	: public render::Renderer
+namespace console
 {
-public:
-	Console(Core *pCore);
-	~Console();
+	class Console
+		: public render::Renderer
+	{
+	public:
+		Console(Core *pCore);
+		~Console();
 
-	virtual void render(double delta);
+		virtual void render(double delta);
 
-protected:
-};
+	protected:
+	};
+}
 
-#endif //__CONSOLE_RENDER_PROC_H__
+#endif //__CONSOLE_CONSOLE_H__

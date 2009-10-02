@@ -12,10 +12,12 @@ namespace render
 	{
 	protected:
 		//! Don't allow construction.
-		RenderUtil();
+		RenderUtil() {}
 
 	public:
-
+		/**
+		 * Cast to different utility.
+		 */
 		template <class T>
 		T *as()	{ return static_cast<T *>(this); }
 	};

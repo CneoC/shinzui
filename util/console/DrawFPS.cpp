@@ -11,19 +11,23 @@
 
 #include <gl/glew.h>
 
+using namespace console;
+
+//////////////////////////////////////////////////////////////////////////
+
 DrawFPS::DrawFPS(Core *pCore)
 	: render::Renderer(pCore)
 	, m_frameCount(0)
 	, m_frameTime(0)
 	, m_fps(0)
 {
-	m_pFontUtil = m_pCore->getDriver()->getUtil("Font")->as<render::FontUtil>();
+	m_pFontUtil = m_pCore->getDriver()->getUtil("2d.Font")->as<render::FontUtil>();
 
 	FTFontResource ftFont(m_pCore->getLoader(), "File::2d/fonts/debug.ttf", "fps");
 	ftFont->setSize(16);
 
-	GLFontResource font(m_pCore->getLoader(), "FTFont::fps");
-	font.load();
+	m_font = GLFontResource(ftFont);
+	m_font.load();
 }
 
 DrawFPS::~DrawFPS()
@@ -35,8 +39,7 @@ void DrawFPS::render(double delta)
 // 	FontResource debugFont = m_pCore->getResourceLoader()->getFont("2d/fonts/debug.ttf");
 // 	printf(debugFont->isLoaded() ? "loaded\n" : "not loaded\n");
 
-	GLFontResource font(m_pCore->getLoader(), "GLFont::fps");
-	m_pFontUtil->setResource(font);
+	m_pFontUtil->setResource(m_font);
 
 	m_frameCount++;
 	m_frameTime += delta;

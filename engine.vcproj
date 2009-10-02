@@ -175,11 +175,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLEndFrameBuffer.cpp"
+				RelativePath=".\render\gl\core\GLEndFrameBuffer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLEndRenderer.cpp"
+				RelativePath=".\render\gl\core\GLEndRenderer.cpp"
 				>
 			</File>
 			<File
@@ -187,11 +187,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLStartFrameBuffer.cpp"
+				RelativePath=".\render\gl\GLRenderDriver.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLStartRenderer.cpp"
+				RelativePath=".\render\gl\core\GLStartFrameBuffer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\gl\core\GLStartRenderer.cpp"
 				>
 			</File>
 			<File
@@ -269,6 +273,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\render\core\EndFrameBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\core\EndRenderer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\util\FastDelegate.h"
 				>
 			</File>
@@ -309,11 +321,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\core\io\FSFile.h"
+				RelativePath=".\os\win\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\io\FSFile.h"
+				RelativePath=".\core\io\FSFile.h"
 				>
 			</File>
 			<File
@@ -325,6 +337,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\render\gl\2d\GL2DLoader.h"
+				>
+			</File>
+			<File
 				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
@@ -333,11 +349,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLEndFrameBuffer.h"
+				RelativePath=".\render\gl\core\GLEndFrameBuffer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLEndRenderer.h"
+				RelativePath=".\render\gl\core\GLEndRenderer.h"
 				>
 			</File>
 			<File
@@ -369,10 +385,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLRendererLoader.h"
-				>
-			</File>
-			<File
 				RelativePath=".\resources\converters\shader\GLShaderConverters.h"
 				>
 			</File>
@@ -381,11 +393,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLStartFrameBuffer.h"
+				RelativePath=".\render\gl\core\GLStartFrameBuffer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\render\gl\GLStartRenderer.h"
+				RelativePath=".\render\gl\core\GLStartRenderer.h"
 				>
 			</File>
 			<File
@@ -418,6 +430,10 @@
 			</File>
 			<File
 				RelativePath=".\core\ProcessChain.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\shader\ProgramResource.h"
 				>
 			</File>
 			<File
@@ -489,6 +505,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\render\core\StartFrameBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\core\StartRenderer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test\TestCase.h"
 				>
 			</File>
@@ -505,11 +529,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Time.h"
+				RelativePath=".\core\Time.h"
 				>
 			</File>
 			<File
-				RelativePath=".\core\Time.h"
+				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File

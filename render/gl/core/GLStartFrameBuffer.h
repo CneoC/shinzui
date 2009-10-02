@@ -3,16 +3,20 @@
 #ifndef __RENDER_GLSTARTFRAMEBUFFER_H__
 #define __RENDER_GLSTARTFRAMEBUFFER_H__
 
-#include "GLRenderer.h"
+#include "render/core/StartFrameBuffer.h"
 
 #include <gl/glew.h>
 
 namespace render
 {
 	class GLStartFrameBuffer
-		: public GLRenderer
+		: public StartFrameBuffer
 	{
 	public:
+		static Renderer *create(Core *pCore)	{ return new GLStartFrameBuffer(pCore); }
+
+		//////////////////////////////////////////////////////////////////////////
+
 		GLStartFrameBuffer(Core *pCore);
 		~GLStartFrameBuffer();
 

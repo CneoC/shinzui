@@ -8,12 +8,20 @@ using namespace render;
 
 RendererLoaderBase::~RendererLoaderBase()
 {
-	// Clean all utils
-	UtilList::iterator i = m_utils.begin();
-	while (i != m_utils.end())
+	// Clean all utilities
+	UtilList::iterator util = m_util.begin();
+	while (util != m_util.end())
 	{
-		delete i->second;
-		++i;
+		delete util->second;
+		++util;
+	}
+
+	// Clean all loaders
+	LoaderList::iterator loader = m_loaders.begin();
+	while (loader != m_loaders.end())
+	{
+		delete loader->second;
+		++loader;
 	}
 }
 
@@ -24,42 +32,24 @@ Renderer *RendererLoaderBase::createRenderer(u32 hash) const
 	// Find the hash
 	RendererList::const_iterator found = m_renderers.find(hash);
 	if (found != m_renderers.end())
-	{
 		return found->second(m_pCore);
-	}
-	// Look in child loaders for proper renderer
-	else
-	{
-		LoaderList::const_iterator i = m_loaders.begin();
-		while (i != m_loaders.end())
-		{
-			Renderer *pRenderer = (*i)->createRenderer(hash);
-			if (pRenderer)
-				return pRenderer;
-			++i;
-		}
-	}
+	return NULL;
 }
 
 RenderUtil *RendererLoaderBase::getUtil(u32 hash) const
 {
 	// Find the hash
-	UtilList::const_iterator found = m_utils.find(hash);
-	if (found != m_utils.end())
-	{
+	UtilList::const_iterator found = m_util.find(hash);
+	if (found != m_util.end())
 		return found->second;
-	}
-	// Look in child loaders for proper util
-	else
-	{
-		LoaderList::const_iterator i = m_loaders.begin();
-		while (i != m_loaders.end())
-		{
-			RenderUtil *pUtil = (*i)->getUtil(hash);
-			if (pUtil)
-				return pUtil;
-			++i;
-		}
-	}
+	return NULL;
+}
+
+RendererLoaderBase *RendererLoaderBase::getLoader(const std::string &name) const
+{
+	u32 hash = Util::hashString(name.c_str(), name.length());
+	LoaderList::const_iterator found = m_loaders.find(hash);
+	if (found != m_loaders.end())
+		return found->second;
 	return NULL;
 }

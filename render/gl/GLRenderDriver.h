@@ -5,6 +5,9 @@
 
 #include "render/RenderDriver.h"
 
+#include "os/current/Window.h"
+#include "os/current/gl/GLContext.h"
+
 namespace render
 {
 	class GLRenderDriver
@@ -12,25 +15,15 @@ namespace render
 	{
 	public:
 		//! 
-		GLRenderDriver(Core *pCore, Window *pWindow)
-			: RenderDriver(pCore)
-			, m_pWindow(pWindow)
-		{
-			m_pContext = new GLContext(pWindow);
-			getGLContext()->create();
-		}
-
-		~GLRenderDriver()
-		{
-			getGLContext()->destroy();
-		}
-
+		GLRenderDriver(Core *pCore, Window *pWindow);
+		~GLRenderDriver();
 
 		//! Get window.
 		Window *getWindow() const	{ return m_pWindow; }
 
 		//! Get context.
-		GLContext *getGLContext() const	{ return static_cast<GLContext *>(m_pContext); }
+		GLContext *getGLContext() const			{ return static_cast<GLContext *>(m_pContext); }
+		GLContext *getLoaderGLContext() const	{ return static_cast<GLContext *>(m_pLoaderContext); }
 
 	protected:
 		Window *	m_pWindow;

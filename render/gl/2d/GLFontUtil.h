@@ -8,6 +8,7 @@
 #include "math/Math.h"
 #include "math/Vector2.h"
 
+#include "resources/ResourceLoaderBase.h"
 #include "resources/font/GLFontResource.h"
 
 #include <gl/glew.h>
@@ -28,7 +29,7 @@ namespace render
 		 * @param length	Length of the text to render.
 		 * @param text		Text to render.
 		 */
-		void print(const Vector2f &p, size_t length, const char *text) const;
+		virtual void print(const Vector2f &p, size_t length, const char *text) const;
 	};
 }
 

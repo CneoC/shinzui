@@ -7,7 +7,7 @@
 using namespace render;
 
 GLStartRenderer::GLStartRenderer(Core *pCore)
-	: GLRenderer(pCore)
+	: StartRenderer(pCore)
 {
 }
 
@@ -15,11 +15,13 @@ GLStartRenderer::~GLStartRenderer()
 {
 }
 
+void GLStartRenderer::init()
+{
+	m_pCore->getDriver()->getContext()->bind();
+}
+
 void GLStartRenderer::render(double delta)
 {
-	//if (delta == 0)
-	m_pCore->getDriver()->getContext()->bind();
-
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
 
 	// Clear The Screen And The Depth Buffer
