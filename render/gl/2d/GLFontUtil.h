@@ -29,7 +29,7 @@ namespace render
 		 * @param length	Length of the text to render.
 		 * @param text		Text to render.
 		 */
-		virtual void print(const Vector2f &p, size_t length, const char *text) const;
+		virtual void print(const math::Vector2f &p, size_t length, const char *text) const;
 	};
 }
 

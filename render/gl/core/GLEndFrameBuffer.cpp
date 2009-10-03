@@ -4,7 +4,6 @@
 
 #include <gl/glew.h>
 
-#define _USE_MATH_DEFINES
 #include <math.h>
 
 using namespace render;
@@ -20,38 +19,44 @@ GLEndFrameBuffer::~GLEndFrameBuffer()
 
 void GLEndFrameBuffer::render(double delta)
 {
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	if (m_frameBuffer)
+		m_frameBuffer->unbind();
 
 	GLint viewportRect[4];
 	glGetIntegerv(GL_VIEWPORT, viewportRect);
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(	viewportRect[0], viewportRect[2],
-				viewportRect[1], viewportRect[3]);
-
-	if (m_program.isLoaded())
-	{
-		glUseProgram(GLProgramResource(m_program)->getProgram());
-	}
+	gluOrtho2D(0, 1, 0, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, 1);
+	if (m_frameBuffer->getTexture().isLoaded())
+	{
+		glEnable(GL_TEXTURE_2D);
+		m_frameBuffer->getTexture()->bind();
+	}
+
+	if (m_program.isLoaded())
+		m_program->bind();
 
 	glColor3f(1, 1, 1);
 	glBegin(GL_QUADS);
-		glTexCoord2i(0, 0); glVertex2i(0, 0);
-		glTexCoord2i(1, 0); glVertex2i(500, 0);
-		glTexCoord2i(1, 1); glVertex2i(500, 500);
-		glTexCoord2i(0, 1); glVertex2i(0, 500);
+		glTexCoord2i(0, 0); glVertex2f(0, 0);
+		glTexCoord2i(1, 0); glVertex2f(1, 0);
+		glTexCoord2i(1, 1); glVertex2f(1, 1);
+		glTexCoord2i(0, 1); glVertex2f(0, 1);
 	glEnd();
 
-	glUseProgram(0);
+	if (m_program.isLoaded())
+		m_program->unbind();
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	if (m_frameBuffer->getTexture().isLoaded())
+	{
+		m_frameBuffer->getTexture()->unbind();
+		glDisable(GL_TEXTURE_2D);
+	}
 
 	glPopMatrix();
 }

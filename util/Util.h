@@ -5,13 +5,14 @@
 
 #include "core/types.h"
 
-namespace Util
+namespace util
 {
 	/**
 	 * Fast string hashing function using 32-bits accumulator.
 	 * This is a slightly modified version from Paul Hsieh (http://www.azillionmonkeys.com/qed/hash.html)
 	 */
 	u32 hashString(const char *data, u32 len, u32 hash = 0);
+
 };
 
 

@@ -121,8 +121,8 @@ namespace GLFontConverters
 			FT_BitmapGlyph pBitmapGlyph = (FT_BitmapGlyph)glyph;
 			FT_Bitmap &bitmap = pBitmapGlyph->bitmap;
 
-			int width = Math::nextPower2(bitmap.width);
-			int height = Math::nextPower2(bitmap.rows);
+			int width = math::getNextPowerOfTwo(bitmap.width);
+			int height = math::getNextPowerOfTwo(bitmap.rows);
 
 			// Copy glyph texture data to a OpenGL texture format with both alpha and luminosity channels.
 			//::printf("Char: %c\n", c);

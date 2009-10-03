@@ -47,7 +47,7 @@ RenderUtil *RendererLoaderBase::getUtil(u32 hash) const
 
 RendererLoaderBase *RendererLoaderBase::getLoader(const std::string &name) const
 {
-	u32 hash = Util::hashString(name.c_str(), name.length());
+	u32 hash = util::hashString(name.c_str(), name.length());
 	LoaderList::const_iterator found = m_loaders.find(hash);
 	if (found != m_loaders.end())
 		return found->second;

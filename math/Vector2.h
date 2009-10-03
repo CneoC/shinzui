@@ -1,41 +1,43 @@
 #pragma once
 
-#ifndef __VECTOR2_H__
-#define __VECTOR2_H__
+#ifndef __MATH_VECTOR2_H__
+#define __MATH_VECTOR2_H__
 
-#include <cmath>
+#include "Math.h"
 
-template <typename T>
-class Vector2
+namespace math
 {
-public:
-	Vector2()
-#ifdef _DEBUG
-		: x(FLT_MAX)
-		, y(FLT_MAX)
-#endif
+	template <typename T>
+	class Vector2
 	{
-	}
+	public:
+		Vector2()
+	#ifdef _DEBUG
+			: x(InvalidValue<T>::value)
+			, y(InvalidValue<T>::value)
+	#endif
+		{
+		}
 
-	Vector2(T _x, T _y)
-		: x(_x)
-		, y(_y)
-	{
-	}
+		Vector2(T _x, T _y)
+			: x(_x)
+			, y(_y)
+		{
+		}
 
-	Vector2(Vector2 &copy)
-		: x(copy.x)
-		, y(copy.y)
-	{
-	}
+		Vector2(const Vector2 &copy)
+			: x(copy.x)
+			, y(copy.y)
+		{
+		}
 
+	public:
+		T x, y;
+	};
 
-	T x;
-	T y;
-};
+	typedef Vector2<int>	Vector2i;
+	typedef Vector2<short>	Vector2s;
+	typedef Vector2<float>	Vector2f;
+}
 
-typedef Vector2<int>	Vector2i;
-typedef Vector2<short>	Vector2s;
-typedef Vector2<float>	Vector2f;
-
-#endif //__VECTOR2_H__
+#endif //__MATH_VECTOR2_H__

@@ -18,14 +18,13 @@ namespace GLProgramConverters
 	/**
 	 * Loader class that can convert file resources to gl shader resources.
 	 */
-	class ConvertFromFile
+	class ConvertFromProgram
 		: public ResourceLoaderBase
 	{
 		virtual Resource convert(const Resource &res, const ResourceType &type)
 		{
-			FileResource file(res, DONT_CONVERT);
-			ProgramDefinition def(res, DONT_CONVERT);
-			if ((file && (type & GLProgramData::getName() || file->getPath().extension() == ".glsl")) || def)
+			ProgramResource def(res, DONT_CONVERT);
+			if (def && type & GLProgramData::getName())
 			{
 				GLProgramData *pData = new GLProgramData(this);
 				pData->setId(ResourceId(GLProgramData::getName(), res->getId().getName()));
@@ -49,7 +48,7 @@ namespace GLProgramConverters
 
 			GLProgramResource program(res);
 
-			ProgramDefinition def = res->getSource();
+			ProgramResource def = res->getSource();
 			if (!def)
 			{
 				FileResource file = res->getSource();
@@ -64,7 +63,7 @@ namespace GLProgramConverters
 
 				ResourceLoaderBase *pRootLoader = def->getLoader()->getRoot();
 
-				ProgramDataDef::ShaderList::const_iterator iter = def->getShaders().begin();
+				ProgramData::ShaderList::const_iterator iter = def->getShaders().begin();
 				while (iter != def->getShaders().end())
 				{
 					GLShaderResource shader = pRootLoader->get(*iter);

@@ -34,7 +34,7 @@ protected:
 	LRESULT CALLBACK wndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK rerouteWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-	bool resize(const Vector2i &size)
+	bool resize(const math::Vector2i &size)
 	{
 		// resizeCallback(size);
 		return true;

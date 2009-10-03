@@ -27,7 +27,8 @@ public:
 	};
 
 	// TODO: use actual hash map
-	typedef std::map<u32, Entry>	ResourceList;
+	typedef std::map<u32, Entry>	ResourceMap;
+	typedef std::list<Resource>		ResourceList;
 
 public:
 	/**
@@ -36,9 +37,10 @@ public:
 	 * @param id				Process identifier for lookups.
 	 * @param targetThreadId	Target thread id to run this process on (THREAD_ID_NORMAL_MASK for any thread)
 	 */
-	ResourceCache(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_LOAD)
+	ResourceCache(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_LOAD_BIT)
 		: Process(pCore, id, targetThreadId)
 		, m_log(LOG_GET("Resources.Cache"))
+		, m_maxLoadingCount(0)
 	{
 	}
 
@@ -47,7 +49,7 @@ public:
 	 */
 	Resource find(const ResourceId &id)
 	{
-		LOG_INFO(m_log, LOG_FMT("'%s'", id.toString()));
+		LOG_TRACE(m_log, LOG_FMT("'%s'", id.toString()));
 
 		// early exit
 		if (m_resources.empty()) return Resource();
@@ -58,7 +60,7 @@ public:
 		u32 hash = id.getHash();
 
 		// find hash in resource map
-		ResourceList::iterator found = m_resources.find(hash);
+		ResourceMap::iterator found = m_resources.find(hash);
 		if (found != m_resources.end())
 		{
 			// for all resources with the same hash key
@@ -79,7 +81,7 @@ public:
 		return Resource();
 	}
 
-	void add(const Resource &resource)
+	void add(Resource resource)
 	{
 		LOG_INFO(m_log, LOG_FMT("'%s' with type %s", resource->getId().toString() % resource->getType().toString()));
 
@@ -97,69 +99,96 @@ public:
 		}
 	}
 
-	void clean()
+	void update()
 	{
-//		boost::lock_guard<boost::shared_mutex> lock(m_resourcesMutex);
+		{
+			boost::lock_guard<boost::shared_mutex> lock(m_resourcesMutex);
+
+			bool loadAdded = false;
+			// For all resources
+			ResourceMap::iterator i;
+			for (i = m_resources.begin(); i != m_resources.end(); ++i)
+			{
+				// And all non-unique hashes
+				Entry::List::iterator j;
+				for (j = i->second.resources.begin(); j != i->second.resources.end();)
+				{
+					Resource resource = *j;
+					Entry::List::iterator prev = j;
+					++j;
+
+					// If the resources is marked for unloading, put it in the unload queue.
+					if (resource->isUnloading()) // TODO: Time out if unused (and NO_TIMEOUT flag not set)
+					{
+						resource->setUnload(false);
+						m_unload.push_front(resource);
+						i->second.resources.erase(prev);
+						break;
+					}
+					// If the resource is marked for loading, put it in the load queue.
+					// if resource is (still) loaded wait for unload to complete (to support reload)
+					else if (resource->isLoading() && !resource->isLoaded())
+					{
+						resource->setLoad(false);
+						m_load.push_front(resource);
+						loadAdded = true;
+					}
+				}
+			}
+
+			if (loadAdded)
+				m_load.sort();
+		}
 	}
 
 	void clear()
 	{
 		boost::lock_guard<boost::shared_mutex> lock(m_resourcesMutex);
-
 		m_resources.clear();
 	}
 
 	void load()
 	{
-		// List of resources we need to load
-		typedef std::list<Resource> LoadList;
-		LoadList loads;
+		// If there is a resource to load
+		if (!m_load.empty())
 		{
-			boost::shared_lock<boost::shared_mutex> lock(m_resourcesMutex);
-
-			// For all resources
-			ResourceList::iterator i;
-			for (i = m_resources.begin(); i != m_resources.end(); ++i)
+			// Resource we want to load
+			Resource loadRes;
 			{
-				// And all non-unique hashes
-				Entry::List::iterator j;
-				for (j = i->second.resources.begin(); j != i->second.resources.end(); ++j)
-				{
-					Resource resource = *j;
-					// If the resources is marked for loading insert it in the load list.
-					if (resource->isLoading())
-						loads.push_back(resource);
-				}
-			}
-		}
+				// Shared lock on m_resources
+				boost::shared_lock<boost::shared_mutex> lock(m_resourcesMutex);
 
-		// Load all resources marked for loading.
-		// This is done separately because of the m_resourcesMutex lock 
-		// since add() will likely get called from inside the load.
-		LoadList::iterator l = loads.begin();
-		for (l = loads.begin(); l != loads.end(); ++l)
-		{
-			(*l).load(0);
+				// Find a resource that needs loading
+				loadRes = m_load.back();
+				m_load.pop_back();
+
+				u32 loads = m_load.size();
+				m_maxLoadingCount = loads? max(m_maxLoadingCount, loads): 0;
+			}
+			// Load one of the resources
+			// This is done separately because of the m_resourcesMutex lock 
+			// since add() will likely get called from inside the load.
+			loadRes.load(0);
 		}
 	}
 
 	void unload()
 	{
-		boost::shared_lock<boost::shared_mutex> lock(m_resourcesMutex);
-
-		// For all resources
-		ResourceList::iterator i;
-		for (i = m_resources.begin(); i != m_resources.end(); ++i)
+		// If there is a resource to unload
+		if (!m_unload.empty())
 		{
-			// And all non-unique hashes
-			Entry::List::iterator j;
-			for (j = i->second.resources.begin(); j != i->second.resources.end(); ++j)
+			// Resource we want to unload
+			Resource unloadRes;
 			{
-				Resource resource = *j;
-				// If the resources is marked for unloading unload it.
-				if (resource->isUnloading())
-					resource.unload(0);
+				// Shared lock on m_resources
+				boost::shared_lock<boost::shared_mutex> lock(m_resourcesMutex);
+
+				// Find a resource that needs unloading.
+				unloadRes = m_unload.back();
+				m_unload.pop_back();
 			}
+
+			unloadRes.unload(0);
 		}
 	}
 
@@ -170,17 +199,28 @@ public:
 
 	virtual Process *run(double delta)
 	{
-		clean();
+		update();
 		unload();
 		load();
 
 		return this;
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+
+	bool isLoading() const		{ return !m_load.empty(); }
+	float getProgress() const	{ return m_maxLoadingCount > 0? min(1.0f, 1 - (float)m_load.size() / m_maxLoadingCount): 1.0f; }
+
 protected:
 	boost::shared_mutex	m_resourcesMutex;		// mutex used to lock list of processes.
-	ResourceList		m_resources;
+	ResourceMap			m_resources;
+
+	ResourceList		m_load;
+	ResourceList		m_unload;
+	
 	logging::Log *		m_log;
+
+	volatile float		m_maxLoadingCount;
 };
 
 #endif //__RESOURCE_CACHE_H__

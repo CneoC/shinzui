@@ -11,7 +11,7 @@ GLFontUtil::GLFontUtil(GLFontResource font)
 {
 }
 
-void GLFontUtil::print(const Vector2f &p, size_t length, const char *text) const
+void GLFontUtil::print(const math::Vector2f &p, size_t length, const char *text) const
 {
 	GLFontResource font(m_font);
 	if (!font)

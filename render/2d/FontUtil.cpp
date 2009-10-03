@@ -12,7 +12,7 @@ FontUtil::FontUtil(FontResource font)
 {
 }
 
-void FontUtil::printf(const Vector2f &p, const char *fmt, ...) const
+void FontUtil::printf(const math::Vector2f &p, const char *fmt, ...) const
 {
 	assert(fmt);
 

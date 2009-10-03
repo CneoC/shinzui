@@ -22,6 +22,9 @@ public:
 		getType() += getName();
 	}
 
+	virtual void bind()		{ glUseProgram(m_program); }
+	virtual void unbind()	{ glUseProgram(0); }
+
 	void setProgram(GLuint program)		{ m_program = program; }
 	GLuint getProgram() const			{ return m_program; }
 

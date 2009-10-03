@@ -50,10 +50,13 @@ bool ResourceLoaderBase::load(Resource &res, u32 flags)
 			Resource loadRes = res;
 			while (loadRes)
 			{
-				if (!loadRes->isLoaded()) loadRes->setLoad(true);
+				if (!loadRes->isLoaded())
+					loadRes->setLoad(true);
 				loadRes = loadRes->getSource();
 			}
 		}
+
+		LOG_INFO(LOG_GET("Resource.Loader"), "Async " << res->getId().toString());
 
 		return true;
 	}
@@ -79,6 +82,8 @@ bool ResourceLoaderBase::load(Resource &res, u32 flags)
 			loadStack.pop();
 		}
 	}
+
+	LOG_INFO(LOG_GET("Resource.Loader"), res->getId().toString());
 
 	return false;
 }
@@ -108,6 +113,8 @@ bool ResourceLoaderBase::unload(Resource &res, u32 flags)
 			}
 		}
 
+		LOG_INFO(LOG_GET("Resource.Loader"), "Async " << res->getId().toString());
+
 		return true;
 	}
 	// Unload recursively and blocking
@@ -120,6 +127,8 @@ bool ResourceLoaderBase::unload(Resource &res, u32 flags)
 			loadRes = loadRes->getSource();
 		}
 	}
+
+	LOG_INFO(LOG_GET("Resource.Loader"), res->getId().toString());
 
 	return false;
 }

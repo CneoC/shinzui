@@ -27,7 +27,10 @@ public:
 	FT_Library &getLibrary()	{ return m_library; }
 	FT_Face &getFace()			{ return m_face; }
 
-	void setSize(int size, int resolution = 128)
+	u32 getSize() const			{ return m_size; }
+	u32 getResolution() const	{ return m_resolution; }
+
+	void setSize(u32 size, u32 resolution = 128)
 	{ 
 		m_size = size;
 		m_resolution = resolution;
@@ -36,8 +39,8 @@ public:
 	}
 
 protected:
-	int			m_size;
-	int			m_resolution;
+	u32			m_size;
+	u32			m_resolution;
 
 	FT_Library	m_library;
 	FT_Face		m_face;

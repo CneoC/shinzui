@@ -10,7 +10,7 @@
 						+ (u32)(((const u8 *)(d))[0]) )
 #endif
 
-u32 Util::hashString(const char * data, u32 len, u32 hash)
+u32 util::hashString(const char * data, u32 len, u32 hash)
 {
 	if (hash == 0) hash = len;
 	u32 tmp;

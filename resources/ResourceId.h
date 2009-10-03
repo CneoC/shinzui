@@ -84,8 +84,8 @@ public:
 	{
 		if (m_hash == 0)
 		{
-			m_hash = Util::hashString(m_type.toString().c_str(), m_type.toString().length());
-			m_hash = Util::hashString(m_name.c_str(), m_name.length(), m_hash);
+			m_hash = util::hashString(m_type.toString().c_str(), m_type.toString().length());
+			m_hash = util::hashString(m_name.c_str(), m_name.length(), m_hash);
 		}
 		return m_hash;
 	}

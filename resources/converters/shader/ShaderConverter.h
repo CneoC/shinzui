@@ -18,7 +18,7 @@ public:
 	ShaderConverter()
 	{
 		addLoader(new GLShaderConverters::ConvertFromFile);
-		addLoader(new GLProgramConverters::ConvertFromFile);
+		addLoader(new GLProgramConverters::ConvertFromProgram);
 	}
 
 };

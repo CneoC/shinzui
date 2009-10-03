@@ -5,6 +5,8 @@
 
 #include "render/Renderer.h"
 
+#include "resources/texture/FrameBufferResource.h"
+
 namespace render
 {
 	class StartFrameBuffer
@@ -12,6 +14,12 @@ namespace render
 	{
 	public:
 		StartFrameBuffer(Core *pCore) : Renderer(pCore) {}
+
+		void setFrameBuffer(FrameBufferResource frameBuffer)	{ m_frameBuffer = frameBuffer; }
+		FrameBufferResource getFrameBuffer()					{ return m_frameBuffer; }
+
+	protected:
+		FrameBufferResource	m_frameBuffer;
 	};
 }
 

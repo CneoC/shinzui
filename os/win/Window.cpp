@@ -233,7 +233,7 @@ LRESULT CALLBACK Window::wndProc(HWND m_hWnd, UINT uMsg,
 
 	case WM_SIZE:
 		{
-			resize(Vector2i(LOWORD(lParam), HIWORD(lParam)));
+			resize(math::Vector2i(LOWORD(lParam), HIWORD(lParam)));
 			return 0;
 		}
 	}

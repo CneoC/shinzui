@@ -58,7 +58,7 @@ namespace FTFontConverters
 				throw std::runtime_error(std::string("FT_New_Face failed. file '") + font->getId().toString() + "' probably doesn't exist.");
 			}
 
-			font->setSize(14, 128);
+			font->setSize(font->getSize(), font->getResolution());
 		
 			font->setLoaded(true);
 

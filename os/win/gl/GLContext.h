@@ -36,7 +36,7 @@ public:
 
 protected:
 	bool init();
-	bool resize(const Vector2i &size);
+	bool resize(const math::Vector2i &size);
 
 protected:
 	HGLRC		m_hRC;		// OpenGL rendering context

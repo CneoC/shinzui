@@ -5,6 +5,8 @@
 
 #include "render/Renderer.h"
 
+#include "resources/texture/GLTextureResource.h"
+
 class Core;
 
 namespace scene
@@ -19,6 +21,7 @@ namespace scene
 		virtual void render(double delta);
 
 	protected:
+		GLTextureResource m_texture;
 	};
 }
 

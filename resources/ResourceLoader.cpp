@@ -10,7 +10,7 @@ ResourceLoader::ResourceLoader(ResourceCache *pCache)
 
 Resource ResourceLoader::get(const ResourceId &id)
 {
-	LOG_INFO(m_log, '\'' << id.toString() << '\'');
+	LOG_TRACE(m_log, '\'' << id.toString() << '\'');
 
 	Resource result;
 

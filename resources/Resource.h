@@ -10,6 +10,8 @@
 #include <assert.h>
 #include <bitset>
 
+#include <boost/thread/mutex.hpp>
+
 class ResourceLoaderBase;
 class ResourceData;
 
@@ -109,7 +111,12 @@ public:
 		// Cast compatible resource types
 		if (cast && cast.getType() & T::getName())
  		{
- 			m_pData = reinterpret_cast<T *>(cast.getData());
+			// C-style cast works better here, due to it's dynamic nature it will
+			// better determine cast types depending on T and OT template types.
+			// A reinterpret_cast will break when data objects have virtual tables,
+			// and static_cast won't work on different typed resource conversions
+			// (even though resource conversions never end up in here).
+ 			m_pData = (T *)cast.getData();
  			reference();
  		}
 		// Try to convert incompatible resource types
@@ -175,6 +182,13 @@ public:
 		return *this;
 	}
 
+	bool operator < (const ResourceRef &other) const
+	{
+		if (!other || !*this)
+			return false;
+		return (*this)->getLoadPriority() < other->getLoadPriority();
+	}
+
 	T *operator -> ()				{ return m_pData; }
 	const T *operator -> () const	{ return m_pData; }
 
@@ -192,12 +206,21 @@ public:
 	}
 
 	/**
-	 * Unload the resource
-	 * @param flags		see ResourceLoaderBase::LoadFlags
-	 */
+	* Unload the resource
+	* @param flags		see ResourceLoaderBase::LoadFlags
+	*/
 	bool unload(u32 flags = 0)
 	{
 		return m_pData && m_pData->getLoader()->unload(ResourceRef<ResourceData>(*this, DONT_CONVERT), flags);
+	}
+
+	/**
+	 * Reload the resource
+	 * @param flags		see ResourceLoaderBase::LoadFlags
+	 */
+	bool reload(u32 flags = 0)
+	{
+		return unload(flags) && load(flags);
 	}
 
 	//! Safe check to see if the data is loaded.
@@ -238,6 +261,7 @@ protected:
  * Base resource data class.
  */
 class ResourceData
+	: boost::noncopyable
 {
 public:
 	enum Flags
@@ -257,49 +281,88 @@ public:
 		: m_references(0)
 		, m_pLoader(pLoader)
 		, m_type(getName())
+		, m_loadPriority(0)
 	{
 	}
 
 	//////////////////////////////////////////////////////////////////////////
 
+	//! Gets the resource identifier.
+	const ResourceId &getId() const				{ return m_id; }
+	//! Sets the resource identifier
+	void setId(const ResourceId &id)			{ m_id = id; }
+
+	//! Gets the resource type.
 	const ResourceType &getType() const			{ return m_type; }
 	ResourceType &getType()						{ return m_type; }
 
+	//! Resets the resource flags.
 	void resetFlags()							{ m_flags.reset(); }
 
+	//! Resource is loaded.
 	bool isLoaded() const						{ return m_flags[FLAG_LOADED]; }
+	//! Set the resource is loaded.
 	void setLoaded(bool loaded)					{ m_flags[FLAG_LOADED] = loaded; loaded? setLoad(false): setUnload(false); }
 
+	//! Resource is marked for unloading.
 	bool isLoading() const						{ return m_flags[FLAG_LOAD]; }
+	//! Mark resource for (async) loading.
 	void setLoad(bool load)						{ m_flags[FLAG_LOAD] = load; }
 
+	//! Resource is marked for unloading.
 	bool isUnloading() const					{ return m_flags[FLAG_UNLOAD]; }
+	//! Mark resource for (async) unloading.
 	void setUnload(bool unload)					{ m_flags[FLAG_UNLOAD] = unload; }
 
+	//! Gets the reference count for this resource data.
 	u32 getRefCount() const						{ return m_references; }
-	void incRefCount()							{ m_references++; }
-	void decRefCount()							{ assert(m_references > 0); m_references--; }
+	
+	/**
+	 * Increment resource data reference count (tread-safe).
+	 */
+	void incRefCount()
+	{
+		boost::lock_guard<boost::mutex> lock(m_rcMutex);
+		m_references++; 
+	}
 
+	/**
+	 * Decrement resource data reference count (tread-safe).
+	 */
+	void decRefCount()
+	{ 
+		boost::lock_guard<boost::mutex> lock(m_rcMutex);
+		assert(m_references > 0); m_references--;
+	}
+
+	//! Gets the resource this one is converted from (can be a NULL resource).
 	Resource getSource() const					{ return m_source; }
+	//! Sets the resource this one is converted from.
 	void setSource(const Resource &source)		{ m_source = source; }
 
+	//! Get the loader responsible for this resource.
 	ResourceLoaderBase *getLoader() const		{ return m_pLoader; }
 
-	const ResourceId &getId() const				{ return m_id; }
-	void setId(const ResourceId &id)			{ m_id = id; }
+	//! Gets the priority this resource has when loading asynchronous.
+	s32 getLoadPriority() const					{ return m_loadPriority; }
+	//! Sets the priority this resource has for asynchronous loading, higher is more important.
+	void setLoadPriority(s32 priority)			{ m_loadPriority = (s16)priority; }
 
 protected:
+	// TODO: Pack this data more optimally
 
-protected:
 	std::bitset<16>		m_flags;		// State flags.
+	s16					m_loadPriority;
 
 	ResourceId			m_id;			// Resource identifier.
 	ResourceType		m_type;			// Resource types.
 
-	u32					m_references;	// Number of references to this resource.
+	volatile u32		m_references;	// Number of references to this resource.
 
 	Resource			m_source;		// Source data for this resource.
 	ResourceLoaderBase*	m_pLoader;		// Loader responsible for this resource.
+
+	boost::mutex		m_rcMutex;		// Mutex used to keep reference counting thread-safe.
 };
 
 #endif //__RESOURCE_H__

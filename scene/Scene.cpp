@@ -2,7 +2,9 @@
 
 #include <gl/glew.h>
 
-#define _USE_MATH_DEFINES
+#include "resources/ResourceLoader.h"
+#include "resources/texture/FITextureResource.h"
+
 #include <math.h>
 
 using namespace scene;
@@ -10,6 +12,9 @@ using namespace scene;
 Scene::Scene(Core *pCore)
 	: render::Renderer(pCore)
 {
+	FITextureResource fiTexture(m_pCore->getLoader(), "File::2d/textures/test.tga", "FITexture::test");
+	m_texture = GLTextureResource(m_pCore->getLoader(), "FITexture::test");
+	m_texture.load();
 }
 
 Scene::~Scene()
@@ -27,10 +32,10 @@ void Scene::render(double delta)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	static double rotx = 0;
-	static double roty = 0;
-	rotx += 20 * delta;
-	roty += 10 * delta;
+	static float rotx = 0;
+	static float roty = 0;
+	rotx += 20 * (float)delta;
+	roty += 10 * (float)delta;
 	if (rotx > 360) rotx -= 360;
 	if (roty > 360) roty -= 360;
 
@@ -38,45 +43,57 @@ void Scene::render(double delta)
 	glRotatef(rotx, 1, 0, 0);
 	glRotatef(roty, 0, 1, 0);
 
-	glDisable(GL_TEXTURE_2D);
+ 	if (m_texture)
+ 	{
+ 		glEnable(GL_TEXTURE_2D);
+ 		m_texture->bind();
+ 	}
 
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
-	glColor3f(1.0f, 1.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
 	glBegin(GL_QUADS);
 		// front
-		glVertex3f(-0.5f,-0.5f, 0.5f);
-		glVertex3f(-0.5f, 0.5f, 0.5f);
-		glVertex3f( 0.5f, 0.5f, 0.5f);
-		glVertex3f( 0.5f,-0.5f, 0.5f);
+		glTexCoord2f(0, 0); glVertex3f(-0.5f,-0.5f, 0.5f);
+		glTexCoord2f(1, 0); glVertex3f( 0.5f,-0.5f, 0.5f);
+		glTexCoord2f(1, 1); glVertex3f( 0.5f, 0.5f, 0.5f);
+		glTexCoord2f(0, 1); glVertex3f(-0.5f, 0.5f, 0.5f);
 
 		// back
-		glVertex3f(-0.5f,-0.5f,-0.5f);
-		glVertex3f( 0.5f,-0.5f,-0.5f);
-		glVertex3f( 0.5f, 0.5f,-0.5f);
-		glVertex3f(-0.5f, 0.5f,-0.5f);
+		glTexCoord2f(0, 0); glVertex3f(-0.5f,-0.5f,-0.5f);
+		glTexCoord2f(0, 1); glVertex3f(-0.5f, 0.5f,-0.5f);
+		glTexCoord2f(1, 1); glVertex3f( 0.5f, 0.5f,-0.5f);
+		glTexCoord2f(1, 0); glVertex3f( 0.5f,-0.5f,-0.5f);
 
 		// top
-		glVertex3f(-0.5f, 0.5f,-0.5f);
-		glVertex3f(-0.5f, 0.5f, 0.5f);
-		glVertex3f( 0.5f, 0.5f, 0.5f);
-		glVertex3f( 0.5f, 0.5f,-0.5f);
+		glTexCoord2f(0, 0); glVertex3f(-0.5f, 0.5f,-0.5f);
+		glTexCoord2f(0, 1); glVertex3f(-0.5f, 0.5f, 0.5f);
+		glTexCoord2f(1, 1); glVertex3f( 0.5f, 0.5f, 0.5f);
+		glTexCoord2f(1, 0); glVertex3f( 0.5f, 0.5f,-0.5f);
 
 		// bottom
-		glVertex3f(-0.5f,-0.5f,-0.5f);
-		glVertex3f( 0.5f,-0.5f,-0.5f);
-		glVertex3f( 0.5f,-0.5f, 0.5f);
-		glVertex3f(-0.5f,-0.5f, 0.5f);
+		glTexCoord2f(0, 0); glVertex3f(-0.5f,-0.5f,-0.5f);
+		glTexCoord2f(1, 0); glVertex3f( 0.5f,-0.5f,-0.5f);
+		glTexCoord2f(1, 1); glVertex3f( 0.5f,-0.5f, 0.5f);
+		glTexCoord2f(0, 1); glVertex3f(-0.5f,-0.5f, 0.5f);
 
 		// right
-		glVertex3f( 0.5f,-0.5f,-0.5f);
-		glVertex3f( 0.5f,-0.5f, 0.5f);
-		glVertex3f( 0.5f, 0.5f, 0.5f);
-		glVertex3f( 0.5f, 0.5f,-0.5f);
+		glTexCoord2f(0, 0); glVertex3f( 0.5f,-0.5f,-0.5f);
+		glTexCoord2f(1, 0); glVertex3f( 0.5f, 0.5f,-0.5f);
+		glTexCoord2f(1, 1); glVertex3f( 0.5f, 0.5f, 0.5f);
+		glTexCoord2f(0, 1); glVertex3f( 0.5f,-0.5f, 0.5f);
 
 		// left
-		glVertex3f(-0.5f,-0.5f,-0.5f);
-		glVertex3f(-0.5f, 0.5f,-0.5f);
-		glVertex3f(-0.5f, 0.5f, 0.5f);
-		glVertex3f(-0.5f,-0.5f, 0.5f);
+		glTexCoord2f(0, 0); glVertex3f(-0.5f,-0.5f,-0.5f);
+		glTexCoord2f(0, 1); glVertex3f(-0.5f,-0.5f, 0.5f);
+		glTexCoord2f(1, 1); glVertex3f(-0.5f, 0.5f, 0.5f);
+		glTexCoord2f(1, 0); glVertex3f(-0.5f, 0.5f,-0.5f);
 	glEnd();
+
+	if (m_texture)
+	{
+		m_texture->unbind();
+		glDisable(GL_TEXTURE_2D);
+	}
 }

@@ -47,4 +47,5 @@ void FileWriter::write(Message &message)
 {
 	boost::lock_guard<boost::mutex> lock(ms_mutex);
 	m_file << (m_pFormatter? m_pFormatter->format(message): message.getMessage());
+	m_file.flush();
 }

@@ -45,6 +45,11 @@ public:
 	 */
 	virtual bool unload(Resource &res, u32 flags = FLAG_NONE)	{ return false; }
 
+	//////////////////////////////////////////////////////////////////////////
+
+	//! Gets the resource cache
+	ResourceCache *getCache() const		{ return m_pCache; }
+
 protected:
 	ResourceCache *	m_pCache;
 	logging::Log *	m_log;

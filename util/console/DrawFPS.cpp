@@ -6,6 +6,7 @@
 #include "render/2d/FontUtil.h"
 
 #include "resources/ResourceLoader.h"
+#include "resources/ResourceCache.h"
 #include "resources/font/GLFontResource.h"
 #include "resources/font/FTFontResource.h"
 
@@ -24,7 +25,7 @@ DrawFPS::DrawFPS(Core *pCore)
 	m_pFontUtil = m_pCore->getDriver()->getUtil("2d.Font")->as<render::FontUtil>();
 
 	FTFontResource ftFont(m_pCore->getLoader(), "File::2d/fonts/debug.ttf", "fps");
-	ftFont->setSize(16);
+	ftFont->setSize(10, 128);
 
 	m_font = GLFontResource(ftFont);
 	m_font.load();
@@ -36,9 +37,6 @@ DrawFPS::~DrawFPS()
 
 void DrawFPS::render(double delta)
 {
-// 	FontResource debugFont = m_pCore->getResourceLoader()->getFont("2d/fonts/debug.ttf");
-// 	printf(debugFont->isLoaded() ? "loaded\n" : "not loaded\n");
-
 	m_pFontUtil->setResource(m_font);
 
 	m_frameCount++;
@@ -64,7 +62,14 @@ void DrawFPS::render(double delta)
 	glLoadIdentity();
 
 	glColor3f(1.0f, 1.0f, 1.0f);
-	m_pFontUtil->printf(Vector2f(10, 10), "%04.2f FPS", getFPS());
+	m_pFontUtil->printf(math::Vector2f(10, 10), "%04.2f FPS", getFPS());
+
+	ResourceCache *pCache = m_pCore->getLoader()->getCache();
+	if (pCache->isLoading())
+	{
+		glColor3f(1.0f, 1.0f, 1.0f);
+		m_pFontUtil->printf(math::Vector2f(800, 10), "Loading... %3.1f%%", pCache->getProgress() * 100);
+	}
 
 	glPushAttrib(GL_TRANSFORM_BIT);
 	glMatrixMode(GL_PROJECTION);

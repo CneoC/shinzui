@@ -28,14 +28,14 @@ namespace render
 		 * @param length	Length of the text to render.
 		 * @param text		Text to render.
 		 */
-		virtual void print(const Vector2f &p, size_t length, const char *text) const = 0;
+		virtual void print(const math::Vector2f &p, size_t length, const char *text) const = 0;
 
 		/**
 		 * Prints a single line of formatted text.
 		 * @param p		translation to render the text at.
 		 * @param fmt	format to print using variable argument list.
 		 */
-		void printf(const Vector2f &p, const char *fmt, ...) const;
+		void printf(const math::Vector2f &p, const char *fmt, ...) const;
 
 	protected:
 		FontResource m_font;

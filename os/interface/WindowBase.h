@@ -33,23 +33,23 @@ public:
 // 	virtual void show() = 0;
 // 	virtual void hide() = 0;
 
-	const std::string &getTitle() const		{ return m_title; }
-	void setTitle(const std::string &title)	{ m_title = title; m_flags[FLAG_DIRTY_TITLE] = true; }
+	const std::string &getTitle() const			{ return m_title; }
+	void setTitle(const std::string &title)		{ m_title = title; m_flags[FLAG_DIRTY_TITLE] = true; }
 
-	bool isFullscreen() const				{ return m_fullscreen; }
-	void setFullscreen(bool fullsreen)		{ m_fullscreen = fullsreen; m_flags[FLAG_DIRTY_FULLSCREEN] = true; }
+	bool isFullscreen() const					{ return m_fullscreen; }
+	void setFullscreen(bool fullsreen)			{ m_fullscreen = fullsreen; m_flags[FLAG_DIRTY_FULLSCREEN] = true; }
 
-	const Vector2i &getSize() const			{ return m_size; }
-	void setSize(const Vector2i &size)		{ m_size = size; m_flags[FLAG_DIRTY_SIZE] = true; }
+	const math::Vector2i &getSize() const		{ return m_size; }
+	void setSize(const math::Vector2i &size)	{ m_size = size; m_flags[FLAG_DIRTY_SIZE] = true; }
 
-	const int getBpp() const				{ return m_bpp; }
-	void setBpp(int bpp)					{ m_bpp = bpp; m_flags[FLAG_DIRTY_BPP] = true; }
+	const int getBpp() const					{ return m_bpp; }
+	void setBpp(int bpp)						{ m_bpp = bpp; m_flags[FLAG_DIRTY_BPP] = true; }
 
 protected:
 	std::bitset<32>	m_flags;
 	bool			m_fullscreen;
 	std::string		m_title;
-	Vector2i		m_size;
+	math::Vector2i	m_size;
 	int				m_bpp;
 };
 

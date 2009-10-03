@@ -5,6 +5,7 @@
 
 #include "render/Renderer.h"
 
+#include "resources/texture/FrameBufferResource.h"
 #include "resources/shader/ProgramResource.h"
 
 namespace render
@@ -15,10 +16,15 @@ namespace render
 	public:
 		EndFrameBuffer(Core *pCore) : Renderer(pCore) {}
 
-		void setProgram(const ProgramResource &program)	{ m_program = program; }
+		void setFrameBuffer(FrameBufferResource frameBuffer)	{ m_frameBuffer = frameBuffer; }
+		FrameBufferResource getFrameBuffer()					{ return m_frameBuffer; }
+
+		void setProgram(ProgramResource program)				{ m_program = program; }
+		ProgramResource getProgram()							{ return m_program; }
 
 	protected:
-		ProgramResource	m_program;
+		FrameBufferResource	m_frameBuffer;
+		ProgramResource		m_program;
 	};
 }
 

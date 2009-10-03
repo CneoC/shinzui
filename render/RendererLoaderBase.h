@@ -47,7 +47,7 @@ namespace render
 		 */
 		void addLoader(const std::string &name, RendererLoaderBase *pLoader)
 		{
-			u32 hash = Util::hashString(name.c_str(), name.length());
+			u32 hash = util::hashString(name.c_str(), name.length());
 			m_loaders[hash]	= pLoader;
 		}
 
@@ -58,7 +58,7 @@ namespace render
 		 */
 		void addRenderer(const std::string &name, RenderCreateFunc createFunc)
 		{
-			u32 hash = Util::hashString(name.c_str(), name.length());
+			u32 hash = util::hashString(name.c_str(), name.length());
 			m_renderers[hash]	= createFunc;
 		}
 
@@ -69,7 +69,7 @@ namespace render
 		 */
 		void addUtil(const std::string &name, RenderUtil *pUtil)
 		{
-			u32 hash = Util::hashString(name.c_str(), name.length());
+			u32 hash = util::hashString(name.c_str(), name.length());
 			m_util[hash]	= pUtil;
 		}
 
@@ -93,7 +93,7 @@ namespace render
 			}
 
 			// Arrived at proper level, so try to create the renderer.
-			return createRenderer(Util::hashString(name.c_str(), name.length()));
+			return createRenderer(util::hashString(name.c_str(), name.length()));
 		}
 
 		/**
@@ -115,7 +115,7 @@ namespace render
 			}
 
 			// Arrived at proper level, so try to create the utility.
-			return getUtil(Util::hashString(name.c_str(), name.length()));
+			return getUtil(util::hashString(name.c_str(), name.length()));
 		}
 
 	protected:

@@ -5,16 +5,22 @@
 
 #include "resources/Resource.h"
 
+#include "math/Vector2.h"
+
 class TextureData
 	: public ResourceData
 {
 public:
 	static const char *getName()	{ return "Texture"; }
 
-	TextureData()
+	TextureData(ResourceLoaderBase *pData)
+		: ResourceData(pData)
 	{
 		getType() += getName();
 	}
+
+	virtual void bind() {}
+	virtual void unbind() {}
 };
 
 typedef ResourceRef<TextureData>	TextureResource;

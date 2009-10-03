@@ -42,8 +42,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include"
-				PreprocessorDefinitions="GLEW_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
+				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include;../libraries/FreeImage/include;../libraries/FreeImage/Wrapper/FreeImagePlus/include"
+				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -62,6 +62,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				LinkLibraryDependencies="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -104,10 +105,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include"
-				PreprocessorDefinitions="GLEW_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
+				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include;../libraries/FreeImage/include;../libraries/FreeImage/Wrapper/FreeImagePlus/include"
+				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -128,6 +130,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				LinkLibraryDependencies="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -257,6 +260,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\math\Color3.h"
+				>
+			</File>
+			<File
+				RelativePath=".\math\Color4.h"
+				>
+			</File>
+			<File
 				RelativePath=".\util\console\Console.h"
 				>
 			</File>
@@ -301,6 +312,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resources\converters\texture\FITextureConverters.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\texture\FITextureResource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resources\converters\font\FontConverter.h"
 				>
 			</File>
@@ -318,6 +337,10 @@
 			</File>
 			<File
 				RelativePath=".\util\logging\FormatUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\texture\FrameBufferResource.h"
 				>
 			</File>
 			<File
@@ -341,11 +364,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\gl\GLContext.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLContext.h"
+				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -366,6 +389,14 @@
 			</File>
 			<File
 				RelativePath=".\render\gl\2d\GLFontUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\converters\texture\GLFrameBufferConverters.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\texture\GLFrameBufferResource.h"
 				>
 			</File>
 			<File
@@ -398,6 +429,14 @@
 			</File>
 			<File
 				RelativePath=".\render\gl\core\GLStartRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\converters\texture\GLTextureConverters.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\texture\GLTextureResource.h"
 				>
 			</File>
 			<File
@@ -513,6 +552,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test\StreamResourceTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test\TestCase.h"
 				>
 			</File>
@@ -549,11 +592,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Window.h"
+				RelativePath=".\math\Vector3.h"
 				>
 			</File>
 			<File
 				RelativePath=".\os\win\Window.h"
+				>
+			</File>
+			<File
+				RelativePath=".\os\current\Window.h"
 				>
 			</File>
 			<File

@@ -21,17 +21,6 @@ namespace render
 		~GLStartFrameBuffer();
 
 		virtual void render(double delta);
-
-	protected: 
-		GLsizei width;
-		GLsizei height;
-		//struct PHviewportRec viewport;
-		GLfloat clearColor[4];
-		GLfloat modelview[16];
-		GLfloat projection[16];
-		GLuint texture;
-		GLuint depth;
-		GLuint fbo;
 	};
 }
 
