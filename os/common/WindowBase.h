@@ -7,6 +7,8 @@
 
 #include "math/Vector2.h"
 
+#include "util/Delegate.h"
+
 #include <bitset>
 
 namespace os
@@ -46,6 +48,10 @@ namespace os
 
 		const int getBpp() const					{ return m_bpp; }
 		void setBpp(int bpp)						{ m_bpp = bpp; m_flags[FLAG_DIRTY_BPP] = true; }
+
+		//////////////////////////////////////////////////////////////////////////
+
+		func::delegate< void (const math::Vector2i &) >	resizeEvent;
 
 	protected:
 		std::bitset<32>	m_flags;

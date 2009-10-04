@@ -84,7 +84,7 @@ public:
 
 	void add(Resource resource)
 	{
-		LOG_INFO(m_log, LOG_FMT("'%s' with type %s", resource->getId().toString() % resource->getType().toString()));
+		LOG_TRACE(m_log, LOG_FMT("'%s' with type %s", resource->getId().toString() % resource->getType().toString()));
 
 		assert(resource);
 
@@ -134,7 +134,7 @@ public:
 					else if (resource->isLoading() && !resource->isLoaded())
 					{
 						resource->setLoad(false);
-						m_load.push_back(resource);
+						m_load.push_front(resource);
 						loadAdded = true;
 					}
 				}

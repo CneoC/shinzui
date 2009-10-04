@@ -230,6 +230,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\world\components\Component.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\world\components\ComponentManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\util\console\Console.cpp"
 				>
 			</File>
@@ -279,6 +287,10 @@
 			</File>
 			<File
 				RelativePath=".\util\logging\Log.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\world\components\MoveComponent.cpp"
 				>
 			</File>
 			<File
@@ -356,6 +368,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\world\components\ComponentDataSet.h"
+				>
+			</File>
+			<File
 				RelativePath=".\world\components\ComponentManager.h"
 				>
 			</File>
@@ -372,6 +388,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\util\Delegate.h"
+				>
+			</File>
+			<File
 				RelativePath=".\util\console\DrawFPS.h"
 				>
 			</File>
@@ -385,10 +405,6 @@
 			</File>
 			<File
 				RelativePath=".\world\Entity.h"
-				>
-			</File>
-			<File
-				RelativePath=".\world\components\EntityData.h"
 				>
 			</File>
 			<File
@@ -540,6 +556,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\world\components\InputComponent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\util\logging\Level.h"
 				>
 			</File>
@@ -564,6 +584,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\world\components\MoveComponent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\world\components\NameComponent.h"
+				>
+			</File>
+			<File
 				RelativePath=".\core\Process.h"
 				>
 			</File>
@@ -577,6 +605,10 @@
 			</File>
 			<File
 				RelativePath=".\resources\RawResource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\world\components\RenderBoxComponent.h"
 				>
 			</File>
 			<File
@@ -680,11 +712,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\os\current\Time.h"
+				>
+			</File>
+			<File
 				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Time.h"
+				RelativePath=".\world\components\TransformData.h"
 				>
 			</File>
 			<File
@@ -704,11 +740,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Window.h"
+				RelativePath=".\os\current\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Window.h"
+				RelativePath=".\os\win\Window.h"
 				>
 			</File>
 			<File

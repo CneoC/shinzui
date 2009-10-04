@@ -237,15 +237,15 @@ void Core::runJob(const CoreJob &job)
 	double delta		= elapsedTime - job.second->getLastRunTime();
 
 	// Initialize process on first run
-	if (job.second->getLastRunTime() == 0)
+	if (job.first == 0 && job.second->getLastRunTime() == 0)
 		job.second->init();
-	job.second->setLastRunTime(elapsedTime);
 	Process *pAdd = job.second->run(job.first, delta);
 
 	// If we have a new process to add, and all process jobs have finished (this being the last one)
 	u16 jobs = job.second->incFinishedJobs();
 	if (pAdd && jobs >= job.second->getJobs())
 	{
+		job.second->setLastRunTime(elapsedTime);
 		if (jobs > job.second->getJobs())
 			LOG_WARN(getLog(), LOG_FMT("More finished jobs (%i) than expected (%i) for: %X", jobs % job.second->getJobs() % job.second));
 		addProcess(pAdd);

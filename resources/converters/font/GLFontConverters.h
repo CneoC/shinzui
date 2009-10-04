@@ -118,6 +118,7 @@ namespace GLFontConverters
 					throw std::runtime_error("FT_Glyph_To_Bitmap failed.");
 				}
 			}
+			
 			FT_BitmapGlyph pBitmapGlyph = (FT_BitmapGlyph)glyph;
 			FT_Bitmap &bitmap = pBitmapGlyph->bitmap;
 
@@ -159,10 +160,11 @@ namespace GLFontConverters
 			glNewList(font->getDisplayLists() + c, GL_COMPILE);
 			glBindTexture(GL_TEXTURE_2D, font->getTexture(c));
 			glPushMatrix();
+
 			// Offset character properly.
 			glTranslatef((float)pBitmapGlyph->left,
-				(float)(pBitmapGlyph->top - bitmap.rows),
-				0);
+						(float)(-(face->bbox.yMin >> 6) - pBitmapGlyph->top),
+						0);
 
 			// Calculate texture coordinates.
 			float x = (float)bitmap.width / (float)width;
@@ -170,11 +172,12 @@ namespace GLFontConverters
 
 			// Generate quad to render character.
 			glBegin(GL_QUADS);
-			glTexCoord2d(0, 0); glVertex2i(0, bitmap.rows);
-			glTexCoord2d(0, y); glVertex2i(0, 0);
-			glTexCoord2d(x, y); glVertex2i(bitmap.width, 0);
-			glTexCoord2d(x, 0); glVertex2i(bitmap.width, bitmap.rows);
+				glTexCoord2d(0, 0); glVertex2i(0, 0);
+				glTexCoord2d(0, y); glVertex2i(0, bitmap.rows);
+				glTexCoord2d(x, y); glVertex2i(bitmap.width, bitmap.rows);
+				glTexCoord2d(x, 0); glVertex2i(bitmap.width, 0);
 			glEnd();
+
 			glPopMatrix();
 
 			// Position for next character.

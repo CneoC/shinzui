@@ -34,6 +34,92 @@ namespace math
 		{
 		}
 
+
+		//////////////////////////////////////////////////////////////////////////
+
+		Vector3 &operator += (const Vector3 &other)
+		{
+			x += other.x;
+			y += other.y;
+			z += other.z;
+			return *this;
+		}
+		Vector3 operator + (const Vector3 &other) const
+		{
+			Vector3 result(*this);
+			return result += other;
+		}
+
+		Vector3 &operator -= (const Vector3 &other)
+		{
+			x -= other.x;
+			y -= other.y;
+			z -= other.z;
+			return *this;
+		}
+		Vector3 operator - (const Vector3 &other) const
+		{
+			Vector3 result(*this);
+			return result -= other;
+		}
+
+		Vector3 &operator *= (const Vector3 &other)
+		{
+			x *= other.x;
+			y *= other.y;
+			z *= other.z;
+			return *this;
+		}
+		Vector3 operator * (const Vector3 &other) const
+		{
+			Vector3 result(*this);
+			return result *= other;
+		}
+
+		Vector3 &operator /= (const Vector3 &other)
+		{
+			x /= other.x;
+			y /= other.y;
+			z /= other.z;
+			return *this;
+		}
+		Vector3 operator / (const Vector3 &other) const
+		{
+			Vector3 result(*this);
+			return result /= other;
+		}
+
+		Vector3 &operator *= (T other)
+		{
+			x *= other;
+			y *= other;
+			z *= other;
+			return *this;
+		}
+		Vector3 operator * (T other) const
+		{
+			Vector3 result(*this);
+			return result *= other;
+		}
+
+		Vector3 &operator /= (T other)
+		{
+			x /= other;
+			y /= other;
+			z /= other;
+			return *this;
+		}
+		Vector3 operator / (T other) const
+		{
+			Vector3 result(*this);
+			return result /= other;
+		}
+
+		Vector3 operator - () const
+		{
+			return Vector3(-x, -y, -z);
+		}
+
 	public:
 		T x, y, z;
 	};

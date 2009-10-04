@@ -1,5 +1,4 @@
 #ifdef ENABLE_UNIT_TEST
-
 #include <cstdio>
 
 #include <FreeImagePlus.h>
@@ -9,6 +8,7 @@
 #include <os/current/gl/GLContext.h>
 
 #include <util/console/Console.h>
+#include <util/console/ThreadUsage.h>
 #include <util/console/DrawFPS.h>
 
 #include <render/gl/GLRenderDriver.h>
@@ -35,14 +35,8 @@
 #include <test/StreamResourceTest.h>
 
 #define ENABLE_RESOURCE_TEST
-
-//#define ENABLE_POST_PROCESSING_TEST
-
 #define ENABLE_ASYNC_LOAD_TEST
-#define ASYNC_LOAD_TEST_COUNT		500
-
-#define ENABLE_PROCESS_OVERHEAD_TEST
-#define PROCESS_OVERHEAD_TEST_COUNT	10000
+#define PROCESS_OVERHEAD_TEST 0 //10000
 
 void main(const char *argc, int argv)
 {
@@ -51,7 +45,7 @@ void main(const char *argc, int argv)
 		FreeImage_Initialise();
 
 		logging::TextFormatter	textFormatter;
-		logging::FileWriter		fileWriter("game.log");
+		logging::FileWriter		fileWriter("engine.log");
 		logging::ConsoleWriter	consoleWriter;
 
 		fileWriter.setFormatter(&textFormatter);
@@ -60,10 +54,11 @@ void main(const char *argc, int argv)
 		LOG_GET_ROOT->addWriter(&fileWriter);
 		LOG_GET_ROOT->addWriter(&consoleWriter);
 		consoleWriter.setLevel(LEVEL_WARN);
-		
+
 		core::Core *pCore = new core::Core();
 
 		ResourceCache*	pCache	= new ResourceCache(pCore);
+		pCache->setJobs(1 + (pCore->getThreadCount() / 2));
 		pCore->addProcess(pCache);
 
 		ResourceLoader*	pLoader	= new ResourceLoader(pCache);
@@ -88,23 +83,23 @@ void main(const char *argc, int argv)
 		GLFontResource font11(font2);												// == font4
 
 		font4.load(	ResourceLoader::FLAG_ASYNC |									// font2, font1 and file resource (font1->getSource()) marked for loading
-					ResourceLoader::ASYNC_PRIORITY_NORMAL);
-#endif //ENABLE_RESOURCE_TEST
+			ResourceLoader::ASYNC_PRIORITY_NORMAL);
+#endif
 
-#ifdef ENABLE_PROCESS_OVERHEAD_TEST
-		test::LogTestProc **pTestLogs = new test::LogTestProc *[PROCESS_OVERHEAD_TEST_COUNT];
-		for (u32 i = 0; i < PROCESS_OVERHEAD_TEST_COUNT; i++)
+#if PROCESS_OVERHEAD_TEST
+		test::LogTestProc **pTestLogs = new test::LogTestProc *[PROCESS_OVERHEAD_TEST];
+		for (u32 i = 0; i < PROCESS_OVERHEAD_TEST; i++)
 		{
-			test::LogTestProc *test = new test::LogTestProc(pCore, i);
+			test::LogTestProc *test = new LogTestProc(pCore, i);
 			test->setFrameDelay(1 + i * 0.01);
 			pCore->addProcess(test);
 			pTestLogs[i] = test;
 		}
-#endif //ENABLE_PROCESS_OVERHEAD_TEST
+#endif
 
 		// Create window before doing any other rendering related stuff
-		Window		*pWindow		= new Window(pCore);
-		pWindow->setTitle("Engine");
+		os::Window		*pWindow		= new os::Window(pCore);
+		pWindow->setTitle("Engine Test");
 		pWindow->setSize(math::Vector2i(1024, 768));
 		pWindow->create();
 
@@ -118,30 +113,28 @@ void main(const char *argc, int argv)
 		render::Renderer *	pScene			= new world::Scene(pCore);
 		render::Renderer *	pDrawFPS		= new console::DrawFPS(pCore);
 		render::Renderer *	pConsole		= new console::Console(pCore);
+		render::Renderer *	pThreadUsage	= new console::ThreadUsage(pCore);
 		render::Renderer *	pEndFB			= pCore->getDriver()->createRenderer("EndFB");
 		render::Renderer *	pRenderEnd		= pCore->getDriver()->createRenderer("End");
 
 		render::RenderChain *pChain = new render::RenderChain(pCore);
 		pChain->link(pRenderStart)
-#ifdef ENABLE_POST_PROCESSING_TEST
- 			->link(pStartFB)
+			->link(pStartFB)
 			->link(pScene)
- 			->link(pEndFB)
-#else //!ENABLE_POST_PROCESSING_TEST
-			->link(pScene)
-#endif //!ENABLE_POST_PROCESSING_TEST
+			->link(pEndFB)
 			->link(pConsole)
+			->link(pThreadUsage)
 			->link(pDrawFPS)
 			->link(pRenderEnd);
 
 		render::RendererProc *pRenderProc = new render::RendererProc(pCore);
+		pRenderProc->setFrameDelay(0.01667); // 60 fps
 		pRenderProc->setRenderer(pChain);
 
 		pCore->getDriver()->getContext()->unbind();
 
 		pCore->getDriver()->getLoaderContext()->bind();
 
-#ifdef ENABLE_POST_PROCESSING_TEST
 		FrameBufferDef fbDef(pLoader);
 		fbDef->setClearColor(math::Color4f(0, 0, 0, 0));
 		fbDef->setCleared(true);
@@ -162,20 +155,20 @@ void main(const char *argc, int argv)
 		GLProgramResource program(programDef);
 		program.load(ResourceLoaderBase::FLAG_ASYNC);
 		pEndFB->as<render::EndFrameBuffer>()->setProgram(program);
-#endif //ENABLE_POST_PROCESSING_TEST
+
 
 #ifdef ENABLE_ASYNC_LOAD_TEST
 		pCore->getLoader()->addLoader(new StreamResourceTestLoader());
-		for (u32 i = 0; i < ASYNC_LOAD_TEST_COUNT; i++)
+		for (u32 i = 0; i < 500; i++)
 		{
 			char pName[32];
 			sprintf(pName, "Test::testing_%d", i);
 
 			StreamResourceTestResource test(pCore->getLoader(), pName);
-			test->setLoadPriority(-(ASYNC_LOAD_TEST_COUNT / 2) + i);
+			test->setLoadPriority(-250 + i);
 			test.load(ResourceLoaderBase::FLAG_ASYNC);
 		}
-#endif //ENABLE_ASYNC_LOAD_TEST
+#endif
 
 		pCore->getDriver()->getLoaderContext()->unbind();
 
@@ -190,19 +183,18 @@ void main(const char *argc, int argv)
 		// Run process handling
 		pCore->run();
 
-#ifdef ENABLE_PROCESS_OVERHEAD_TEST
+#if PROCESS_OVERHEAD_TEST
 		logging::Log *log = LOG_GET_ROOT;
 		if (LOG_CHECK(log, LEVEL_TRACE))
 		{
-			for (u32 i = 0; i < PROCESS_OVERHEAD_TEST_COUNT; i++)
+			for (u32 i = 0; i < PROCESS_OVERHEAD_TEST; i++)
 			{
 				double diff = pCore->getElapsedTime() - pTestLogs[i]->getNextRunTime();
 				if (diff > 0.01) LOG_TRACE(log, "Process " << i << " hasn't been run in " << diff << " seconds.");
 			}
 		}
 		delete pTestLogs;
-#endif //ENABLE_PROCESS_OVERHEAD_TEST
-
+#endif
 		delete pCore;
 
 		pWindow->destroy();

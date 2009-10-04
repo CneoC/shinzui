@@ -22,7 +22,7 @@ void GLStartRenderer::init()
 
 void GLStartRenderer::render(double delta)
 {
-	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
+	m_pCore->getDriver()->getContext()->update();
 
 	// Clear The Screen And The Depth Buffer
 	glClearColor(0, 0, 0, 0);

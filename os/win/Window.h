@@ -38,7 +38,8 @@ namespace os
 
 		bool resize(const math::Vector2i &size)
 		{
-			// resizeCallback(size);
+			m_size = size;
+			resizeEvent(size);
 			return true;
 		}
 

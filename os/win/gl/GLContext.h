@@ -23,17 +23,19 @@ namespace os
 			assert(!m_hRC);
 		}
 
-		bool create();
-		bool destroy();
+		virtual bool create();
+		virtual bool destroy();
 
-		bool bind();
-		bool unbind();
-		bool link(ContextBase *pOther);
+		virtual bool bind();
+		virtual bool unbind();
+		virtual bool link(ContextBase *pOther);
 
-		void swapBuffers();
+		virtual void update();
 
-		void onResize()			{ resize(m_pWindow->getSize()); }
+		virtual void swapBuffers();
 		
+		//////////////////////////////////////////////////////////////////////////
+
 		HGLRC getHRC() const	{ return m_hRC; }
 
 	protected:

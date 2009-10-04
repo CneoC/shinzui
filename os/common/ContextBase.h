@@ -10,10 +10,20 @@ namespace os
 	class ContextBase
 	{
 	public:
+		enum Flags
+		{
+			FLAG_RESIZED
+		};
+
+		//////////////////////////////////////////////////////////////////////////
+
 		ContextBase(Window *pWindow)
 			: m_pWindow(pWindow) 
 		{
+			pWindow->resizeEvent.connect(this, &ContextBase::onResize);
 		}
+
+		//////////////////////////////////////////////////////////////////////////
 
 		virtual bool create() = 0;
 		virtual bool destroy() = 0;
@@ -22,12 +32,20 @@ namespace os
 		virtual bool unbind() = 0;
 		virtual bool link(ContextBase *pOther) = 0;
 
+		virtual void update() = 0;
+
 		virtual void swapBuffers() = 0;
 
-		//	virtual bool onResize(const Vector2i &size) = 0;
+		//////////////////////////////////////////////////////////////////////////
+
+		Window *getWindow() const	{ return m_pWindow; }
 
 	protected:
-		Window*	m_pWindow;
+		void onResize(const math::Vector2i &size) { m_flags[FLAG_RESIZED] = true; }
+
+	protected:
+		std::bitset<16>	m_flags;
+		Window *		m_pWindow;
 	};
 }
 

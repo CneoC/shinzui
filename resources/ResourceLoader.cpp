@@ -36,7 +36,7 @@ Resource ResourceLoader::get(const ResourceId &id)
 
 Resource ResourceLoader::convert(const Resource &resource, const ResourceType &type)
 {
-	LOG_INFO(m_log, '\'' << resource->getId().getType().getTop() << "::" << resource->getId().getName() << "' to type " << type.toString());
+	LOG_TRACE(m_log, '\'' << resource->getId().getType().getTop() << "::" << resource->getId().getName() << "' to type " << type.toString());
 
 	// Resource id we want to convert to
 	ResourceId id(type.getTop() + "::" + resource->getId().getName());
@@ -62,7 +62,7 @@ Resource ResourceLoader::convert(const Resource &resource, const ResourceType &t
 
 Resource ResourceLoader::clone(const Resource &src, Resource dst)
 {
-	LOG_INFO(m_log, '\'' << src->getId().getType().getTop() << "::" << src->getId().getName() << "' -> '" << dst->getId().getType().getTop() << "::" << dst->getId().getName());
+	LOG_TRACE(m_log, '\'' << src->getId().getType().getTop() << "::" << src->getId().getName() << "' -> '" << dst->getId().getType().getTop() << "::" << dst->getId().getName());
 
 	Resource result;
 

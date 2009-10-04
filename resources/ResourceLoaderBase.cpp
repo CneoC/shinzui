@@ -56,7 +56,7 @@ bool ResourceLoaderBase::load(Resource &res, u32 flags)
 			}
 		}
 
-		LOG_INFO(LOG_GET("Resource.Loader"), "Async " << res->getId().toString());
+		LOG_TRACE(LOG_GET("Resource.Loader"), "Async " << res->getId().toString());
 
 		return true;
 	}
@@ -113,7 +113,7 @@ bool ResourceLoaderBase::unload(Resource &res, u32 flags)
 			}
 		}
 
-		LOG_INFO(LOG_GET("Resource.Loader"), "Async " << res->getId().toString());
+		LOG_TRACE(LOG_GET("Resource.Loader"), "Async " << res->getId().toString());
 
 		return true;
 	}

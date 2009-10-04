@@ -5,30 +5,49 @@
 
 #include "core/Process.h"
 #include "world/Entity.h"
-#include "world/EntityData.h"
+#include "world/components/ComponentDataSet.h"
+
+#include <boost/thread.hpp>
 
 namespace world
 {
+	class ComponentManager;
+
 	class Component
 		: public core::Process
 	{
 	public:
-		typedef std::map<EntityId, EntityData *>	EntityList;
-
-		virtual void update(EntityId id, EntityData *pData, double delta) = 0;
-
-		virtual core::Process *run(u32 job, double delta)
+		struct ComponentEntry
 		{
-			EntityList::iterator entity;
-			for (entity = m_entities.begin(); entity != m_entities.end(); ++entity)
-			{
-				update(entity->first, entity->second);
-			}
-		}
+			ComponentData *		data;		// quick access slot for current component's data.
+			ComponentDataSetRef	dataSet;	// component's complete data set.
+		};
+
+		typedef std::map<u32, ComponentEntry>	EntityList;
+
+		//////////////////////////////////////////////////////////////////////////
+
+		Component(core::Core *pCore, ComponentManager *pManager);
+
+		//////////////////////////////////////////////////////////////////////////
+
+		virtual ComponentData *createData(const Entity &entity) { return NULL; }
+
+		void addEntity(const Entity &entity);
+		void removeEntity(const Entity &entity);
+
+		virtual Process *run(u32 job, double delta);
+			
+		virtual void start(double delta) = 0;
+		virtual bool step(double delta) = 0;
 
 	protected:
-		EntityList	m_entities;
+		ComponentManager *	m_pManager;
+		EntityList			m_entities;
+		boost::shared_mutex	m_startMutex;
 	};
+
+	typedef boost::shared_ptr<Component> ComponentRef;
 }
 
 

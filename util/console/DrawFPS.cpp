@@ -25,7 +25,7 @@ DrawFPS::DrawFPS(core::Core *pCore)
 	m_pFontUtil = m_pCore->getDriver()->getUtil("2d.Font")->as<render::FontUtil>();
 
 	FTFontResource ftFont(m_pCore->getLoader(), "File::2d/fonts/debug.ttf", "fps");
-	ftFont->setSize(10, 128);
+	ftFont->setSize(14, 96);
 
 	m_font = GLFontResource(ftFont);
 	m_font.load();
@@ -49,52 +49,28 @@ void DrawFPS::render(double delta)
 	}
 
 	glPushAttrib(GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_ENABLE_BIT); 
+	glDisable(GL_DEPTH_TEST);
 
-	GLint viewportRect[4];
-	glGetIntegerv(GL_VIEWPORT, viewportRect);
+	GLint rec[4];
+	glGetIntegerv(GL_VIEWPORT, rec);
+
 	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(	viewportRect[0], viewportRect[2],
-				viewportRect[1], viewportRect[3]);
-
+	glOrtho(0.0f, rec[2], rec[3], 0.0f, -1, 1);
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glTranslatef(10.0f, 10.0f, 0.0f);
-	glBegin(GL_TRIANGLES);
-	glVertex3f( 0.0f, 5.0f, 0.0f);
-	glVertex3f(-5.0f,-5.0f, 0.0f);
-	glVertex3f( 5.0f,-5.0f, 0.0f);
-	glEnd();
 
 	ResourceCache *pCache = m_pCore->getLoader()->getCache();
 	if (pCache->isLoading())
 	{
 		glColor3f(1.0f, 1.0f, 1.0f);
-		m_pFontUtil->printf(math::Vector2f(800, 10), "Loading... %3.1f%%", pCache->getProgress() * 100);
+		m_pFontUtil->printf(math::Vector2f(getContext()->getWindow()->getSize().x - 150, 10), "Loading... %3.1f%%", pCache->getProgress() * 100);
 	}
-
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glBegin(GL_TRIANGLES);
-	glVertex3f( 0.0f, 5.0f, 0.0f);
-	glVertex3f(-5.0f,-5.0f, 0.0f);
-	glVertex3f( 5.0f,-5.0f, 0.0f);
-	glEnd();
 
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glLoadIdentity();
 	m_pFontUtil->printf(math::Vector2f(10, 10), "%04.2f FPS", getFPS());
 
-// 	glColor3f(0.0f, 0.0f, 1.0f);
-// 	glBegin(GL_TRIANGLES);
-// 	glVertex3f( 0.0f, 5.0f, 0.0f);
-// 	glVertex3f(-5.0f,-5.0f, 0.0f);
-// 	glVertex3f( 5.0f,-5.0f, 0.0f);
-// 	glEnd();
-
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
 	glPopAttrib();
 }

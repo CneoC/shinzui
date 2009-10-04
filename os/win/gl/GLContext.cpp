@@ -133,8 +133,18 @@ bool GLContext::link(ContextBase *pOther)
 	return wglShareLists(m_hRC, static_cast<GLContext *>(pOther)->getHRC()) == TRUE;
 }
 
+void GLContext::update()
+{
+	if (m_flags[FLAG_RESIZED])
+	{
+		m_flags[FLAG_RESIZED] = false;
+		resize(m_pWindow->getSize());
+	}
+}
+
 bool GLContext::resize(const math::Vector2i &size)
 {
+	LOG_INFO(LOG_GET_ROOT, " resolution " << size.x << "x" << size.y);
 	glViewport(0, 0, size.x, size.y);
 
 	glMatrixMode(GL_PROJECTION);
