@@ -22,6 +22,8 @@ namespace core
 	class Process;
 	class Core;
 
+	typedef std::pair<u32, Process *>	CoreJob;
+
 	/**
 	* Core thread class which is used by Core to run a Process.
 	*/
@@ -37,9 +39,7 @@ namespace core
 		CoreThread(Core *pCore, u32 id)
 			: m_pCore(pCore)
 			, m_id(id)
-			, m_pProcess(NULL)
-			, m_load(0)
-			, m_active(false)
+			, m_job(0, NULL)
 		{
 		}
 
@@ -49,16 +49,13 @@ namespace core
 
 		u32 getId() const							{ return m_id; }
 
-		void setProcess(Process *pProcess)			{ m_pProcess = pProcess; }
-		Process *getProcess() const					{ return m_pProcess; }
+		void setJob(const CoreJob &job)				{ m_job = job; }
+		const CoreJob &getJob() const				{ return m_job; }
 
 		boost::mutex &getProcessMutex()				{ return m_mutex; }
 		boost::condition_variable &getCondition()	{ return m_condition; }
 
-		float getLoad() const						{ return m_load; }
-		void setLoad(float load)					{ m_load = load; }
-
-		bool isActive() const						{ return m_active; }
+		bool isWorking() const						{ return m_job.second != NULL; }
 
 	protected:
 		Core *	m_pCore;		// parent core class.
@@ -66,9 +63,8 @@ namespace core
 
 		boost::condition_variable	m_condition;
 		boost::mutex				m_mutex;
-		Process *					m_pProcess;
-		float						m_load;
-		volatile bool				m_active;
+		
+		CoreJob						m_job;
 	};
 
 	/**
@@ -132,8 +128,10 @@ namespace core
 
 		/**
 		* Gets the next process scheduled to run for a specific thread identifier.
+		* @param threadId	The thread to get the next process for.
+		* @return a Job pair with job id and Process pointer.
 		*/
-		Process *getNextProcess(u32 threadId);
+		CoreJob getNextJob(u32 threadId);
 
 		/**
 		* Adds a process to the execution list.
@@ -148,6 +146,13 @@ namespace core
 		void removeProcess(Process *pProcess);
 
 		/**
+		 * Runs a single process job, this function is called from CoreThreads as well!
+		 */
+		void runJob(const CoreJob &job);
+
+		//////////////////////////////////////////////////////////////////////////
+
+		/**
 		* Returns the elapsed time since the core system started.
 		* @return elapsed time in seconds.
 		*/
@@ -159,6 +164,9 @@ namespace core
 
 		//! Gets if the core is still running.
 		bool isRunning() const							{ return m_running; }
+
+		//! Gets if the core process is currently working.
+		const CoreJob &getJob() const				{ return m_job; }
 
 		//! Gets the current resource loader.
 		ResourceLoader *getLoader() const				{ return m_pLoader; }
@@ -175,12 +183,15 @@ namespace core
 
 	protected:
 		os::Time				m_startTime;			// start time of the core system.
+
 		bool					m_running;				// is the core still running.
 
 		ThreadList				m_threads;				// pool of active core threads.
 
 		boost::shared_mutex		m_processesMutex;		// mutex used to lock list of processes.
 		boost::shared_mutex		m_waitingProcessesMutex;// mutex used to lock list of processes.
+
+		CoreJob					m_job;					// current job the core process is running.
 
 		ProcessList				m_processes;			// list of processes.
 		ProcessList				m_waitingProcesses;		// list of waiting processes.

@@ -20,6 +20,7 @@ public:
 		, m_program(0)
 	{
 		getType() += getName();
+		m_flags[FLAG_REQUIRE_CONTEXT] = true;
 	}
 
 	virtual void bind()		{ glUseProgram(m_program); }

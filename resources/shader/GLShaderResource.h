@@ -28,6 +28,7 @@ public:
 		, m_shader(0)
 	{
 		getType() += getName();
+		m_flags[FLAG_REQUIRE_CONTEXT] = true;
 	}
 
 	void setShaderType(ShaderType type)	{ m_shaderType = type; }

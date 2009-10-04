@@ -4,15 +4,17 @@ using namespace core;
 
 //////////////////////////////////////////////////////////////////////////
 
-Process::Process(core::Core *pCore, u32 id, u32 targetThreadMask)
+Process::Process(core::Core *pCore, u32 id, u32 threadMask, u32 jobThreadMask)
 	: m_pCore(pCore)
 	, m_id(id)
-	, m_targetThreadMask(targetThreadMask)
+	, m_threadMask(threadMask)
+	, m_jobThreadMask(jobThreadMask)
 	, m_frameDelay(0)
 	, m_lastRunTime(0)
 	, m_jobs(1)
 	, m_activeJobs(0)
 	, m_finishedJobs(0)
+	, m_color(0.8, 0.9, 1.0)
 {
 }
 

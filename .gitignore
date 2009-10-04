@@ -1,5 +1,7 @@
 Debug/
+Debug UnitTest/
 Release/
 engine.suo
 engine.ncb
 engine.vcproj.*
+*.log

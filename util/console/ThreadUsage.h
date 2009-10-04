@@ -6,6 +6,7 @@
 #include "render/Renderer.h"
 
 #include "core/Core.h"
+#include "core/Process.h"
 #include "os/current/Time.h"
 
 namespace console
@@ -14,52 +15,71 @@ namespace console
 		: public os::Thread
 	{
 	public:
+		struct Activity
+		{
+			double			m_start;
+			double			m_end;
+			core::Process *	m_pProcess;
+		};
+
 		struct ActivityInfo
 		{
-			typedef std::list<double>		TimeList;
+			typedef std::list<Activity>		ActivityList;
 
-			ActivityInfo()
-				: m_firstActive(false)
-				, m_lastActive(false)
-			{}
-
-			boost::mutex	m_mutex;
-			bool			m_firstActive;
-			bool			m_lastActive;
-			TimeList		m_times;
+			Activity			m_current;
+			ActivityList		m_list;
+			boost::shared_mutex	m_mutex;
 		};
 
 		typedef std::vector<ActivityInfo>	ThreadList;
 
-		ThreadUsageInfo(core::Core *pCore, double duration = 1)
+		ThreadUsageInfo(core::Core *pCore, double show = 0.5, double keep = 3)
 			: m_pCore(pCore)
-			, m_duration(duration)
+			, m_showDuration(show)
+			, m_keepDuration(keep)
+			, m_threadCount(1 + m_pCore->getThreadCount())
 		{
-			setPriority(PRIORITY_ABOVE_NORMAL);
-			m_threads = new ActivityInfo[m_pCore->getThreadCount()];
+			m_threads = new ActivityInfo[m_threadCount];
+			for (u32 i = 0; i < m_threadCount; i++)
+			{
+				m_threads[i].m_current.m_pProcess = NULL;
+				m_threads[i].m_current.m_start = 0;
+				m_threads[i].m_current.m_end = 0;
+			}
 		}
 
 		virtual bool run()
 		{
-			double t = m_pCore->getElapsedTime();
+			double t = os::Time(os::Time::NOW).getSeconds();
 
-			for (u32 i = 0; i < m_pCore->getThreadCount(); i++)
+			for (u32 i = 0; i < m_threadCount; i++)
 			{
-				core::CoreThread *pThread = m_pCore->getThread(i);
-				bool active = pThread->isActive();
+				core::Process *pActive;
+				if (i == 0)
+					pActive = m_pCore->getJob().second;
+				else
+					pActive = m_pCore->getThread(i - 1)->getJob().second;
 
-				ActivityInfo &info = m_threads[i];
-				if (info.m_lastActive != active)
 				{
-					info.m_lastActive = active;
-					info.m_times.push_back(t);
-				}
+					ActivityInfo &info = m_threads[i];
+					boost::lock_guard<boost::shared_mutex> lock(info.m_mutex);
+					if (pActive != info.m_current.m_pProcess)
+					{
+						if (info.m_current.m_pProcess)
+						{
+							info.m_current.m_end = t;
+							info.m_list.push_front(info.m_current);
+						}
 
-				if (t - info.m_times.front() > m_duration)
-				{
-					boost::lock_guard<boost::mutex> lock(info.m_mutex);
-					info.m_times.pop_front();
-					info.m_firstActive = !info.m_firstActive;
+						info.m_current.m_pProcess = pActive;
+						info.m_current.m_start	= t;
+					}
+
+ 					while (	!info.m_list.empty() &&
+							(t - info.m_list.back().m_end) > m_keepDuration)
+					{
+						info.m_list.pop_back();
+					}
 				}
 			}
 
@@ -71,11 +91,15 @@ namespace console
 			return m_threads[i];
 		}
 
-		double getDuration() const	{ return m_duration; }
+		double getShowDuration() const	{ return m_showDuration; }
+		double getKeepDuration() const	{ return m_keepDuration; }
+		u32 getThreadCount() const		{ return m_threadCount; }
 
 	protected:
 		core::Core *	m_pCore;
-		double			m_duration;
+		double			m_showDuration;
+		double			m_keepDuration;
+		u32				m_threadCount;
 		ActivityInfo *	m_threads;
 	};
 

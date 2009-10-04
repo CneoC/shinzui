@@ -17,7 +17,7 @@ namespace world
 
 		virtual void update(EntityId id, EntityData *pData, double delta) = 0;
 
-		virtual core::Process *run(double delta)
+		virtual core::Process *run(u32 job, double delta)
 		{
 			EntityList::iterator entity;
 			for (entity = m_entities.begin(); entity != m_entities.end(); ++entity)

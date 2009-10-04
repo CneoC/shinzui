@@ -19,6 +19,8 @@ void Console::render(double delta)
 {
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
 
+	glPushAttrib(GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_ENABLE_BIT); 
+
 	GLint viewportRect[4];
 	glGetIntegerv(GL_VIEWPORT, viewportRect);
 	glMatrixMode(GL_PROJECTION);
@@ -40,7 +42,14 @@ void Console::render(double delta)
 	glVertex3f( 5.0f,-5.0f, 0.0f);
 	glEnd();
 
-	glPushAttrib(GL_TRANSFORM_BIT);
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glTranslatef(10.0f, 10.0f, 0.0f);
+	glBegin(GL_TRIANGLES);
+	glVertex3f( 0.0f, 5.0f, 0.0f);
+	glVertex3f(-5.0f,-5.0f, 0.0f);
+	glVertex3f( 5.0f,-5.0f, 0.0f);
+	glEnd();
+
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glPopAttrib();

@@ -19,6 +19,7 @@ public:
 		, m_depthFbo(0)
 	{
 		getType() += getName();
+		m_flags[FLAG_REQUIRE_CONTEXT] = true;
 	}
 
 	void setFBO(GLuint fbo)			{ m_fbo = fbo; }

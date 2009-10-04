@@ -18,7 +18,7 @@ namespace test
 		{
 		}
 
-		virtual Process *run(double delta)
+		virtual Process *run(u32 job, double delta)
 		{
 			logging::Log *log = LOG_GET_ROOT;
 			//LOG_WARN(log, "TEST: " << getId() << " from " << boost::this_thread::get_id());

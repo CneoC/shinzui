@@ -167,7 +167,7 @@ void Window::hide()
 	ShowWindow(m_hWnd, SW_HIDE);
 }
 
-core::Process *Window::run(double delta)
+core::Process *Window::run(u32 job, double delta)
 {
 	MSG msg;
 

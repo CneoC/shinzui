@@ -43,7 +43,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include;../libraries/FreeImage/include;../libraries/FreeImage/Wrapper/FreeImagePlus/include"
-				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
+				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -176,7 +176,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include;../libraries/FreeImage/include;../libraries/FreeImage/Wrapper/FreeImagePlus/include"
-				PreprocessorDefinitions="ENABLE_UNIT_TEST;GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
+				PreprocessorDefinitions="ENABLE_UNIT_TEST;GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -444,11 +444,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\io\FSFile.h"
+				RelativePath=".\core\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\core\io\FSFile.h"
+				RelativePath=".\os\win\io\FSFile.h"
 				>
 			</File>
 			<File
@@ -464,11 +464,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\gl\GLContext.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLContext.h"
+				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -680,11 +680,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Time.h"
+				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Time.h"
+				RelativePath=".\os\current\Time.h"
 				>
 			</File>
 			<File
@@ -704,11 +704,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Window.h"
+				RelativePath=".\os\win\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Window.h"
+				RelativePath=".\os\current\Window.h"
 				>
 			</File>
 			<File

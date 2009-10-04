@@ -35,13 +35,14 @@ public:
 	 * Constructs a resource cache process.
 	 * @param pCore				Core class.
 	 * @param id				Process identifier for lookups.
-	 * @param targetThreadId	Target thread id to run this process on (THREAD_ID_NORMAL_MASK for any thread)
+	 * @param threadMask	Target thread id to run this process on (THREAD_ID_NORMAL_MASK for any thread)
 	 */
-	ResourceCache(core::Core *pCore, int id = 0, int targetThreadId = core::Core::THREAD_ID_LOAD_BIT)
-		: Process(pCore, id, targetThreadId)
+	ResourceCache(core::Core *pCore, int id = 0)
+		: Process(pCore, id, core::Core::THREAD_ID_LOAD_BIT, core::Core::THREAD_ID_NORMAL_MASK)
 		, m_log(LOG_GET("Resources.Cache"))
 		, m_maxLoadingCount(0)
 	{
+		m_color = math::Color3f(0, 1, 0);
 	}
 
 	/**
@@ -97,6 +98,9 @@ public:
 			Entry &entry = m_resources[hash];
 			entry.resources.push_back(resource);
 		}
+
+		// Maybe there's something to load now
+		setFrameDelay(0);
 	}
 
 	void update()
@@ -121,7 +125,7 @@ public:
 					if (resource->isUnloading()) // TODO: Time out if unused (and NO_TIMEOUT flag not set)
 					{
 						resource->setUnload(false);
-						m_unload.push_front(resource);
+						m_unload.push_back(resource);
 						i->second.resources.erase(prev);
 						break;
 					}
@@ -130,7 +134,7 @@ public:
 					else if (resource->isLoading() && !resource->isLoaded())
 					{
 						resource->setLoad(false);
-						m_load.push_front(resource);
+						m_load.push_back(resource);
 						loadAdded = true;
 					}
 				}
@@ -147,32 +151,45 @@ public:
 		m_resources.clear();
 	}
 
-	void load()
+	void load(bool coreJob)
 	{
-		// If there is a resource to load
-		if (!m_load.empty())
+		// Resource we want to load
+		Resource loadRes;
 		{
-			// Resource we want to load
-			Resource loadRes;
+			// Shared lock on m_resources
+			boost::upgrade_lock<boost::shared_mutex> lock(m_resourcesMutex);
+
+			// If there is a resource to load
+			if (!m_load.empty())
 			{
-				// Shared lock on m_resources
-				boost::shared_lock<boost::shared_mutex> lock(m_resourcesMutex);
-
 				// Find a resource that needs loading
-				loadRes = m_load.back();
-				m_load.pop_back();
-
-				u32 loads = m_load.size();
-				m_maxLoadingCount = loads? max(m_maxLoadingCount, loads): 0;
+				ResourceList::iterator i = m_load.begin();
+				while (i != m_load.end())
+				{
+					// Only load a resource in the core job if we have one job or
+					// if the resource requires the loading context.
+					if (getJobs() == 1 || !coreJob || (*i)->requiresContext())
+					{
+						boost::upgrade_to_unique_lock<boost::shared_mutex> uniqueLock(lock);
+						loadRes = *i;
+						m_load.erase(i);
+						break;
+					}
+					++i;
+				}
 			}
-			// Load one of the resources
-			// This is done separately because of the m_resourcesMutex lock 
-			// since add() will likely get called from inside the load.
-			loadRes.load(0);
 		}
+
+		u32 loads = m_load.size();
+		m_maxLoadingCount = loads? max(m_maxLoadingCount, loads): 0;
+
+		// Load one of the resources
+		// This is done separately because of the m_resourcesMutex lock 
+		// since add() will likely get called from inside the load.
+		loadRes.load(0);
 	}
 
-	void unload()
+	void unload(bool coreJob)
 	{
 		// If there is a resource to unload
 		if (!m_unload.empty())
@@ -197,14 +214,23 @@ public:
 		m_pCore->getDriver()->getLoaderContext()->bind();
 	}
 
-	virtual core::Process *run(double delta)
+	virtual core::Process *run(u32 job, double delta)
 	{
+		bool coreJob = job == 0;
+
 		// Only update on first job
-		if (getFinishedJobs() == 0)
+		if (coreJob)
+		{
 			update();
 
-		unload();
-		load();
+			if (m_load.empty())
+				setFrameDelay(1);
+			else
+				setFrameDelay(0);
+		}
+
+		unload(coreJob);
+		load(coreJob);
 
 		return this;
 	}

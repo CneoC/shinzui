@@ -5,6 +5,8 @@
 
 #include "Core.h"
 
+#include "math/Color3.h"
+
 #include <list>
 
 namespace core
@@ -21,13 +23,15 @@ namespace core
 		 * Constructs a core process.
 		 * @param pCore			core class.
 		 * @param id				process identifier for lookups.
-		 * @param targetThreadId	target thread id to run this process on (THREAD_ID_NONE for any thread)
+		 * @param threadMask	target thread id to run this process on (THREAD_ID_NONE for any thread)
 		 */
-		Process(core::Core *pCore, u32 id = 0, u32 targetThreadMask = core::Core::THREAD_ID_NORMAL_MASK);
+		Process(core::Core *pCore, u32 id = 0,
+				u32 threadMask = core::Core::THREAD_ID_NORMAL_MASK,
+				u32 jobThreadMask = core::Core::THREAD_ID_NORMAL_MASK);
 
 		/**
 		 * Initializes the process.
-		 * this function is called from a thread in the getTargetThreadMask()
+		 * this function is called from a thread in the getThreadMask()
 		 *  for thread specific initialization.
 		 */
 		virtual void init() {}
@@ -36,7 +40,7 @@ namespace core
 		 * Runs the process.
 		 * @return if the process is added to the run queue after execution.
 		 */
-		virtual Process *run(double delta) = 0;
+		virtual Process *run(u32 job, double delta) = 0;
 
 		/**
 		 * Check if other processes this process depends on have finished their execution.
@@ -51,10 +55,15 @@ namespace core
 		//! Get internal process identifier.
 		u32 getId() const						{ return m_id; }
 
-		//! Gets the target thread the Process needs to be run on.
-		u32 getTargetThreadMask() const			{ return m_targetThreadMask; }
-		//! Sets the target thread the Process needs to be run on.
-		void setTargetThreadMask(u32 mask)		{ m_targetThreadMask = mask; }
+		//! Gets the thread the Process needs to be run on.
+		u32 getThreadMask() const				{ return m_threadMask; }
+		//! Sets the thread the Process needs to be run on.
+		void setThreadMask(u32 mask)			{ m_threadMask = mask; }
+
+		//! Gets the thread the jobs for this Process want to run on.
+		u32 getJobThreadMask() const			{ return m_jobThreadMask; }
+		//! Sets the thread the jobs for this Process want to run on.
+		void setJobThreadMask(u32 mask)			{ m_jobThreadMask = mask; }
 
 		//! Gets the amount of jobs this process will allocate for each run.
 		u16 getJobs() const						{ return m_jobs; }
@@ -62,7 +71,7 @@ namespace core
 		void setJobs(u16 jobs)					{ m_jobs = jobs; }
 
 		//! Gets the amount of active jobs.
-		u16 getActiveJobs()
+		u16 getActiveJobs() const
 		{
 			boost::shared_lock<boost::shared_mutex> lock(m_jobMutex);
 			return m_activeJobs;
@@ -75,7 +84,7 @@ namespace core
 		}
 		
 		//! Gets the amount of finished jobs.
-		u16 getFinishedJobs()
+		u16 getFinishedJobs() const
 		{ 
 			boost::shared_lock<boost::shared_mutex> lock(m_jobMutex);
 			return m_finishedJobs; 
@@ -86,6 +95,9 @@ namespace core
 			boost::lock_guard<boost::shared_mutex> lock(m_jobMutex);
 			return ++m_finishedJobs;
 		}
+
+		//! Checks if this job is the core (first) job for this process.
+		bool isCoreJob() const	{ return getFinishedJobs() == 0; }
 		
 		//! Resets the amounts of activated and finished jobs.
 		void resetJobs()
@@ -116,13 +128,17 @@ namespace core
 		//! Forces the process ready (ignoring dependencies and frame delay).
 		void forceStart()						{ m_forceStart = true; }
 
+		//! Gets process identifying color.
+		const math::Color3f &getColor() const	{ return m_color; }
+
 	protected:
 		core::Core *			m_pCore;
 
 		u32						m_id;
-		u32						m_targetThreadMask;
+		u32						m_threadMask;
+		u32						m_jobThreadMask;
 
-		boost::shared_mutex		m_jobMutex;
+		mutable boost::shared_mutex	m_jobMutex;
 		u16						m_jobs;
 		u16						m_activeJobs;
 		u16						m_finishedJobs;
@@ -134,6 +150,8 @@ namespace core
 
 		bool					m_forceStart;
 		DependencyProcessList	m_dependencies;
+
+		math::Color3f			m_color;
 	};
 }
 

@@ -13,10 +13,9 @@ namespace os
 	{
 	public:
 		// Initial value
-		enum NoneValue	{ NONE };
 		enum NowValue	{ NOW };
 
-		Time(NoneValue = NONE)
+		Time()
 		{
 			m_value.QuadPart = 0;
 			m_frequency.QuadPart = 0;
@@ -29,32 +28,48 @@ namespace os
 		}
 
 		Time(const Time &copy)
-			: m_value(copy.m_value)
-			, m_frequency(copy.m_frequency)
 		{
+			m_value.QuadPart = copy.m_value.QuadPart;
+			m_frequency.QuadPart = copy.m_frequency.QuadPart;
 		}
 
-		double getSeconds()
+		//////////////////////////////////////////////////////////////////////////
+
+		double getSeconds() const
 		{
 			assert(m_frequency.QuadPart > 0);
 			return (double)m_value.QuadPart / (double)m_frequency.QuadPart;
 		}
 
-		Time operator - (const Time &other)
+		//////////////////////////////////////////////////////////////////////////
+
+		Time &operator -= (const Time &other)
 		{
-			Time result;
-			result.m_value.QuadPart = m_value.QuadPart - other.m_value.QuadPart;
-			result.m_frequency = m_frequency;
+			m_value.QuadPart = m_value.QuadPart - other.m_value.QuadPart;
+			return *this;
+		}
+
+		Time operator - (const Time &other) const
+		{
+			Time result(*this);
+			result -= other;
 			return result;
 		}
 
-		Time operator + (const Time &other)
+		Time &operator += (const Time &other)
 		{
-			Time result;
-			result.m_value.QuadPart = m_value.QuadPart + other.m_value.QuadPart;
-			result.m_frequency = m_frequency;
+			m_value.QuadPart = m_value.QuadPart + other.m_value.QuadPart;
+			return *this;
+		}
+
+		Time operator + (const Time &other) const
+		{
+			Time result(*this);
+			result += other;
 			return result;
 		}
+
+		//////////////////////////////////////////////////////////////////////////
 
 		bool operator == (const Time &other) const
 		{

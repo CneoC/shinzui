@@ -9,6 +9,7 @@ Core::Core(s32 threadCount)
 	: m_startTime(os::Time::NOW)
 	, m_processRunId(0)
 	, m_log(LOG_GET("Core"))
+	, m_job(0, NULL)
 {
 
 	// Determine thread count automatically
@@ -52,20 +53,10 @@ void Core::run()
 	while (isRunning())
 	{
 		// Run a core process if one is available
-		Process *pProcess = getNextProcess(THREAD_ID_CORE_BIT);
-		if (pProcess)
-		{
-			double elapsedTime	= getElapsedTime();
-			double delta		= elapsedTime - pProcess->getLastRunTime();
-
-			if (pProcess->getLastRunTime() == 0)
-				pProcess->init();
-			pProcess->setLastRunTime(elapsedTime);
-			Process *pAddProcess = pProcess->run(delta);
-			if (pAddProcess)
-				addProcess(pAddProcess);
-		}
-
+		m_job = getNextJob(THREAD_ID_CORE_BIT);
+		if (m_job.second)
+			runJob(m_job);
+		
 		// Copy waiting processes that have passed their frame delay to the main processes list.		
 		{
 			double elapsed = getElapsedTime();
@@ -74,21 +65,25 @@ void Core::run()
 			// Don't bother adding more processes than we can handle
 			u32 max = m_threads.size() - m_processes.size();
 
+			// For all waiting processes
 			ProcessList::iterator p = m_waitingProcesses.begin();
 			while (p != m_waitingProcesses.end() && max > 0)
 			{
-				pProcess = *p;
+				Process *pProcess = *p;
+
+				// If the process wait is over
 				double delta = elapsed - pProcess->getLastRunTime();
 				if (delta >= pProcess->getFrameDelay())
 				{
 					boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
 
-					// Reset job amounts
+					// Reset job counters
 					pProcess->resetJobs();
-					m_processes.push_back(pProcess);
 
-					// No longer in waiting list
+					// Change from waiting to active list
+					m_processes.push_back(pProcess);
 					p = m_waitingProcesses.erase(p);
+
 					--max;
 				}
 				else
@@ -103,16 +98,17 @@ void Core::run()
 		for (iter = m_threads.begin(); iter != m_threads.end(); ++iter)
 		{
 			CoreThread *pThread = *iter;
-			if (!pThread->getProcess())
+			if (!pThread->getJob().second)
 			{
-				pProcess = getNextProcess(pThread->getId());
-				if (pProcess)
+				CoreJob job = getNextJob(pThread->getId());
+				if (job.second)
 				{
 					{
 						boost::lock_guard<boost::mutex> lock(pThread->getProcessMutex());
-						pThread->setProcess(pProcess);
+						pThread->setJob(job);
 					}
-					pThread->getCondition().notify_all();
+					// Notify the waiting thread it has a job
+					pThread->getCondition().notify_one();
 				}
 			}
 		}
@@ -122,45 +118,50 @@ void Core::run()
 //////////////////////////////////////////////////////////////////////////
 
 // TODO: optimize
-Process *Core::getNextProcess(u32 threadMask)
+CoreJob Core::getNextJob(u32 threadMask)
 {
 	boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
 
 	double elapsed = getElapsedTime();
 
+	// For all active processes
 	ProcessList::iterator p = m_processes.begin();
 	while (p != m_processes.end())
 	{
 		Process *pProcess = *p;
 
 		// Do target thread id's match?
-		if (pProcess->getTargetThreadMask() & threadMask)
+		u32 processThreadMask = pProcess->getActiveJobs() == 0? pProcess->getThreadMask(): pProcess->getJobThreadMask();
+		if (processThreadMask & threadMask)
 		{
-			double delta = elapsed - pProcess->getLastRunTime();
-			if (delta > pProcess->getFrameDelay() && pProcess->isDependencyDone())
+			// Are it's dependencies done, getFrameDelay is already checked in Core thread
+			if (pProcess->isDependencyDone())
 			{
 				if (LOG_CHECK(m_log, LEVEL_WARN))
 				{
 					double diff = elapsed - pProcess->getNextRunTime();
 					if (diff > 0.1) LOG_WARN(m_log, "Process expected execution time exceeded by: " << diff);
 				}
-				// If all requested jobs have been activated, remove te process from the active list.
+
+				// Increase job count for the process
 				u16 jobs = pProcess->incActiveJobs();
 				if (jobs == 1)
 					pProcess->setLastRunId(m_processRunId++);
 
+				// If all requested jobs have been activated, remove the process from the active list.
 				if (jobs >= pProcess->getJobs())
 				{
 					if (jobs > pProcess->getJobs())
 						LOG_WARN(m_log, LOG_FMT("More active jobs (%i) than expected (%i) for: %X", jobs % pProcess->getJobs() % pProcess));
 					m_processes.erase(p);
 				}
-				return pProcess;
+
+				return CoreJob(jobs - 1, pProcess);
 			}
 		}
 		++p;
 	}
-	return NULL;
+	return CoreJob(0, NULL);
 }
 
 // TODO: optimization point - threading
@@ -230,40 +231,42 @@ void Core::removeProcess(Process *pProcess)
 	}
 }
 
+void Core::runJob(const CoreJob &job)
+{
+	double elapsedTime	= getElapsedTime();
+	double delta		= elapsedTime - job.second->getLastRunTime();
+
+	// Initialize process on first run
+	if (job.second->getLastRunTime() == 0)
+		job.second->init();
+	job.second->setLastRunTime(elapsedTime);
+	Process *pAdd = job.second->run(job.first, delta);
+
+	// If we have a new process to add, and all process jobs have finished (this being the last one)
+	u16 jobs = job.second->incFinishedJobs();
+	if (pAdd && jobs >= job.second->getJobs())
+	{
+		if (jobs > job.second->getJobs())
+			LOG_WARN(getLog(), LOG_FMT("More finished jobs (%i) than expected (%i) for: %X", jobs % job.second->getJobs() % job.second));
+		addProcess(pAdd);
+	}
+
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 bool CoreThread::run()
 {
-	m_active = false;
 	boost::unique_lock<boost::mutex> lock(m_mutex);
-	while (!m_pProcess && m_pCore->isRunning())
+	while (!m_job.second && m_pCore->isRunning())
 	{
 		m_condition.wait(lock);
 	}
 
-	if (m_pProcess)
+	if (m_job.second != NULL)
 	{
-		m_active = true;
-
-		double elapsedTime	= m_pCore->getElapsedTime();
-		double delta		= elapsedTime - m_pProcess->getLastRunTime();
-
-		// Initialize process on first run
-		if (m_pProcess->getLastRunTime() == 0)
-			m_pProcess->init();
-		m_pProcess->setLastRunTime(elapsedTime);
-		Process *pAdd = m_pProcess->run(delta);
-
-		// If we have a new process to add, and all process jobs have finished (this being the last one)
-		u16 jobs = m_pProcess->incFinishedJobs();
-		if (pAdd && jobs >= m_pProcess->getJobs())
-		{
-			if (jobs > m_pProcess->getJobs())
-				LOG_WARN(m_pCore->getLog(), LOG_FMT("More finished jobs (%i) than expected (%i) for: %X", jobs % m_pProcess->getJobs() % m_pProcess));
-			m_pCore->addProcess(pAdd);
-		}
-
-		m_pProcess = NULL;
+		m_pCore->runJob(m_job);
+		m_job = CoreJob(0, NULL);
 	}
 
 	return m_pCore->isRunning();

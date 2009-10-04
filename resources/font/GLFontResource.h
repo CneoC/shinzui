@@ -17,13 +17,14 @@ public:
 		: FontData(pData)
 	{
 		getType() += getName();
+		m_flags[FLAG_REQUIRE_CONTEXT] = true;
 	}
 
 	void setTextures(GLuint *pTextures)	{ m_pTextures = pTextures; }
 	GLuint *getTextures()				{ return m_pTextures; }
 	GLuint getTexture(char c)			{ return m_pTextures[c]; }
 
-	void setDisplayLists(GLuint lists)		{  m_displayLists = lists; }
+	void setDisplayLists(GLuint lists)	{  m_displayLists = lists; }
 	GLuint getDisplayLists() const		{ return m_displayLists; }
 
 protected:

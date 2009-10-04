@@ -22,6 +22,8 @@ void ThreadUsage::render(double delta)
 {
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);
 
+	glPushAttrib(GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_ENABLE_BIT); 
+
 	GLint viewportRect[4];
 	glGetIntegerv(GL_VIEWPORT, viewportRect);
 	glMatrixMode(GL_PROJECTION);
@@ -33,43 +35,45 @@ void ThreadUsage::render(double delta)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(10.0f, 700.0f, 0.0f);
+	glTranslatef(10.0f, 760.0f, 0.0f);
 
-	double width = 500;
+	float width = 1000;
 	for (u32 i = 0; i < m_pCore->getThreadCount(); i++)
 	{
 		ThreadUsageInfo::ActivityInfo &info = m_info.getActivityInfo(i);
-		boost::lock_guard<boost::mutex> lock(info.m_mutex);
+		boost::shared_lock<boost::shared_mutex> lock(info.m_mutex);
 
-		double prevOffset = 0;
+		double start = os::Time(os::Time::NOW).getSeconds();
+
 		glBegin(GL_QUADS);
-			bool active = info.m_firstActive;
-			ThreadUsageInfo::ActivityInfo::TimeList::const_iterator time;
-			for (time = info.m_times.begin(); time != info.m_times.end(); ++time)
+			glColor3f(0.4, 0.4, 0.4);
+			glVertex3f( 0,  1.0f, 0.0f);
+			glVertex3f( 0, -1.0f, 0.0f);
+			glVertex3f( width, -1.0f, 0.0f);
+			glVertex3f( width,  1.0f, 0.0f);
+
+			ThreadUsageInfo::ActivityInfo::ActivityList::const_iterator iter;
+			for (iter = info.m_list.begin(); iter != info.m_list.end(); ++iter)
 			{
-				if (active)
-					glColor3f(0.5f, 0.6f, 1.0f);
-				else
-					glColor3f(0.4f, 0.4f, 0.4f);
+				float startX	= width * (1 - ((start - iter->m_start) / m_info.getShowDuration()));
+				float endX		= width * (1 - ((start - iter->m_end) / m_info.getShowDuration()));
+				if (startX < 0)
+					startX = 0;
 
-				double diff = m_info.getDuration() - (m_pCore->getElapsedTime() - *time);
-				double offset = (diff / m_info.getDuration()) * width;
+				math::Color3f c = iter->m_pProcess->getColor();
+				glColor3f(c.r, c.g, c.b);
+				glVertex3f(startX,  1.0f, 0.0f);
+				glVertex3f(startX, -1.0f, 0.0f);
+				glVertex3f(endX, -1.0f, 0.0f);
+				glVertex3f(endX,  1.0f, 0.0f);
 
-				glVertex3f( prevOffset,  2.0f, 0.0f);
-				glVertex3f( prevOffset, -2.0f, 0.0f);
-				glVertex3f( offset, -2.0f, 0.0f);
-				glVertex3f( offset,  2.0f, 0.0f);
-
-				prevOffset = offset;
-
-				active = !active;
+				if (startX == 0)
+					break;
 			}
 		glEnd();
-		glTranslatef(0.0f, -5.0f, 0.0f);
-
+		glTranslatef(0.0f, -3.0f, 0.0f);
 	}
 
-	glPushAttrib(GL_TRANSFORM_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glPopAttrib();

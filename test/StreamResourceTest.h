@@ -56,9 +56,10 @@ public:
 			return true;
 
 		// Wait for it...
-		for (u32 i = 0; i < 100000; i++)
+		u32 count = 100000 * (1 + (rand() & (64-1)));
+		for (u32 i = 0; i < count; i++)
 		{
-			boost::this_thread::yield();
+			volatile int j = 0;
 		}
 		
 		res->setLoaded(true);

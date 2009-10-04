@@ -11,6 +11,7 @@ WindowBase::WindowBase(core::Core *pCore)
 	, m_bpp(0)
 {
 	setFrameDelay(0.1);
+	m_color = math::Color3f(0, 0, 1);
 }
 
 WindowBase::~WindowBase()

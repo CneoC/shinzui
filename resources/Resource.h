@@ -186,7 +186,8 @@ public:
 	{
 		if (!other || !*this)
 			return false;
-		return (*this)->getLoadPriority() < other->getLoadPriority();
+		// Higher priority is more important so should come earlier
+		return (*this)->getLoadPriority() > other->getLoadPriority();
 	}
 
 	T *operator -> ()				{ return m_pData; }
@@ -266,6 +267,7 @@ class ResourceData
 public:
 	enum Flags
 	{
+		FLAG_REQUIRE_CONTEXT,
 		FLAG_LOADED,
 		FLAG_LOAD,
 		FLAG_UNLOAD,
@@ -313,6 +315,9 @@ public:
 	bool isUnloading() const					{ return m_flags[FLAG_UNLOAD]; }
 	//! Mark resource for (async) unloading.
 	void setUnload(bool unload)					{ m_flags[FLAG_UNLOAD] = unload; }
+
+	//! Resource requires a context to be able to load
+	bool requiresContext() const				{ return m_flags[FLAG_REQUIRE_CONTEXT]; }
 
 	//! Gets the reference count for this resource data.
 	u32 getRefCount() const						{ return m_references; }

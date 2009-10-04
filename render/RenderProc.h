@@ -14,10 +14,12 @@ namespace render
 		: public core::Process
 	{
 	public:
-		RendererProc(core::Core *pCore, int id = 0, int targetThreadId = core::Core::THREAD_ID_MAIN_BIT)
-			: core::Process(pCore, id, targetThreadId)
+		RendererProc(core::Core *pCore, int id = 0, int threadMask = core::Core::THREAD_ID_MAIN_BIT)
+			: core::Process(pCore, id, threadMask)
 			, m_pRenderer(NULL)
-		{}
+		{
+			m_color = math::Color3f(1, 0, 0);
+		}
 
 	public:
 		virtual void init()
@@ -26,7 +28,7 @@ namespace render
 				m_pRenderer->init();
 		}
 
-		virtual core::Process *run(double delta)
+		virtual core::Process *run(u32 job, double delta)
 		{
 			if (m_pRenderer)
 				m_pRenderer->render(delta);

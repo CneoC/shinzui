@@ -18,6 +18,7 @@ public:
 		, m_texture(GL_NONE)
 	{
 		getType() += getName();
+		m_flags[FLAG_REQUIRE_CONTEXT] = true;
 	}
 
 	void setTexture(GLuint texture)	{ m_texture = texture; }

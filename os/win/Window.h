@@ -20,7 +20,7 @@ namespace os
 		Window(core::Core *pCore);
 		~Window();
 
-		virtual core::Process *run(double delta);
+		virtual core::Process *run(u32 job, double delta);
 
 		bool create();
 		bool destroy();

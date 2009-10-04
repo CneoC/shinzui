@@ -48,6 +48,8 @@ void DrawFPS::render(double delta)
 		m_frameCount = 0;
 	}
 
+	glPushAttrib(GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_ENABLE_BIT); 
+
 	GLint viewportRect[4];
 	glGetIntegerv(GL_VIEWPORT, viewportRect);
 	glMatrixMode(GL_PROJECTION);
@@ -59,10 +61,13 @@ void DrawFPS::render(double delta)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glLoadIdentity();
-
-	glColor3f(1.0f, 1.0f, 1.0f);
-	m_pFontUtil->printf(math::Vector2f(10, 10), "%04.2f FPS", getFPS());
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glTranslatef(10.0f, 10.0f, 0.0f);
+	glBegin(GL_TRIANGLES);
+	glVertex3f( 0.0f, 5.0f, 0.0f);
+	glVertex3f(-5.0f,-5.0f, 0.0f);
+	glVertex3f( 5.0f,-5.0f, 0.0f);
+	glEnd();
 
 	ResourceCache *pCache = m_pCore->getLoader()->getCache();
 	if (pCache->isLoading())
@@ -71,7 +76,24 @@ void DrawFPS::render(double delta)
 		m_pFontUtil->printf(math::Vector2f(800, 10), "Loading... %3.1f%%", pCache->getProgress() * 100);
 	}
 
-	glPushAttrib(GL_TRANSFORM_BIT);
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glBegin(GL_TRIANGLES);
+	glVertex3f( 0.0f, 5.0f, 0.0f);
+	glVertex3f(-5.0f,-5.0f, 0.0f);
+	glVertex3f( 5.0f,-5.0f, 0.0f);
+	glEnd();
+
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glLoadIdentity();
+	m_pFontUtil->printf(math::Vector2f(10, 10), "%04.2f FPS", getFPS());
+
+// 	glColor3f(0.0f, 0.0f, 1.0f);
+// 	glBegin(GL_TRIANGLES);
+// 	glVertex3f( 0.0f, 5.0f, 0.0f);
+// 	glVertex3f(-5.0f,-5.0f, 0.0f);
+// 	glVertex3f( 5.0f,-5.0f, 0.0f);
+// 	glEnd();
+
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glPopAttrib();
