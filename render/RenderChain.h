@@ -18,7 +18,7 @@ namespace render
 
 		//////////////////////////////////////////////////////////////////////////
 
-		RenderChain(Core *pCore)
+		RenderChain(core::Core *pCore)
 			: Renderer(pCore)
 		{}
 

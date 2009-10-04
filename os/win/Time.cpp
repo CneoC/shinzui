@@ -3,6 +3,4 @@
 
 #include "Time.h"
 
-
-
 #endif //_WIN32

@@ -13,11 +13,11 @@ namespace render
 		: public EndFrameBuffer
 	{
 	public:
-		static Renderer *create(Core *pCore)	{ return new GLEndFrameBuffer(pCore); }
+		static Renderer *create(core::Core *pCore)	{ return new GLEndFrameBuffer(pCore); }
 
 		//////////////////////////////////////////////////////////////////////////
 
-		GLEndFrameBuffer(Core *pCore);
+		GLEndFrameBuffer(core::Core *pCore);
 		~GLEndFrameBuffer();
 
 		virtual void render(double delta);

@@ -1,10 +1,10 @@
 #include "GLEndRenderer.h"
 
-#include "os/interface/ContextBase.h"
+#include "os/common//ContextBase.h"
 
 using namespace render;
 
-GLEndRenderer::GLEndRenderer(Core *pCore)
+GLEndRenderer::GLEndRenderer(core::Core *pCore)
 	: EndRenderer(pCore)
 {
 }

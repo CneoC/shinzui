@@ -10,10 +10,10 @@
 namespace test
 {
 	class LogTestProc
-		: public Process
+		: public core::Process
 	{
 	public:
-		LogTestProc(Core *pCore, int id = 0, int targetThread = Core::THREAD_ID_NORMAL_MASK)
+		LogTestProc(core::Core *pCore, int id = 0, int targetThread = core::Core::THREAD_ID_NORMAL_MASK)
 			: Process(pCore, id, targetThread)
 		{
 		}
@@ -25,6 +25,6 @@ namespace test
 			return this;
 		}
 	};
-} //namespace test
+}
 
 #endif //__TEST_LOGTESTPROC_H__

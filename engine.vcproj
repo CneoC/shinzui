@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				LinkLibraryDependencies="true"
+				LinkLibraryDependencies="false"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,7 +130,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				LinkLibraryDependencies="true"
+				LinkLibraryDependencies="false"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -143,6 +143,78 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug UnitTest|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include;../libraries/FreeImage/include;../libraries/FreeImage/Wrapper/FreeImagePlus/include"
+				PreprocessorDefinitions="ENABLE_UNIT_TEST;GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
+				MinimalRebuild="false"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="true"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="opengl32.lib glu32.lib"
+				AdditionalLibraryDirectories="../libraries/boost_1_40_0/lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -167,6 +239,10 @@
 			</File>
 			<File
 				RelativePath=".\util\console\DrawFPS.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\world\Entity.cpp"
 				>
 			</File>
 			<File
@@ -226,7 +302,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\scene\Scene.cpp"
+				RelativePath=".\world\Scene.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\test\testMain.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\console\ThreadUsage.cpp"
 				>
 			</File>
 			<File
@@ -242,7 +326,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\interface\WindowBase.cpp"
+				RelativePath=".\os\common\WindowBase.cpp"
 				>
 			</File>
 			<File
@@ -268,11 +352,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\world\components\Component.h"
+				>
+			</File>
+			<File
+				RelativePath=".\world\components\ComponentManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\util\console\Console.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\interface\ContextBase.h"
+				RelativePath=".\os\common\ContextBase.h"
 				>
 			</File>
 			<File
@@ -289,6 +381,14 @@
 			</File>
 			<File
 				RelativePath=".\render\core\EndRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\world\Entity.h"
+				>
+			</File>
+			<File
+				RelativePath=".\world\components\EntityData.h"
 				>
 			</File>
 			<File
@@ -364,11 +464,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLContext.h"
+				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\gl\GLContext.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -532,7 +632,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\scene\Scene.h"
+				RelativePath=".\world\Scene.h"
 				>
 			</File>
 			<File
@@ -568,11 +668,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\util\Thread.h"
+				RelativePath=".\os\current\Thread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\core\Time.h"
+				RelativePath=".\os\common\Thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\util\console\ThreadUsage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\os\current\Time.h"
 				>
 			</File>
 			<File
@@ -596,15 +704,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Window.h"
-				>
-			</File>
-			<File
 				RelativePath=".\os\current\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\interface\WindowBase.h"
+				RelativePath=".\os\win\Window.h"
+				>
+			</File>
+			<File
+				RelativePath=".\os\common\WindowBase.h"
 				>
 			</File>
 			<File

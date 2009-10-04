@@ -1,25 +1,28 @@
 #pragma once
 
-#ifndef __FS_FILE_H__
-#define __FS_FILE_H__
+#ifndef __CORE_FSFILE_H__
+#define __CORE_FSFILE_H__
 
 #include "File.h"
 
 #include <boost/filesystem/path.hpp>
 
-class FSFile
-	: public File
+namespace core
 {
-	using boost::filesystem::Path;
-
-	FSFile()
+	class FSFile
+		: public File
 	{
-	}
+		using boost::filesystem::Path;
 
-	FSFile(const Path &path)
-	{
-	}
+		FSFile()
+		{
+		}
 
-};
+		FSFile(const Path &path)
+		{
+		}
 
-#endif //__FS_FILE_H__
+	};
+}
+
+#endif //__CORE_FSFILE_H__

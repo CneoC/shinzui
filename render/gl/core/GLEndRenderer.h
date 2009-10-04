@@ -13,11 +13,11 @@ namespace render
 		public EndRenderer
 	{
 	public:
-		static Renderer *create(Core *pCore)	{ return new GLEndRenderer(pCore); }
+		static Renderer *create(core::Core *pCore)	{ return new GLEndRenderer(pCore); }
 
 		//////////////////////////////////////////////////////////////////////////
 
-		GLEndRenderer(Core *pCore);
+		GLEndRenderer(core::Core *pCore);
 		~GLEndRenderer();
 
 		virtual void render(double delta);

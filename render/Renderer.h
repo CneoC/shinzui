@@ -6,7 +6,7 @@
 #include "core/types.h"
 
 #include "render/RenderDriver.h"
-#include "os/interface/ContextBase.h"
+#include "os/common//ContextBase.h"
 
 namespace render
 {
@@ -17,7 +17,7 @@ namespace render
 	{
 	protected:
 		//! Don't allow external construction.
-		Renderer(Core *pCore)
+		Renderer(core::Core *pCore)
 			: m_pCore(pCore)
 		{}
 
@@ -41,11 +41,11 @@ namespace render
 
 	protected:
 		//! Get context.
-		ContextBase *getContext() const			{ return m_pCore->getDriver()->getContext(); }
-		ContextBase *getLoaderContext() const	{ return m_pCore->getDriver()->getLoaderContext(); }
+		os::ContextBase *getContext() const			{ return m_pCore->getDriver()->getContext(); }
+		os::ContextBase *getLoaderContext() const	{ return m_pCore->getDriver()->getLoaderContext(); }
 
 	protected:
-		Core *		m_pCore;	// core class.
+		core::Core *		m_pCore;	// core class.
 	};
 }
 

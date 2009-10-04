@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 
+//////////////////////////////////////////////////////////////////////////
+
 #if (defined(__GNUC__) && defined(__i386__)) || defined(__WATCOMC__) || \
 	defined(_MSC_VER) || defined (__BORLANDC__) || defined (__TURBOC__)
 #define GET_16_BITS(d) (*((const u16 *) (d)))

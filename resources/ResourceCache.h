@@ -8,7 +8,7 @@
 #include "resources/Resource.h"
 
 #include "render/RenderDriver.h"
-#include "os/interface/ContextBase.h"
+#include "os/common//ContextBase.h"
 
 #include "util/Util.h"
 
@@ -17,7 +17,7 @@
 #include <boost/thread/shared_mutex.hpp>
 
 class ResourceCache
-	: public Process
+	: public core::Process
 {
 public:
 	struct Entry
@@ -37,7 +37,7 @@ public:
 	 * @param id				Process identifier for lookups.
 	 * @param targetThreadId	Target thread id to run this process on (THREAD_ID_NORMAL_MASK for any thread)
 	 */
-	ResourceCache(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_LOAD_BIT)
+	ResourceCache(core::Core *pCore, int id = 0, int targetThreadId = core::Core::THREAD_ID_LOAD_BIT)
 		: Process(pCore, id, targetThreadId)
 		, m_log(LOG_GET("Resources.Cache"))
 		, m_maxLoadingCount(0)
@@ -197,9 +197,12 @@ public:
 		m_pCore->getDriver()->getLoaderContext()->bind();
 	}
 
-	virtual Process *run(double delta)
+	virtual core::Process *run(double delta)
 	{
-		update();
+		// Only update on first job
+		if (getFinishedJobs() == 0)
+			update();
+
 		unload();
 		load();
 

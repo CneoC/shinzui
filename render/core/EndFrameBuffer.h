@@ -14,7 +14,7 @@ namespace render
 		: public Renderer
 	{
 	public:
-		EndFrameBuffer(Core *pCore) : Renderer(pCore) {}
+		EndFrameBuffer(core::Core *pCore) : Renderer(pCore) {}
 
 		void setFrameBuffer(FrameBufferResource frameBuffer)	{ m_frameBuffer = frameBuffer; }
 		FrameBufferResource getFrameBuffer()					{ return m_frameBuffer; }

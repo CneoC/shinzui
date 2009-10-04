@@ -6,7 +6,7 @@
 
 using namespace render;
 
-GLStartRenderer::GLStartRenderer(Core *pCore)
+GLStartRenderer::GLStartRenderer(core::Core *pCore)
 	: StartRenderer(pCore)
 {
 }

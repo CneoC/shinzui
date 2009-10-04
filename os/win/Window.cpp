@@ -5,9 +5,13 @@
 
 #include "util/logging/Log.h"
 
+using namespace os;
+
+//////////////////////////////////////////////////////////////////////////
+
 #define WINDOW_CLASS "GameWnd"
 
-Window::Window(Core *pCore)
+Window::Window(core::Core *pCore)
 	: WindowBase(pCore)
 	, m_hDC(NULL)
 	, m_hWnd(NULL)
@@ -163,7 +167,7 @@ void Window::hide()
 	ShowWindow(m_hWnd, SW_HIDE);
 }
 
-Process *Window::run(double delta)
+core::Process *Window::run(double delta)
 {
 	MSG msg;
 

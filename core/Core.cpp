@@ -1,8 +1,12 @@
 #include "Core.h"
 #include "Process.h"
 
+using namespace core;
+
+//////////////////////////////////////////////////////////////////////////
+
 Core::Core(s32 threadCount)
-	: m_startTime(Time::NOW)
+	: m_startTime(os::Time::NOW)
 	, m_processRunId(0)
 	, m_log(LOG_GET("Core"))
 {
@@ -66,16 +70,26 @@ void Core::run()
 		{
 			double elapsed = getElapsedTime();
 			boost::lock_guard<boost::shared_mutex> lock(m_waitingProcessesMutex);
+
+			// Don't bother adding more processes than we can handle
+			u32 max = m_threads.size() - m_processes.size();
+
 			ProcessList::iterator p = m_waitingProcesses.begin();
-			while (p != m_waitingProcesses.end())
+			while (p != m_waitingProcesses.end() && max > 0)
 			{
 				pProcess = *p;
 				double delta = elapsed - pProcess->getLastRunTime();
 				if (delta >= pProcess->getFrameDelay())
 				{
 					boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
+
+					// Reset job amounts
+					pProcess->resetJobs();
 					m_processes.push_back(pProcess);
+
+					// No longer in waiting list
 					p = m_waitingProcesses.erase(p);
+					--max;
 				}
 				else
 				{
@@ -84,7 +98,7 @@ void Core::run()
 			}
 		}
 
-		// Handle load balancing of running threads
+		// Assign processes to free running threads
 		ThreadList::iterator iter;
 		for (iter = m_threads.begin(); iter != m_threads.end(); ++iter)
 		{
@@ -102,14 +116,12 @@ void Core::run()
 				}
 			}
 		}
-
-		boost::this_thread::yield();
 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-// TODO: optimization point - threading
+// TODO: optimize
 Process *Core::getNextProcess(u32 threadMask)
 {
 	boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
@@ -132,9 +144,17 @@ Process *Core::getNextProcess(u32 threadMask)
 					double diff = elapsed - pProcess->getNextRunTime();
 					if (diff > 0.1) LOG_WARN(m_log, "Process expected execution time exceeded by: " << diff);
 				}
+				// If all requested jobs have been activated, remove te process from the active list.
+				u16 jobs = pProcess->incActiveJobs();
+				if (jobs == 1)
+					pProcess->setLastRunId(m_processRunId++);
 
-				m_processes.erase(p);
-				pProcess->setLastRunId(m_processRunId++);
+				if (jobs >= pProcess->getJobs())
+				{
+					if (jobs > pProcess->getJobs())
+						LOG_WARN(m_log, LOG_FMT("More active jobs (%i) than expected (%i) for: %X", jobs % pProcess->getJobs() % pProcess));
+					m_processes.erase(p);
+				}
 				return pProcess;
 			}
 		}
@@ -148,7 +168,7 @@ void Core::addProcess(Process *pProcess)
 {
 	boost::lock_guard<boost::shared_mutex> lock(m_waitingProcessesMutex);
 
-	// TODO: don't use insertion sort?
+	// TODO: use different sort method?
 
 	if (m_waitingProcesses.empty())
 	{
@@ -214,6 +234,7 @@ void Core::removeProcess(Process *pProcess)
 
 bool CoreThread::run()
 {
+	m_active = false;
 	boost::unique_lock<boost::mutex> lock(m_mutex);
 	while (!m_pProcess && m_pCore->isRunning())
 	{
@@ -222,15 +243,25 @@ bool CoreThread::run()
 
 	if (m_pProcess)
 	{
+		m_active = true;
+
 		double elapsedTime	= m_pCore->getElapsedTime();
 		double delta		= elapsedTime - m_pProcess->getLastRunTime();
 
+		// Initialize process on first run
 		if (m_pProcess->getLastRunTime() == 0)
 			m_pProcess->init();
 		m_pProcess->setLastRunTime(elapsedTime);
-		Process *pAddProcess = m_pProcess->run(delta);
-		if (pAddProcess)
-			m_pCore->addProcess(pAddProcess);
+		Process *pAdd = m_pProcess->run(delta);
+
+		// If we have a new process to add, and all process jobs have finished (this being the last one)
+		u16 jobs = m_pProcess->incFinishedJobs();
+		if (pAdd && jobs >= m_pProcess->getJobs())
+		{
+			if (jobs > m_pProcess->getJobs())
+				LOG_WARN(m_pCore->getLog(), LOG_FMT("More finished jobs (%i) than expected (%i) for: %X", jobs % m_pProcess->getJobs() % m_pProcess));
+			m_pCore->addProcess(pAdd);
+		}
 
 		m_pProcess = NULL;
 	}

@@ -5,7 +5,10 @@
 
 #include "RendererLoaderBase.h"
 
-class ContextBase;
+namespace os
+{
+	class ContextBase;
+}
 
 namespace render
 {
@@ -14,7 +17,7 @@ namespace render
 	{
 	protected:
 		//! Don't allow external construction.
-		RenderDriver(Core *pCore)
+		RenderDriver(core::Core *pCore)
 			: RendererLoaderBase(pCore)
 			, m_pContext(NULL)
 			, m_pLoaderContext(NULL)
@@ -22,13 +25,13 @@ namespace render
 
 	public:
 		//! Gets the context.
-		ContextBase *getContext() const			{ return m_pContext; }
+		os::ContextBase *getContext() const			{ return m_pContext; }
 		//! Gets the context for the loader thread(s).
-		ContextBase *getLoaderContext() const	{ return m_pLoaderContext; }
+		os::ContextBase *getLoaderContext() const	{ return m_pLoaderContext; }
 
 	protected:
-		ContextBase *m_pContext;
-		ContextBase *m_pLoaderContext;
+		os::ContextBase *m_pContext;
+		os::ContextBase *m_pLoaderContext;
 	};
 }
 

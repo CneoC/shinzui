@@ -5,7 +5,7 @@
 
 #include "render/core/StartRenderer.h"
 
-#include "os/interface/ContextBase.h"
+#include "os/common//ContextBase.h"
 
 namespace render
 {
@@ -13,11 +13,11 @@ namespace render
 		public StartRenderer
 	{
 	public:
-		static Renderer *create(Core *pCore)	{ return new GLStartRenderer(pCore); }
+		static Renderer *create(core::Core *pCore)	{ return new GLStartRenderer(pCore); }
 
 		//////////////////////////////////////////////////////////////////////////
 
-		GLStartRenderer(Core *pCore);
+		GLStartRenderer(core::Core *pCore);
 		~GLStartRenderer();
 
 		//////////////////////////////////////////////////////////////////////////

@@ -6,7 +6,7 @@ using namespace console;
 
 //////////////////////////////////////////////////////////////////////////
 
-Console::Console(Core *pCore)
+Console::Console(core::Core *pCore)
 	: Renderer(pCore)
 {
 }

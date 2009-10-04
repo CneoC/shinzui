@@ -11,11 +11,11 @@ namespace render
 	 * Render process calling a renderer on run.
 	 */
 	class RendererProc
-		: public Process
+		: public core::Process
 	{
 	public:
-		RendererProc(Core *pCore, int id = 0, int targetThreadId = Core::THREAD_ID_MAIN_BIT)
-			: Process(pCore, id, targetThreadId)
+		RendererProc(core::Core *pCore, int id = 0, int targetThreadId = core::Core::THREAD_ID_MAIN_BIT)
+			: core::Process(pCore, id, targetThreadId)
 			, m_pRenderer(NULL)
 		{}
 
@@ -26,7 +26,7 @@ namespace render
 				m_pRenderer->init();
 		}
 
-		virtual Process *run(double delta)
+		virtual core::Process *run(double delta)
 		{
 			if (m_pRenderer)
 				m_pRenderer->render(delta);
@@ -43,4 +43,4 @@ namespace render
 	};
 }
 
-#endif __RENDER_RENDERERPROC_H__
+#endif //__RENDER_RENDERERPROC_H__

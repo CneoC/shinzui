@@ -1,16 +1,26 @@
 #include "Process.h"
 
-Process::Process(Core *pCore, int id, int targetThreadMask)
+using namespace core;
+
+//////////////////////////////////////////////////////////////////////////
+
+Process::Process(core::Core *pCore, u32 id, u32 targetThreadMask)
 	: m_pCore(pCore)
 	, m_id(id)
 	, m_targetThreadMask(targetThreadMask)
 	, m_frameDelay(0)
 	, m_lastRunTime(0)
+	, m_jobs(1)
+	, m_activeJobs(0)
+	, m_finishedJobs(0)
 {
 }
 
 bool Process::isDependencyDone() const
 {
+	if (m_dependencies.empty())
+		return true;
+
 	const u32 lastRunId = getLastRunId();
 	DependencyProcessList::const_iterator iter = m_dependencies.begin();
 	while (iter != m_dependencies.end())

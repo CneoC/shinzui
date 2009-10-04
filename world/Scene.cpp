@@ -7,9 +7,11 @@
 
 #include <math.h>
 
-using namespace scene;
+using namespace world;
 
-Scene::Scene(Core *pCore)
+//////////////////////////////////////////////////////////////////////////
+
+Scene::Scene(core::Core *pCore)
 	: render::Renderer(pCore)
 {
 	FITextureResource fiTexture(m_pCore->getLoader(), "File::2d/textures/test.tga", "FITexture::test");

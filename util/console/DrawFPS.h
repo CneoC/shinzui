@@ -14,7 +14,7 @@ namespace console
 		: public render::Renderer
 	{
 	public:
-		DrawFPS(Core *pCore);
+		DrawFPS(core::Core *pCore);
 		~DrawFPS();
 
 		virtual void render(double delta);

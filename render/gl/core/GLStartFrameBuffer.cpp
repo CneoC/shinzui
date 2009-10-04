@@ -4,7 +4,7 @@
 
 using namespace render;
 
-GLStartFrameBuffer::GLStartFrameBuffer(Core *pCore)
+GLStartFrameBuffer::GLStartFrameBuffer(core::Core *pCore)
 	: StartFrameBuffer(pCore)
 {
 }

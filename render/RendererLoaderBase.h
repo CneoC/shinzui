@@ -11,7 +11,10 @@
 #include <map>
 #include <list>
 
-class Core;
+namespace core
+{
+	class Core;
+}
 
 namespace render
 {
@@ -22,10 +25,10 @@ namespace render
 	{
 	protected:
 		//! Don't allow construction.
-		RendererLoaderBase(Core *pCore) : m_pCore(pCore) {}
+		RendererLoaderBase(core::Core *pCore) : m_pCore(pCore) {}
 
 	public:
-		typedef Renderer *(*RenderCreateFunc)(Core *);
+		typedef Renderer *(*RenderCreateFunc)(core::Core *);
 
 		typedef std::map<u32, RenderCreateFunc>		RendererList;
 		typedef std::map<u32, RenderUtil *>			UtilList;
@@ -137,7 +140,7 @@ namespace render
 		RendererLoaderBase *getLoader(const std::string &name) const;
 
 	protected:
-		Core *			m_pCore;
+		core::Core *	m_pCore;
 		RendererList	m_renderers;
 		UtilList		m_util;
 		LoaderList		m_loaders;

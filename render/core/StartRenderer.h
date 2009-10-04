@@ -11,7 +11,7 @@ namespace render
 		public Renderer
 	{
 	public:
-		StartRenderer(Core *pCore) : Renderer(pCore) {}
+		StartRenderer(core::Core *pCore) : Renderer(pCore) {}
 	protected:
 	};
 }

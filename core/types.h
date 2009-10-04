@@ -17,5 +17,4 @@ typedef unsigned long			u32;
 typedef long long				s64;
 typedef unsigned long long		u64;
 
-
 #endif //__TYPES_H__

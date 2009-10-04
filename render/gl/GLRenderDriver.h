@@ -15,18 +15,18 @@ namespace render
 	{
 	public:
 		//! 
-		GLRenderDriver(Core *pCore, Window *pWindow);
+		GLRenderDriver(core::Core *pCore, os::Window *pWindow);
 		~GLRenderDriver();
 
 		//! Get window.
-		Window *getWindow() const	{ return m_pWindow; }
+		os::Window *getWindow() const				{ return m_pWindow; }
 
 		//! Get context.
-		GLContext *getGLContext() const			{ return static_cast<GLContext *>(m_pContext); }
-		GLContext *getLoaderGLContext() const	{ return static_cast<GLContext *>(m_pLoaderContext); }
+		os::GLContext *getGLContext() const			{ return static_cast<os::GLContext *>(m_pContext); }
+		os::GLContext *getLoaderGLContext() const	{ return static_cast<os::GLContext *>(m_pLoaderContext); }
 
 	protected:
-		Window *	m_pWindow;
+		os::Window *	m_pWindow;
 	};
 }
 

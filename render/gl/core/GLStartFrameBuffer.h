@@ -13,11 +13,11 @@ namespace render
 		: public StartFrameBuffer
 	{
 	public:
-		static Renderer *create(Core *pCore)	{ return new GLStartFrameBuffer(pCore); }
+		static Renderer *create(core::Core *pCore)	{ return new GLStartFrameBuffer(pCore); }
 
 		//////////////////////////////////////////////////////////////////////////
 
-		GLStartFrameBuffer(Core *pCore);
+		GLStartFrameBuffer(core::Core *pCore);
 		~GLStartFrameBuffer();
 
 		virtual void render(double delta);

@@ -13,7 +13,7 @@ namespace render
 		: public Renderer
 	{
 	public:
-		StartFrameBuffer(Core *pCore) : Renderer(pCore) {}
+		StartFrameBuffer(core::Core *pCore) : Renderer(pCore) {}
 
 		void setFrameBuffer(FrameBufferResource frameBuffer)	{ m_frameBuffer = frameBuffer; }
 		FrameBufferResource getFrameBuffer()					{ return m_frameBuffer; }

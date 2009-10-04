@@ -6,6 +6,10 @@
 #include <gl/glew.h>
 #include <gl/wglew.h>
 
+using namespace os;
+
+//////////////////////////////////////////////////////////////////////////
+
 void GLContext::swapBuffers()
 {
 	//printf("%s @ %f + %f\n", __FUNCTION__, getLastRunTime(), delta);

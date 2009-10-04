@@ -16,7 +16,7 @@ using namespace console;
 
 //////////////////////////////////////////////////////////////////////////
 
-DrawFPS::DrawFPS(Core *pCore)
+DrawFPS::DrawFPS(core::Core *pCore)
 	: render::Renderer(pCore)
 	, m_frameCount(0)
 	, m_frameTime(0)

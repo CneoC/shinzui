@@ -11,14 +11,14 @@ using namespace render;
 
 //////////////////////////////////////////////////////////////////////////
 
-GLRenderDriver::GLRenderDriver(Core *pCore, Window *pWindow)
+GLRenderDriver::GLRenderDriver(core::Core *pCore, os::Window *pWindow)
 	: RenderDriver(pCore)
 	, m_pWindow(pWindow)
 {
-	m_pContext = new GLContext(pWindow);
+	m_pContext = new os::GLContext(pWindow);
 	getGLContext()->create();
 
-	m_pLoaderContext = new GLContext(pWindow);
+	m_pLoaderContext = new os::GLContext(pWindow);
 	getLoaderGLContext()->create();
 	getLoaderGLContext()->unbind();
 

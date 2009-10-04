@@ -11,7 +11,7 @@ namespace console
 		: public render::Renderer
 	{
 	public:
-		Console(Core *pCore);
+		Console(core::Core *pCore);
 		~Console();
 
 		virtual void render(double delta);

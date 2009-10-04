@@ -13,7 +13,7 @@ namespace render
 		: public RendererLoaderBase
 	{
 	public:
-		GL2DLoader(Core *pCore)
+		GL2DLoader(core::Core *pCore)
 			: RendererLoaderBase(pCore)
 		{
 			addUtil("Font", new GLFontUtil());

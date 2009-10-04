@@ -18,7 +18,7 @@ namespace render
 	{
 	protected:
 		//! Don't allow external construction.
-		GLRenderer(Core *pCore)
+		GLRenderer(core::Core *pCore)
 			: Renderer(pCore)
 		{}
 	};

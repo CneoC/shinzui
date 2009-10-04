@@ -8,7 +8,7 @@
 
 using namespace render;
 
-GLEndFrameBuffer::GLEndFrameBuffer(Core *pCore)
+GLEndFrameBuffer::GLEndFrameBuffer(core::Core *pCore)
 	: EndFrameBuffer(pCore)
 {
 }
