@@ -7,6 +7,8 @@
 #include "resources/ResourceId.h"
 #include "resources/ResourceType.h"
 
+#include "os/current/AtomicCounter.h"
+
 #include <assert.h>
 #include <bitset>
 
@@ -322,23 +324,10 @@ public:
 	//! Gets the reference count for this resource data.
 	u32 getRefCount() const						{ return m_references; }
 	
-	/**
-	 * Increment resource data reference count (tread-safe).
-	 */
-	void incRefCount()
-	{
-		boost::lock_guard<boost::mutex> lock(m_rcMutex);
-		m_references++; 
-	}
-
-	/**
-	 * Decrement resource data reference count (tread-safe).
-	 */
-	void decRefCount()
-	{ 
-		boost::lock_guard<boost::mutex> lock(m_rcMutex);
-		assert(m_references > 0); m_references--;
-	}
+	//! Increment resource data reference count (tread-safe).
+	void incRefCount()							{ ++m_references; }
+	//! Decrement resource data reference count (tread-safe).
+	void decRefCount()							{  assert(m_references > 0); --m_references; }
 
 	//! Gets the resource this one is converted from (can be a NULL resource).
 	Resource getSource() const					{ return m_source; }
@@ -356,18 +345,16 @@ public:
 protected:
 	// TODO: Pack this data more optimally
 
-	std::bitset<16>		m_flags;		// State flags.
-	s16					m_loadPriority;
+	std::bitset<16>			m_flags;		// State flags.
+	s16						m_loadPriority;
 
-	ResourceId			m_id;			// Resource identifier.
-	ResourceType		m_type;			// Resource types.
+	ResourceId				m_id;			// Resource identifier.
+	ResourceType			m_type;			// Resource types.
 
-	volatile u32		m_references;	// Number of references to this resource.
+	os::AtomicCounter<u32>	m_references;	// Number of references to this resource.
 
-	Resource			m_source;		// Source data for this resource.
-	ResourceLoaderBase*	m_pLoader;		// Loader responsible for this resource.
-
-	boost::mutex		m_rcMutex;		// Mutex used to keep reference counting thread-safe.
+	Resource				m_source;		// Source data for this resource.
+	ResourceLoaderBase *	m_pLoader;		// Loader responsible for this resource.
 };
 
 #endif //__RESOURCE_H__

@@ -9,14 +9,14 @@
 namespace os
 {
 	/**
-	* Abstract thread class.
-	*/
+	 * Abstract thread class.
+	 */
 	class Thread
 	{
 	private:
 		/**
-		* Functor to handle the actual running of this thread.
-		*/
+		 * Functor to handle the actual running of this thread.
+		 */
 		class RunThread
 		{
 		public:
@@ -100,11 +100,11 @@ namespace os
 		}
 
 		/**
-		* Runs the thread
-		* This function is called until it returns false (which stops the thread)
-		*  or until isRunning() returns false.
-		* @return if the thread should continue to run.
-		*/
+		 * Runs the thread
+		 * This function is called until it returns false (which stops the thread)
+		 *  or until isRunning() returns false.
+		 * @return if the thread should continue to run.
+		 */
 		virtual bool run() = 0;
 
 		//! If the thread is still running.

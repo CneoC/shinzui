@@ -13,8 +13,8 @@ namespace test
 		: public core::Process
 	{
 	public:
-		LogTestProc(core::Core *pCore, int id = 0, int targetThread = core::Core::THREAD_ID_NORMAL_MASK)
-			: Process(pCore, id, targetThread)
+		LogTestProc(core::Core *pCore, int id = 0)
+			: Process(pCore, id)
 		{
 		}
 

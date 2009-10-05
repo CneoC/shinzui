@@ -6,6 +6,7 @@
 #include "Core.h"
 
 #include "math/Color3.h"
+#include "os/current/AtomicCounter.h"
 
 #include <list>
 
@@ -23,11 +24,8 @@ namespace core
 		 * Constructs a core process.
 		 * @param pCore			core class.
 		 * @param id				process identifier for lookups.
-		 * @param threadMask	target thread id to run this process on (THREAD_ID_NONE for any thread)
 		 */
-		Process(core::Core *pCore, u32 id = 0,
-				u32 threadMask = core::Core::THREAD_ID_NORMAL_MASK,
-				u32 jobThreadMask = core::Core::THREAD_ID_NORMAL_MASK);
+		Process(core::Core *pCore, u32 id = 0);
 
 		/**
 		 * Initializes the process.
@@ -36,11 +34,20 @@ namespace core
 		 */
 		virtual void init() {}
 
+		//////////////////////////////////////////////////////////////////////////
+
 		/**
-		 * Runs the process.
-		 * @return if the process is added to the run queue after execution.
+		 * Called when the process is activated.
+		 * Called from main thread, expects process to add one or more jobs to execute.
 		 */
-		virtual Process *run(u32 job, double delta) = 0;
+		virtual void onStart() = 0;
+
+		/**
+		 * Called when all jobs are finished.
+		 */
+		virtual void onStop() {}
+
+		//////////////////////////////////////////////////////////////////////////
 
 		/**
 		 * Check if other processes this process depends on have finished their execution.
@@ -52,66 +59,31 @@ namespace core
 		//! Removes a dependency from this process.
 		void removeDependency(Process *pDependency)	{ m_dependencies.remove(pDependency); }
 
+		//////////////////////////////////////////////////////////////////////////
+
+		//! Gets the amount of active jobs.
+		u32 getJobs() const		{ return m_jobs; }
+		//! Increases the amount of jobs that are active for this process.
+		void incJobs()			{ ++m_jobs; }
+		//! Decreases the amount of jobs that are active for this process.
+		void decJobs()			{ --m_jobs; }
+		//! Resets the amounts of activated jobs.
+		void resetJobs()		{ m_jobs = 0; }
+
+		//////////////////////////////////////////////////////////////////////////
+
 		//! Get internal process identifier.
 		u32 getId() const						{ return m_id; }
 
-		//! Gets the thread the Process needs to be run on.
-		u32 getThreadMask() const				{ return m_threadMask; }
-		//! Sets the thread the Process needs to be run on.
-		void setThreadMask(u32 mask)			{ m_threadMask = mask; }
-
-		//! Gets the thread the jobs for this Process want to run on.
-		u32 getJobThreadMask() const			{ return m_jobThreadMask; }
-		//! Sets the thread the jobs for this Process want to run on.
-		void setJobThreadMask(u32 mask)			{ m_jobThreadMask = mask; }
-
-		//! Gets the amount of jobs this process will allocate for each run.
-		u16 getJobs() const						{ return m_jobs; }
-		//! Sets the amount of jobs this process will allocate for each run.
-		void setJobs(u16 jobs)					{ m_jobs = jobs; }
-
-		//! Gets the amount of active jobs.
-		u16 getActiveJobs() const
-		{
-			boost::shared_lock<boost::shared_mutex> lock(m_jobMutex);
-			return m_activeJobs;
-		}
-		//! Increases the amount of jobs that have activated this run.
-		u16 incActiveJobs()
-		{
-			boost::lock_guard<boost::shared_mutex> lock(m_jobMutex);
-			return ++m_activeJobs;
-		}
-		
-		//! Gets the amount of finished jobs.
-		u16 getFinishedJobs() const
-		{ 
-			boost::shared_lock<boost::shared_mutex> lock(m_jobMutex);
-			return m_finishedJobs; 
-		}
-		//! Increases the amount of jobs that have finished this run.
-		u16 incFinishedJobs()
-		{
-			boost::lock_guard<boost::shared_mutex> lock(m_jobMutex);
-			return ++m_finishedJobs;
-		}
-
-		//! Checks if this job is the core (first) job for this process.
-		bool isCoreJob() const	{ return getFinishedJobs() == 0; }
-		
-		//! Resets the amounts of activated and finished jobs.
-		void resetJobs()
-		{
-			boost::lock_guard<boost::shared_mutex> lock(m_jobMutex);
-			m_activeJobs = m_finishedJobs = 0;
-		}
+		//! Gets the core class this process belongs to.
+		core::Core *getCore() const				{ return m_pCore; }
 
 		//! Gets the frame delay time in seconds.
 		double getFrameDelay() const			{ return m_frameDelay; }
 		//! Sets the frame delay time in seconds.
 		void setFrameDelay(double frameDelay)	{ m_frameDelay = frameDelay; }
 
-		//! Get id of last run.
+		//! Get id of last run, used for dependency checking.
 		u32 getLastRunId() const				{ return m_lastRunId; }
 		//! Set id of last run.
 		void setLastRunId(u32 id)				{ m_lastRunId = id; }
@@ -121,9 +93,13 @@ namespace core
 		//! Set time of last run.
 		void setLastRunTime(double time)		{ m_lastRunTime = time; }
 
+		//! Get delta time of current run.
+		double getDeltaTime() const				{ return m_deltaTime; }
+		//! Set delta time of current run.
+		void setDeltaTime(double time)			{ m_deltaTime = time; }
+
 		//! Gets the next time the process wants to be run.
 		double getNextRunTime() const			{ return m_lastRunTime + m_frameDelay; }
-
 
 		//! Forces the process ready (ignoring dependencies and frame delay).
 		void forceStart()						{ m_forceStart = true; }
@@ -135,18 +111,14 @@ namespace core
 		core::Core *			m_pCore;
 
 		u32						m_id;
-		u32						m_threadMask;
-		u32						m_jobThreadMask;
 
-		mutable boost::shared_mutex	m_jobMutex;
-		u16						m_jobs;
-		u16						m_activeJobs;
-		u16						m_finishedJobs;
-
+		os::AtomicCounter<u32>	m_jobs;
+		
 		double					m_frameDelay;
 
-		volatile u32			m_lastRunId;
-		volatile double			m_lastRunTime;
+		u32						m_lastRunId;
+		double					m_lastRunTime;
+		double					m_deltaTime;
 
 		bool					m_forceStart;
 		DependencyProcessList	m_dependencies;

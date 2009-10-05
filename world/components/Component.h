@@ -36,15 +36,9 @@ namespace world
 		void addEntity(const Entity &entity);
 		void removeEntity(const Entity &entity);
 
-		virtual Process *run(u32 job, double delta);
-			
-		virtual void start(double delta) = 0;
-		virtual bool step(double delta) = 0;
-
 	protected:
 		ComponentManager *	m_pManager;
 		EntityList			m_entities;
-		boost::shared_mutex	m_startMutex;
 	};
 
 	typedef boost::shared_ptr<Component> ComponentRef;

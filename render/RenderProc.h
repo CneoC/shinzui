@@ -14,25 +14,36 @@ namespace render
 		: public core::Process
 	{
 	public:
-		RendererProc(core::Core *pCore, int id = 0, int threadMask = core::Core::THREAD_ID_MAIN_BIT)
-			: core::Process(pCore, id, threadMask)
+		RendererProc(core::Core *pCore, int id = 0)
+			: core::Process(pCore, id)
 			, m_pRenderer(NULL)
 		{
 			m_color = math::Color3f(1, 0, 0);
 		}
 
 	public:
-		virtual void init()
+		//////////////////////////////////////////////////////////////////////////
+
+		virtual void onStart()
+		{
+			if (getLastRunTime() == 0)
+				m_pCore->addJob(this, core::Job::Function(this, &RendererProc::initJob), core::Core::THREAD_ID_MAIN_BIT);
+			else
+				m_pCore->addJob(this, core::Job::Function(this, &RendererProc::renderJob), core::Core::THREAD_ID_MAIN_BIT);
+		}
+		
+		bool initJob()
 		{
 			if (m_pRenderer)
 				m_pRenderer->init();
+			return false;
 		}
 
-		virtual core::Process *run(u32 job, double delta)
+		bool renderJob()
 		{
 			if (m_pRenderer)
-				m_pRenderer->render(delta);
-			return this;
+				m_pRenderer->render(getDeltaTime());
+			return false;
 		}
 
 		//! Sets the active renderer.

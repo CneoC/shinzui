@@ -28,8 +28,7 @@ namespace world
 			return entity.getData()->create<NameData>("Name");
 		}
 
-		virtual void start(double delta) {}
-		virtual bool step(double delta) {}
+		virtual void onStart() {}
 
 	protected:
 	};

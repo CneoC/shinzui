@@ -230,6 +230,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\os\win\AtomicCounter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\world\components\Component.cpp"
 				>
 			</File>
@@ -351,6 +355,14 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\os\win\AtomicCounter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\os\current\AtomicCounter.h"
+				>
+			</File>
 			<File
 				RelativePath=".\util\Callback.h"
 				>
@@ -480,11 +492,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLContext.h"
+				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\gl\GLContext.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -593,10 +605,6 @@
 			</File>
 			<File
 				RelativePath=".\core\Process.h"
-				>
-			</File>
-			<File
-				RelativePath=".\core\ProcessChain.h"
 				>
 			</File>
 			<File
@@ -712,11 +720,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Time.h"
+				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Time.h"
+				RelativePath=".\os\current\Time.h"
 				>
 			</File>
 			<File
@@ -740,11 +748,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Window.h"
+				RelativePath=".\os\win\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Window.h"
+				RelativePath=".\os\current\Window.h"
 				>
 			</File>
 			<File

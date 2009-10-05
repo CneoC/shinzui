@@ -29,20 +29,3 @@ void Component::removeEntity(const Entity &entity)
 	if (found != m_entities.end())
 		m_entities.erase(found);
 }
-
-core::Process *Component::run(u32 job, double delta)
-{
-	if (job == 0)
-	{
-		boost::lock_guard<boost::shared_mutex> lock(m_startMutex);
-		start(delta);
-	}
-	else
-	{
-		boost::shared_lock<boost::shared_mutex> lock(m_startMutex);
-	}
-
-	while (step(delta)) {}
-
-	return this;
-}

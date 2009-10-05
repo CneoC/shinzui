@@ -167,7 +167,7 @@ void Window::hide()
 	ShowWindow(m_hWnd, SW_HIDE);
 }
 
-core::Process *Window::run(u32 job, double delta)
+void Window::update()
 {
 	MSG msg;
 
@@ -183,8 +183,6 @@ core::Process *Window::run(u32 job, double delta)
 			DispatchMessage(&msg);
 		}
 	}
-
-	return this;
 }
 
 LRESULT CALLBACK Window::wndProc(HWND m_hWnd, UINT uMsg,

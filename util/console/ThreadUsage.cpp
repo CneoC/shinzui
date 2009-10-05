@@ -6,6 +6,63 @@ using namespace console;
 
 //////////////////////////////////////////////////////////////////////////
 
+
+ThreadUsageInfo::ThreadUsageInfo(core::Core *pCore, double show, double keep)
+	: m_pCore(pCore)
+	, m_showDuration(show)
+	, m_keepDuration(keep)
+	, m_threadCount(1 + m_pCore->getThreadCount())
+{
+	m_threads = new ActivityInfo[m_threadCount];
+	for (u32 i = 0; i < m_threadCount; i++)
+	{
+		m_threads[i].m_current.m_pProcess = NULL;
+		m_threads[i].m_current.m_start = 0;
+		m_threads[i].m_current.m_end = 0;
+	}
+}
+
+bool ThreadUsageInfo::run()
+{
+	double t = os::Time(os::Time::NOW).getSeconds();
+
+	for (u32 i = 0; i < m_pCore->getThreadCount(); i++)
+	{
+		core::Process *pActive;
+		if (i == 0)
+			pActive = m_pCore->getJob().pProcess;
+		else
+			pActive = m_pCore->getThread(i - 1)->getJob().pProcess;
+
+		{
+			ActivityInfo &info = m_threads[i];
+			boost::lock_guard<boost::shared_mutex> lock(info.m_mutex);
+
+			if (pActive != info.m_current.m_pProcess)
+			{
+				if (info.m_current.m_pProcess)
+				{
+					info.m_current.m_end = t;
+					info.m_list.push_front(info.m_current);
+				}
+
+				info.m_current.m_pProcess = pActive;
+				info.m_current.m_start	= t;
+			}
+
+			while (	!info.m_list.empty() &&
+				(t - info.m_list.back().m_end) > m_keepDuration)
+			{
+				info.m_list.pop_back();
+			}
+		}
+	}
+
+	return m_pCore->isRunning();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 ThreadUsage::ThreadUsage(core::Core *pCore)
 	: Renderer(pCore)
 	, m_info(pCore)
@@ -39,7 +96,8 @@ void ThreadUsage::render(double delta)
 	glLoadIdentity();
 
 	float width = rec[2] - rec[0] - 10;
-	glTranslatef(5, rec[3] - rec[1] - 5, 0.0f);
+	float offsetX = 5;
+	glTranslatef(offsetX, rec[3] - rec[1] - 5, 0.0f);
 
 	for (u32 i = 0; i < m_pCore->getThreadCount(); i++)
 	{
@@ -62,6 +120,8 @@ void ThreadUsage::render(double delta)
 			for (iter = info.m_list.begin(); iter != info.m_list.end(); ++iter)
 			{
 				float startX	= (float)(width * (1 - ((start - iter->m_start) / m_info.getShowDuration())));
+				if (startX < offsetX)
+					startX = offsetX;
 				float endX		= (float)(width * (1 - ((start - iter->m_end) / m_info.getShowDuration())));
 				if (startX < 0)
 					startX = 0;
@@ -75,6 +135,19 @@ void ThreadUsage::render(double delta)
 
 				if (startX == 0)
 					break;
+			}
+
+			if (info.m_current.m_pProcess)
+			{
+				float startX	= (float)(width * (1 - ((start - info.m_current.m_start) / m_info.getShowDuration())));
+				if (startX < offsetX)
+					startX = offsetX;
+
+				math::Color3f c = info.m_current.m_pProcess->getColor();
+				glVertex3f(startX, -1.0f, 0.0f);
+				glVertex3f(startX,  1.0f, 0.0f);
+				glVertex3f(width,  1.0f, 0.0f);
+				glVertex3f(width, -1.0f, 0.0f);
 			}
 		glEnd();
 		glTranslatef(0.0f, -3.0f, 0.0f);

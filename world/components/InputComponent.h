@@ -32,9 +32,8 @@ namespace world
 			return entity.getData()->create<InputData>("Input");
 		}
 
-		virtual void start(double delta) {}
-		virtual bool step(double delta) { return false; }
-
+		virtual void onStart() {}
+		
 	protected:
 	};
 }

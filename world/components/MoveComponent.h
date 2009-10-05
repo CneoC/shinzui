@@ -28,8 +28,8 @@ namespace world
 
 		virtual ComponentData *createData(const Entity &entity);
 
-		virtual void start(double delta);
-		virtual bool step(double delta);
+		virtual void onStart();
+		bool step();
 
 	protected:
 		boost::mutex			m_mutex;

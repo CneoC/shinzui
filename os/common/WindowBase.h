@@ -3,10 +3,9 @@
 #ifndef __OS_WINDOWBASE_H__
 #define __OS_WINDOWBASE_H__
 
-#include "core/ProcessChain.h"
+#include "core/Process.h"
 
 #include "math/Vector2.h"
-
 #include "util/Delegate.h"
 
 #include <bitset>
@@ -31,6 +30,23 @@ namespace os
 		WindowBase(core::Core *pCore);
 		virtual ~WindowBase();
 
+		//////////////////////////////////////////////////////////////////////////
+
+		virtual void onStart()
+		{
+			m_pCore->addJob(this, core::Job::Function(this, &WindowBase::updateJob), core::Core::THREAD_ID_CORE_BIT);
+		}
+
+		bool updateJob()
+		{
+			update();
+			return false;
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		virtual void update() = 0;
+		
 		// 	virtual bool create() = 0;
 		// 	virtual bool destroy() = 0;
 

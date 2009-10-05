@@ -19,11 +19,15 @@ namespace world
 	public:
 		typedef std::map<u32, ComponentRef>	ComponentList;
 
-		ComponentManager(core::Core *pCore, u32 id = 0,
-						u32 threadMask = core::Core::THREAD_ID_NORMAL_MASK,
-						u32 jobThreadMask = core::Core::THREAD_ID_NORMAL_MASK);
+		//////////////////////////////////////////////////////////////////////////
 
-		virtual core::Process *run(u32 job, double delta);
+		ComponentManager(core::Core *pCore, u32 id = 0);
+
+		//////////////////////////////////////////////////////////////////////////
+
+		virtual void onStart() {}
+
+		//////////////////////////////////////////////////////////////////////////
 
 		void addComponent(const std::string &name, Component *pComponent)
 		{
@@ -50,6 +54,5 @@ namespace world
 		ComponentList	m_components;
 	};
 }
-
 
 #endif //__WORLD_COMPONENTMANAGER_H__

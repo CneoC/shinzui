@@ -50,8 +50,7 @@ namespace world
 			return pData;
 		}
 
-		virtual void start(double delta) {}
-		virtual bool step(double delta) { return false; }
+		virtual void onStart() {}
 
 		virtual void render(double delta)
 		{

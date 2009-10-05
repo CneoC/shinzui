@@ -33,12 +33,11 @@ public:
 public:
 	/**
 	 * Constructs a resource cache process.
-	 * @param pCore				Core class.
-	 * @param id				Process identifier for lookups.
-	 * @param threadMask	Target thread id to run this process on (THREAD_ID_NORMAL_MASK for any thread)
+	 * @param pCore	Core class.
+	 * @param id	Process identifier for lookups.
 	 */
 	ResourceCache(core::Core *pCore, int id = 0)
-		: Process(pCore, id, core::Core::THREAD_ID_LOAD_BIT, core::Core::THREAD_ID_NORMAL_MASK)
+		: Process(pCore, id)
 		, m_log(LOG_GET("Resources.Cache"))
 		, m_maxLoadingCount(0)
 	{
@@ -102,6 +101,69 @@ public:
 		// Maybe there's something to load now
 		setFrameDelay(0);
 	}
+
+	//////////////////////////////////////////////////////////////////////////
+
+	virtual void onStart()
+	{
+		// TODO: Move these to a separate job?
+		update();
+		unload();
+
+		// Initialize before we start loading
+		if (getLastRunTime() == 0)
+		{
+			m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::initJob), core::Core::THREAD_ID_LOAD_BIT);
+		}
+		else
+		{
+			// Create load jobs
+			if (!m_load.empty())
+			{
+				m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::loadCoreJob), core::Core::THREAD_ID_LOAD_BIT);
+				for (u32 i = 1; i < getLoadJobs(); i++)
+				{
+					m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::loadJob));
+				}
+
+				setFrameDelay(0);
+			}
+			// Delay execution of this process if we have nothing to load
+			else
+			{
+				setFrameDelay(1);
+			}
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+
+	void setLoadJobs(u32 jobs)	{ m_loadJobs = jobs; }
+	u32 getLoadJobs() const		{ return m_loadJobs; }
+
+	bool isLoading() const		{ return !m_load.empty(); }
+	float getProgress() const	{ return m_maxLoadingCount > 0? min(1.0f, 1 - (float)m_load.size() / m_maxLoadingCount): 1.0f; }
+
+protected:
+	bool initJob()
+	{
+		m_pCore->getDriver()->getLoaderContext()->bind();
+		return false;
+	}
+
+	bool loadCoreJob()
+	{
+		load(true);
+		return !m_load.empty();
+	}
+
+	bool loadJob()
+	{
+		load(false);
+		return !m_load.empty();
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 
 	void update()
 	{
@@ -168,7 +230,7 @@ public:
 				{
 					// Only load a resource in the core job if we have one job or
 					// if the resource requires the loading context.
-					if (getJobs() == 1 || !coreJob || (*i)->requiresContext())
+					if (getLoadJobs() == 1 || (coreJob == (*i)->requiresContext()))
 					{
 						boost::upgrade_to_unique_lock<boost::shared_mutex> uniqueLock(lock);
 						loadRes = *i;
@@ -189,7 +251,7 @@ public:
 		loadRes.load(0);
 	}
 
-	void unload(bool coreJob)
+	void unload()
 	{
 		// If there is a resource to unload
 		if (!m_unload.empty())
@@ -209,37 +271,6 @@ public:
 		}
 	}
 
-	virtual void init()
-	{
-		m_pCore->getDriver()->getLoaderContext()->bind();
-	}
-
-	virtual core::Process *run(u32 job, double delta)
-	{
-		bool coreJob = job == 0;
-
-		// Only update on first job
-		if (coreJob)
-		{
-			update();
-
-			if (m_load.empty())
-				setFrameDelay(1);
-			else
-				setFrameDelay(0);
-		}
-
-		unload(coreJob);
-		load(coreJob);
-
-		return this;
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-
-	bool isLoading() const		{ return !m_load.empty(); }
-	float getProgress() const	{ return m_maxLoadingCount > 0? min(1.0f, 1 - (float)m_load.size() / m_maxLoadingCount): 1.0f; }
-
 protected:
 	boost::shared_mutex	m_resourcesMutex;		// mutex used to lock list of processes.
 	ResourceMap			m_resources;
@@ -249,6 +280,7 @@ protected:
 	
 	logging::Log *		m_log;
 
+	u32					m_loadJobs;
 	volatile float		m_maxLoadingCount;
 };
 

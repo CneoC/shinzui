@@ -5,7 +5,7 @@ using namespace os;
 //////////////////////////////////////////////////////////////////////////
 
 WindowBase::WindowBase(core::Core *pCore)
-	: Process(pCore, 0, core::Core::THREAD_ID_CORE_BIT)
+	: Process(pCore, 0)
 	, m_size(800, 600)
 	, m_fullscreen(false)
 	, m_bpp(0)
