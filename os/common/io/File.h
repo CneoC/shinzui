@@ -1,10 +1,13 @@
 #pragma once
 
-#ifndef __CORE_FILE_H__
-#define __CORE_FILE_H__
+#ifndef __OS_FILE_H__
+#define __OS_FILE_H__
 
-namespace core
+namespace os
 {
+	/**
+	 * File class.
+	 */
 	class File
 	{
 	public:
@@ -16,10 +19,14 @@ namespace core
 			MODE_APPEND	= 1 << 2
 		}
 
+		//////////////////////////////////////////////////////////////////////////
+
 		File()
 			: m_open(false)
 		{
 		}
+
+		//////////////////////////////////////////////////////////////////////////
 
 		virtual bool open(u8 mode = MODE_READ) = 0;
 		virtual void close() = 0;
@@ -33,10 +40,10 @@ namespace core
 
 		bool isOpen()	{ return m_open; }
 
-		protected;
+	protected;
 		u8		m_mode;
 		bool	m_open;
 	};
 }
 
-#endif //__CORE_FILE_H__
+#endif //__OS_FILE_H__

@@ -9,30 +9,41 @@
 
 #include <gl/glew.h>
 
-class GLProgramData
-	: public ProgramData
+//////////////////////////////////////////////////////////////////////////
+
+namespace resources
 {
-public:
-	static const char *getName()	{ return "GLProgram"; }
-
-	GLProgramData(ResourceLoaderBase *pLoader)
-		: ProgramData(pLoader)
-		, m_program(0)
+	class GLProgramData
+		: public ProgramData
 	{
-		getType() += getName();
-		m_flags[FLAG_REQUIRE_CONTEXT] = true;
-	}
+	public:
+		static const char *getName()	{ return "GLProgram"; }
 
-	virtual void bind()		{ glUseProgram(m_program); }
-	virtual void unbind()	{ glUseProgram(0); }
+		//////////////////////////////////////////////////////////////////////////
 
-	void setProgram(GLuint program)		{ m_program = program; }
-	GLuint getProgram() const			{ return m_program; }
+		GLProgramData(ResourceLoaderBase *pLoader)
+			: ProgramData(pLoader)
+			, m_program(0)
+		{
+			getType() += getName();
+			m_flags[FLAG_REQUIRE_CONTEXT] = true;
+		}
 
-protected:
-	GLuint		m_program;
-};
+		//////////////////////////////////////////////////////////////////////////
 
-typedef ResourceRef<GLProgramData>	GLProgramResource;
+		virtual void bind()		{ glUseProgram(m_program); }
+		virtual void unbind()	{ glUseProgram(0); }
+
+		//////////////////////////////////////////////////////////////////////////
+
+		void setProgram(GLuint program)		{ m_program = program; }
+		GLuint getProgram() const			{ return m_program; }
+
+	protected:
+		GLuint		m_program;
+	};
+
+	typedef ResourceRef<GLProgramData>	GLProgramResource;
+}
 
 #endif //__RESOURCES_GLPROGRAMRESOURCE_H__

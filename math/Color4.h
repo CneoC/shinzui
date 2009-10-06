@@ -7,6 +7,9 @@
 
 namespace math
 {
+	/**
+	 * Color RGBA class.
+	 */
 	template <typename T>
 	class Color4
 	{

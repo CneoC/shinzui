@@ -18,9 +18,9 @@ namespace render
 		: public RenderUtil
 	{
 	public:
-		FontUtil(FontResource font = Resource());
+		FontUtil(resources::FontResource font = resources::Resource());
 
-		void setResource(FontResource font) { m_font = font; }
+		void setResource(resources::FontResource font) { m_font = font; }
 
 		/**
 		 * Prints a single line of text.
@@ -38,7 +38,7 @@ namespace render
 		void printf(const math::Vector2f &p, const char *fmt, ...) const;
 
 	protected:
-		FontResource m_font;
+		resources::FontResource m_font;
 	};
 }
 

@@ -8,25 +8,38 @@
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 
-class FileData
-	: public RawData
+namespace resources
 {
-public:
-	static const char *getName()	{ return "File"; }
-
-	FileData(ResourceLoaderBase *pData)
-		: RawData(pData)
+	/**
+	 * File resource data.
+	 * TODO: instead of just representing a path, implement file reading functions?
+	 */
+	class FileData
+		: public RawData
 	{
-		getType() += getName();
-	}
+	public:
+		static const char *getName()	{ return "File"; }
 
-	void setPath(const fs::path &path)	{ m_path = path; }
-	const fs::path &getPath() const		{ return m_path; }
+		//////////////////////////////////////////////////////////////////////////
 
-protected:
-	fs::path	m_path;
-};
+		FileData(ResourceLoaderBase *pData)
+			: RawData(pData)
+		{
+			getType() += getName();
+		}
 
-typedef ResourceRef<FileData>		FileResource;
+		//////////////////////////////////////////////////////////////////////////
+
+		void setPath(const fs::path &path)	{ m_path = path; }
+		const fs::path &getPath() const		{ return m_path; }
+
+	protected:
+		fs::path	m_path;
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+
+	typedef ResourceRef<FileData>		FileResource;
+}
 
 #endif //__RESOURCES_FILERESOURCE_H__

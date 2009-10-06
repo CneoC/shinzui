@@ -4,68 +4,43 @@
 #define __RESOURCES_FILERESOURCELOADER_H__
 
 #include "resources/ResourceLoaderBase.h"
-#include "resources/FileResource.h"
-#include "resources/ResourceType.h"
 
 #include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
 
-class FileResourceLoader
-	: public ResourceLoaderBase
+//////////////////////////////////////////////////////////////////////////
+
+namespace resources
 {
-public:
+namespace loaders
+{
 	/**
-	 * Constructs a new file resource loader for raw disk access resources.
+	 * Loader class that loads a file resource.
 	 */
-	FileResourceLoader(const fs::path &base = "./")
-		: m_basePath(base)
+	class FileResourceLoader
+		: public ResourceLoaderBase
 	{
-	}
-
-	virtual Resource get(const ResourceId &id)
-	{
-		if (id.getType() & "File")
+	public:
+		/**
+		 * Constructs a new file resource loader for raw disk access resources.
+		 */
+		FileResourceLoader(const boost::filesystem::path &base = "./")
+			: m_basePath(base)
 		{
-			fs::path p((m_basePath / id.getName()).native_directory_string());
-
-			if (fs::exists(p))
-			{
-				FileData *pData = new FileData(this);
-				pData->setId(id);
-				pData->setPath(p);
-				return FileResource(pData);
-			}
 		}
-		return Resource();
-	}
 
-	/**
-	 * Loads a file resource.
-	 * @return if resource was properly loaded.
-	 */
-	virtual bool load(Resource &res, u32 flags)
-	{
-		if (ResourceLoaderBase::load(res, flags))
-			return true;
+		//! @see ResourceLoaderBase::get
+		virtual Resource get(const ResourceId &id);
 
-		FileResource file = res;
-		res->setLoaded(fs::exists(file->getPath()));
-		return res->isLoaded();
-	}
+		//! @see ResourceLoaderBase::load
+		virtual bool load(Resource &res, u32 flags);
 
-	/**
-	 * Unloads a resource (blocking).
-	 */
-	virtual bool unload(Resource &res, u32 flags)
-	{
-		if (ResourceLoaderBase::unload(res, flags))
-			return true;
+		//! @see ResourceLoaderBase::unload
+		virtual bool unload(Resource &res, u32 flags);
 
-		return true;
-	}
-
-protected:
-	fs::path		m_basePath;
-};
+	protected:
+		boost::filesystem::path	m_basePath;		// root path, pre-pended to all file names.
+	};
+}
+}
 
 #endif //__RESOURCES_FILERESOURCELOADER_H__

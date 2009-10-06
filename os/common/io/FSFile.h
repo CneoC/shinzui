@@ -1,13 +1,13 @@
 #pragma once
 
-#ifndef __CORE_FSFILE_H__
-#define __CORE_FSFILE_H__
+#ifndef __OS_FSFILE_H__
+#define __OS_FSFILE_H__
 
 #include "File.h"
 
 #include <boost/filesystem/path.hpp>
 
-namespace core
+namespace os
 {
 	class FSFile
 		: public File
@@ -25,4 +25,4 @@ namespace core
 	};
 }
 
-#endif //__CORE_FSFILE_H__
+#endif //__OS_FSFILE_H__

@@ -7,6 +7,9 @@
 
 namespace math
 {
+	/**
+	 * 2D Vector class.
+	 */
 	template <typename T>
 	class Vector2
 	{

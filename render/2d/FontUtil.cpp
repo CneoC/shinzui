@@ -4,6 +4,7 @@
 #include <stdarg.h>
 
 using namespace render;
+using namespace resources;
 
 #pragma warning(disable: 4996)
 

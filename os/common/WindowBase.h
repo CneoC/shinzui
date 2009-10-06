@@ -45,6 +45,7 @@ namespace os
 
 		//////////////////////////////////////////////////////////////////////////
 
+		//! Updates the window from the core thread.
 		virtual void update() = 0;
 		
 		// 	virtual bool create() = 0;
@@ -53,7 +54,9 @@ namespace os
 		// 	virtual void show() = 0;
 		// 	virtual void hide() = 0;
 
+		//! Gets the window title.
 		const std::string &getTitle() const			{ return m_title; }
+		//! Sets the window title.
 		void setTitle(const std::string &title)		{ m_title = title; m_flags[FLAG_DIRTY_TITLE] = true; }
 
 		bool isFullscreen() const					{ return m_fullscreen; }

@@ -5,113 +5,30 @@
 
 #include "resources/ResourceLoaderBase.h"
 
-#include "resources/shader/GLShaderResource.h"
-#include "resources/shader/GLProgramResource.h"
-
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
-namespace fs = boost::filesystem;
-
-namespace GLProgramConverters
+namespace resources
 {
-	/**
-	 * Loader class that can convert file resources to gl shader resources.
-	 */
-	class ConvertFromProgram
-		: public ResourceLoaderBase
+namespace converters
+{
+	namespace GLProgramConverters
 	{
-		virtual Resource convert(const Resource &res, const ResourceType &type)
-		{
-			ProgramResource def(res, DONT_CONVERT);
-			if (def && type & GLProgramData::getName())
-			{
-				GLProgramData *pData = new GLProgramData(this);
-				pData->setId(ResourceId(GLProgramData::getName(), res->getId().getName()));
-				pData->setSource(res);
-				return GLProgramResource(pData);
-			}
-			
-			return Resource();
-		}
-
 		/**
-		 * Loads the OpenGL shader resource (blocking).
-		 * @return if resource was properly loaded.
+		 * Loader class that can convert program definition resources to gl program resources.
 		 */
-		virtual bool load(Resource &res, u32 flags)
+		class ConvertFromProgram
+			: public ResourceLoaderBase
 		{
-			if (ResourceLoaderBase::load(res, flags))
-				return true;
+		public:
+			//! @see ResourceLoaderBase::convert
+			virtual Resource convert(const Resource &res, const ResourceType &type);
 
-			logging::Log *log = LOG_GET("Resources.Converters.Program");
+			//! @see ResourceLoaderBase::load
+			virtual bool load(Resource &res, u32 flags);
 
-			GLProgramResource program(res);
-
-			ProgramResource def = res->getSource();
-			if (!def)
-			{
-				FileResource file = res->getSource();
-				if (!file->isLoaded())
-				{
-					return false;
-				}
-			}
-			else
-			{
-				program->setProgram(glCreateProgram());
-
-				ResourceLoaderBase *pRootLoader = def->getLoader()->getRoot();
-
-				ProgramData::ShaderList::const_iterator iter = def->getShaders().begin();
-				while (iter != def->getShaders().end())
-				{
-					GLShaderResource shader = pRootLoader->get(*iter);
-					if (shader.load())
-						glAttachShader(program->getProgram(), shader->getShader());
-					++iter;
-				}
-			}
-
-			glLinkProgram(program->getProgram());
-
-			GLint success;
-			glGetProgramiv(program->getProgram(), GL_LINK_STATUS, &success);
-			if (!success)
-			{
-				char buf[512];
-				glGetProgramInfoLog(program, sizeof(buf), 0, buf);
-
-				LOG_ERROR(log, "Unable to link program " << program->getId().toString() << ':' << std::endl << buf);
-				
-				return false;
-			}
-
-			LOG_TRACE(log, "Linked program: " << program->getId());
-			program->setLoaded(true);
-
-			return true;
-		}
-
-		/**
-		 * Unloads a resource (blocking).
-		 */
-		virtual bool unload(Resource &res, u32 flags)
-		{
-			if (ResourceLoaderBase::unload(res, flags))
-				return true;
-
-			GLProgramResource program(res);
-
-			glDeleteProgram(program->getProgram());
-			program->setProgram(0);
-
-			program->setLoaded(false);
-
-			return true;
-		}
-	};
-
-} //namespace GLProgramConverters
+			//! @see ResourceLoaderBase::unload
+			virtual bool unload(Resource &res, u32 flags);
+		};
+	}
+}
+}
 
 #endif //__RESOURCES_GLPROGRAMCONVERTERS_H__

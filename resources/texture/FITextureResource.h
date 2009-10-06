@@ -7,24 +7,33 @@
 
 #include <FreeImagePlus.h>
 
-class FITextureData
-	: public TextureData
+//////////////////////////////////////////////////////////////////////////
+
+namespace resources
 {
-public:
-	static const char *getName()	{ return "FITexture"; }
-
-	FITextureData(ResourceLoaderBase *pData)
-		: TextureData(pData)
+	class FITextureData
+		: public TextureData
 	{
-		getType() += getName();
-	}
+	public:
+		static const char *getName()	{ return "FITexture"; }
 
-	fipImage &getTexture()	{ return m_texture; }
+		//////////////////////////////////////////////////////////////////////////
 
-protected:
-	fipImage	m_texture;
-};
+		FITextureData(ResourceLoaderBase *pData)
+			: TextureData(pData)
+		{
+			getType() += getName();
+		}
 
-typedef ResourceRef<FITextureData>		FITextureResource;
+		//////////////////////////////////////////////////////////////////////////
+
+		fipImage &getTexture()	{ return m_texture; }
+
+	protected:
+		fipImage	m_texture;
+	};
+
+	typedef ResourceRef<FITextureData>		FITextureResource;
+}
 
 #endif //__RESOURCES_FITEXTURERESOURCE_H__

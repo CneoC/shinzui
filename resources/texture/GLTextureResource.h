@@ -7,37 +7,48 @@
 
 #include <gl/glew.h>
 
-class GLTextureData
-	: public TextureData
+//////////////////////////////////////////////////////////////////////////
+
+namespace resources
 {
-public:
-	static const char *getName()	{ return "GLTexture"; }
-
-	GLTextureData(ResourceLoaderBase *pData)
-		: TextureData(pData)
-		, m_texture(GL_NONE)
+	class GLTextureData
+		: public TextureData
 	{
-		getType() += getName();
-		m_flags[FLAG_REQUIRE_CONTEXT] = true;
-	}
+	public:
+		static const char *getName()	{ return "GLTexture"; }
 
-	void setTexture(GLuint texture)	{ m_texture = texture; }
-	GLuint getTexture()				{ return m_texture; }
+		//////////////////////////////////////////////////////////////////////////
 
-	virtual void bind()
-	{
-		glBindTexture(GL_TEXTURE_2D, m_texture);
-	}
+		GLTextureData(ResourceLoaderBase *pData)
+			: TextureData(pData)
+			, m_texture(GL_NONE)
+		{
+			getType() += getName();
+			m_flags[FLAG_REQUIRE_CONTEXT] = true;
+		}
 
-	virtual void unbind()
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
+		//////////////////////////////////////////////////////////////////////////
 
-protected:
-	GLuint m_texture;
-};
+		void setTexture(GLuint texture)	{ m_texture = texture; }
+		GLuint getTexture()				{ return m_texture; }
 
-typedef ResourceRef<GLTextureData>		GLTextureResource;
+		virtual void bind()
+		{
+			glBindTexture(GL_TEXTURE_2D, m_texture);
+		}
+
+		virtual void unbind()
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+
+	protected:
+		GLuint m_texture;
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+
+	typedef ResourceRef<GLTextureData>		GLTextureResource;
+}
 
 #endif //__RESOURCES_GLTEXTURERESOURCE_H__

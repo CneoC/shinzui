@@ -5,19 +5,29 @@
 
 #include "Resource.h"
 
-class RawData
-	: public ResourceData
+namespace resources
 {
-public:
-	static const char *getName()	{ return "Raw"; }
-
-	RawData(ResourceLoaderBase *pData)
-		: ResourceData(pData)
+	/**
+	 * Simple raw data resource.
+	 */
+	class RawData
+		: public ResourceData
 	{
-		getType() += getName();
-	}
-};
+	public:
+		static const char *getName()	{ return "Raw"; }
 
-typedef ResourceRef<RawData>			RawResource;
+		//////////////////////////////////////////////////////////////////////////
+
+		RawData(ResourceLoaderBase *pData)
+			: ResourceData(pData)
+		{
+			getType() += getName();
+		}
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+
+	typedef ResourceRef<RawData>			RawResource;
+}
 
 #endif //__RESOURCES_RAWRESOURCE_H__

@@ -108,22 +108,22 @@ namespace core
 		const math::Color3f &getColor() const	{ return m_color; }
 
 	protected:
-		core::Core *			m_pCore;
+		core::Core *			m_pCore;			// the core this process belongs to.
 
-		u32						m_id;
+		u32						m_id;				// identifier of this process.
 
-		os::AtomicCounter<u32>	m_jobs;
+		os::AtomicCounter<u32>	m_jobs;				// amount of active jobs this process has.
 		
-		double					m_frameDelay;
+		double					m_frameDelay;		// wait time between activations for this process.
 
-		u32						m_lastRunId;
-		double					m_lastRunTime;
-		double					m_deltaTime;
+		u32						m_lastRunId;		// last run identifier (used for dependency checking).
+		double					m_lastRunTime;		// last time the process was run.
+		double					m_deltaTime;		// time since last run from when the process was activated.
 
-		bool					m_forceStart;
-		DependencyProcessList	m_dependencies;
+		bool					m_forceStart;		// force the process to start regardless of checks.
+		DependencyProcessList	m_dependencies;		// list of processes this process dependends on before it can start.
 
-		math::Color3f			m_color;
+		math::Color3f			m_color;			// process color used by util::ThreadUsage
 	};
 }
 

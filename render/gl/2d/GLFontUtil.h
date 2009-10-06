@@ -21,7 +21,7 @@ namespace render
 		: public FontUtil
 	{
 	public:
-		GLFontUtil(GLFontResource font = Resource());
+		GLFontUtil(resources::GLFontResource font = resources::Resource());
 
 		/**
 		 * Prints a single line of text.

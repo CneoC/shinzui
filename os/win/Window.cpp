@@ -55,7 +55,7 @@ bool Window::create()
 	// Try to register the window class
 	if (!RegisterClass(&wc))
 	{
-		MessageBox(NULL,"Failed To Register The Window Class.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		throw std::runtime_error("Unable to register window class.");
 		return false;
 	}
 
@@ -72,13 +72,12 @@ bool Window::create()
 		// Change display settings
 		if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
 		{
-			if (MessageBox(NULL,"The Requested Fullscreen Mode Is Not Supported By\nYour Video Card. Use Windowed Mode Instead?","NeHe GL",MB_YESNO|MB_ICONEXCLAMATION)==IDYES)
+			if (MessageBox(NULL,"Fullscreen not supported, change to windowed mode instead?", getTitle().c_str(), MB_YESNO | MB_ICONEXCLAMATION) == IDYES)
 			{
 				setFullscreen(false);
 			}
 			else
 			{
-				MessageBox(NULL,"Program Will Now Close.","ERROR",MB_OK|MB_ICONSTOP);
 				return false;
 			}
 		}
@@ -110,7 +109,7 @@ bool Window::create()
 	if (!m_hWnd)
 	{
 		destroy();
-		MessageBox(NULL,"Window Creation Error.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		throw std::runtime_error("Window Creation Error.");
 		return false;
 	}
 
@@ -118,7 +117,7 @@ bool Window::create()
 	if (!m_hDC)
 	{
 		destroy();
-		MessageBox(NULL,"Can't Create A Device Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		throw std::runtime_error("Unable to create device context.");
 		return false;
 	}
 
@@ -136,19 +135,19 @@ bool Window::destroy()
 
 	if (m_hDC && !ReleaseDC(m_hWnd, m_hDC))
 	{
-		MessageBox(NULL,"Release Device Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		throw std::runtime_error("Unable to release device context.");
 	}
 	m_hDC = NULL;
 
 	if (m_hWnd && !DestroyWindow(m_hWnd))
 	{
-		MessageBox(NULL,"Could Not Release m_hWnd.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		throw std::runtime_error("Unable to destroy m_hWnd.");
 	}
 	m_hWnd = NULL;
 
 	if (!UnregisterClass(WINDOW_CLASS, m_hInstance))
 	{
-		MessageBox(NULL,"Could Not Unregister Class.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		throw std::runtime_error("Unable to unregister class.");
 	}
 	m_hInstance = NULL;
 

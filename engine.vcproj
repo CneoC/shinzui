@@ -258,7 +258,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resources\loaders\FileResourceLoader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\converters\texture\FITextureConverters.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\render\2d\FontUtil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\converters\font\FTFontConverters.cpp"
 				>
 			</File>
 			<File
@@ -274,11 +286,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resources\converters\font\GLFontConverters.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\render\gl\2d\GLFontUtil.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\resources\converters\texture\GLFrameBufferConverters.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\converters\shader\GLProgramConverters.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\render\gl\GLRenderDriver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\converters\shader\GLShaderConverters.cpp"
 				>
 			</File>
 			<File
@@ -287,6 +315,10 @@
 			</File>
 			<File
 				RelativePath=".\render\gl\core\GLStartRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\converters\texture\GLTextureConverters.cpp"
 				>
 			</File>
 			<File
@@ -302,11 +334,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\world\components\RenderBoxComponent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\render\Renderer.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\render\RendererLoaderBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\ResourceCache.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\ResourceId.cpp"
 				>
 			</File>
 			<File
@@ -356,11 +400,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\os\win\AtomicCounter.h"
+				RelativePath=".\os\current\AtomicCounter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\AtomicCounter.h"
+				RelativePath=".\os\win\AtomicCounter.h"
 				>
 			</File>
 			<File
@@ -428,7 +472,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\core\io\File.h"
+				RelativePath=".\os\common\io\File.h"
 				>
 			</File>
 			<File
@@ -472,11 +516,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\core\io\FSFile.h"
+				RelativePath=".\os\win\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\io\FSFile.h"
+				RelativePath=".\os\common\io\FSFile.h"
 				>
 			</File>
 			<File
@@ -492,11 +536,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\gl\GLContext.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLContext.h"
+				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -656,6 +700,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resources\ResourceData.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resources\ResourceId.h"
 				>
 			</File>
@@ -665,6 +713,10 @@
 			</File>
 			<File
 				RelativePath=".\resources\ResourceLoaderBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resources\ResourceRef.h"
 				>
 			</File>
 			<File
@@ -708,11 +760,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Thread.h"
+				RelativePath=".\os\common\Thread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\Thread.h"
+				RelativePath=".\os\current\Thread.h"
 				>
 			</File>
 			<File
@@ -748,11 +800,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Window.h"
+				RelativePath=".\os\current\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Window.h"
+				RelativePath=".\os\win\Window.h"
 				>
 			</File>
 			<File

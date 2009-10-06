@@ -7,6 +7,9 @@
 
 namespace math
 {
+	/**
+	 * 3D Vector class.
+	 */
 	template <typename T>
 	class Vector3
 	{
@@ -33,7 +36,6 @@ namespace math
 			, z(copy.z)
 		{
 		}
-
 
 		//////////////////////////////////////////////////////////////////////////
 

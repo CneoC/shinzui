@@ -10,22 +10,22 @@
 #include "resources/ResourceType.h"
 
 class StreamResourceTestData
-	: public RawData
+	: public resources::RawData
 {
 public:
 	static const char *getName()	{ return "Test"; }
 
-	StreamResourceTestData(ResourceLoaderBase *pData)
-		: RawData(pData)
+	StreamResourceTestData(resources::ResourceLoaderBase *pData)
+		: resources::RawData(pData)
 	{
 		getType() += getName();
 	}
 };
 
-typedef ResourceRef<StreamResourceTestData>		StreamResourceTestResource;
+typedef resources::ResourceRef<StreamResourceTestData>		StreamResourceTestResource;
 
 class StreamResourceTestLoader
-	: public ResourceLoaderBase
+	: public resources::ResourceLoaderBase
 {
 public:
 	/**
@@ -35,7 +35,7 @@ public:
 	{
 	}
 
-	virtual Resource get(const ResourceId &id)
+	virtual resources::Resource get(const resources::ResourceId &id)
 	{
 		if (id.getType() & "Test")
 		{
@@ -43,16 +43,16 @@ public:
 			pData->setId(id);
 			return StreamResourceTestResource(pData);
 		}
-		return Resource();
+		return resources::Resource();
 	}
 
 	/**
 	* Loads a file resource.
 	* @return if resource was properly loaded.
 	*/
-	virtual bool load(Resource &res, u32 flags)
+	virtual bool load(resources::Resource &res, u32 flags)
 	{
-		if (ResourceLoaderBase::load(res, flags))
+		if (resources::ResourceLoaderBase::load(res, flags))
 			return true;
 
 		// Wait for it...
@@ -70,9 +70,9 @@ public:
 	/**
 	 * Unloads a resource (blocking).
 	 */
-	virtual bool unload(Resource &res, u32 flags)
+	virtual bool unload(resources::Resource &res, u32 flags)
 	{
-		if (ResourceLoaderBase::unload(res, flags))
+		if (resources::ResourceLoaderBase::unload(res, flags))
 			return true;
 
 		return true;

@@ -31,6 +31,11 @@
 #include <resources/shader/GLProgramResource.h>
 #include <resources/texture/GLFrameBufferResource.h>
 
+#include <world/components/ComponentManager.h>
+#include <world/components/MoveComponent.h>
+#include <world/components/InputComponent.h>
+#include <world/components/RenderBoxComponent.h>
+
 #include <test/LogTestProc.h>
 #include <test/StreamResourceTest.h>
 
@@ -38,34 +43,46 @@
 #define ENABLE_ASYNC_LOAD_TEST
 #define PROCESS_OVERHEAD_TEST 0 //10000
 
+using namespace core;
+using namespace os;
+using namespace logging;
+using namespace resources;
+using namespace render;
+
 void main(const char *argc, int argv)
 {
 	try
 	{
 		FreeImage_Initialise();
 
-		logging::TextFormatter	textFormatter;
-		logging::FileWriter		fileWriter("engine.log");
-		logging::ConsoleWriter	consoleWriter;
+		/************************************************************************/
+		/* Initialize log system                                                */
+		/************************************************************************/
+		TextFormatter	textFormatter;
+		FileWriter		fileWriter("game.log");
+		ConsoleWriter	consoleWriter;
 
 		fileWriter.setFormatter(&textFormatter);
 		consoleWriter.setFormatter(&textFormatter);
 
 		LOG_GET_ROOT->addWriter(&fileWriter);
 		LOG_GET_ROOT->addWriter(&consoleWriter);
-		consoleWriter.setLevel(LEVEL_WARN);
+		consoleWriter.setLevel(LEVEL_INFO);
 
-		core::Core *pCore = new core::Core();
+		/************************************************************************/
+		/* Initialize core and resource system                                  */
+		/************************************************************************/
+		Core *pCore = new Core();
 
 		ResourceCache*	pCache	= new ResourceCache(pCore);
-		pCache->setJobs(1 + (pCore->getThreadCount() / 2));
+		pCache->setLoadJobs(1 + (pCore->getThreadCount() / 2));
 		pCore->addProcess(pCache);
 
 		ResourceLoader*	pLoader	= new ResourceLoader(pCache);
 		pCore->setLoader(pLoader);
 
-		pLoader->addLoader(new FileResourceLoader("./data/"));
-		pLoader->addLoader(new ResourceConverters);
+		pLoader->addLoader(new loaders::FileResourceLoader("./data/"));
+		pLoader->addLoader(new converters::ResourceConverters);
 
 #ifdef ENABLE_RESOURCE_TEST
 		FontResource font1(pLoader, "File::2d/fonts/debug.ttf");
@@ -96,28 +113,67 @@ void main(const char *argc, int argv)
 			pTestLogs[i] = test;
 		}
 #endif
-
-		// Create window before doing any other rendering related stuff
-		os::Window		*pWindow		= new os::Window(pCore);
-		pWindow->setTitle("Engine Test");
+		/************************************************************************/
+		/* Window creation                                                      */
+		/************************************************************************/
+		Window		*pWindow		= new Window(pCore);
+		pWindow->setTitle("Game");
 		pWindow->setSize(math::Vector2i(1024, 768));
 		pWindow->create();
+		pCore->addProcess(pWindow);
 
-		render::RenderDriver *pDriver	= new render::GLRenderDriver(pCore, pWindow);
+		RenderDriver *pDriver	= new GLRenderDriver(pCore, pWindow);
 		pCore->setDriver(pDriver);
 
+		/************************************************************************/
+		/* Initialize entity system                                             */
+		/************************************************************************/
+		world::ComponentManager *pComponentMgr = new world::ComponentManager(pCore);
+		pCore->addProcess(pComponentMgr);
+
+		world::RenderBoxComponent *pRenderBoxComponent = new world::RenderBoxComponent(pCore, pComponentMgr);
+		Renderer *	pScene	= pRenderBoxComponent;
+
+		pComponentMgr->addComponent("Move", new world::MoveComponent(pCore, pComponentMgr));
+		pComponentMgr->addComponent("Input", new world::InputComponent(pCore, pComponentMgr));
+		pComponentMgr->addComponent("RenderBox", pRenderBoxComponent);
+
+		for (u32 i = 0; i < 10000; i++)
+		{
+			world::Entity ent = world::Entity::create("Test", pComponentMgr);
+			ent.addComponent("Move");
+			ent.addComponent("Input");
+			ent.addComponent("RenderBox");
+
+			math::Vector3f pos(
+				(rand() % 1000 - 500) * 0.05f,
+				(rand() % 1000 - 500) * 0.01f,
+				(rand() % 1000 - 500) * 0.05f);
+			world::TransformData *pTransform = ent.getData()->get<world::TransformData>("Transform");
+			pTransform->position = pos;
+
+			world::MoveData *pMove = ent.getData()->get<world::MoveData>("Move");
+			pMove->velocity = pos * math::Vector3f(0.3f, 0, 0.3f);
+			pMove->velocity.y += (rand() % 1000) * 0.02f;
+			pMove->gravity = math::Vector3f(0, (fabs(pos.x) + fabs(pos.z)) * -0.02, 0);
+			pMove->damping = math::Vector3f(0.99f, 0.99f, 0.99f);
+		}
+
+		/************************************************************************/
+		/* Initialize render process                                            */
+		/************************************************************************/
 		pCore->getDriver()->getContext()->bind();
 
-		render::Renderer *	pRenderStart	= pCore->getDriver()->createRenderer("Start");
-		render::Renderer *	pStartFB		= pCore->getDriver()->createRenderer("StartFB");
-		render::Renderer *	pScene			= new world::Scene(pCore);
-		render::Renderer *	pDrawFPS		= new console::DrawFPS(pCore);
-		render::Renderer *	pConsole		= new console::Console(pCore);
-		render::Renderer *	pThreadUsage	= new console::ThreadUsage(pCore);
-		render::Renderer *	pEndFB			= pCore->getDriver()->createRenderer("EndFB");
-		render::Renderer *	pRenderEnd		= pCore->getDriver()->createRenderer("End");
+		Renderer *	pRenderStart	= pCore->getDriver()->createRenderer("Start");
+		Renderer *	pStartFB		= pCore->getDriver()->createRenderer("StartFB");
+		//Renderer *	pScene			= new world::Scene(pCore);
+		Renderer *	pDrawFPS		= new console::DrawFPS(pCore);
+		Renderer *	pConsole		= new console::Console(pCore);
+		Renderer *	pThreadUsage	= new console::ThreadUsage(pCore);
+		Renderer *	pEndFB			= pCore->getDriver()->createRenderer("EndFB");
+		Renderer *	pRenderEnd		= pCore->getDriver()->createRenderer("End");
 
-		render::RenderChain *pChain = new render::RenderChain(pCore);
+		RenderChain *pChain = new RenderChain(pCore);
 		pChain->link(pRenderStart)
 			->link(pStartFB)
 			->link(pScene)
@@ -127,12 +183,16 @@ void main(const char *argc, int argv)
 			->link(pDrawFPS)
 			->link(pRenderEnd);
 
-		render::RendererProc *pRenderProc = new render::RendererProc(pCore);
+		RendererProc *pRenderProc = new RendererProc(pCore);
 		pRenderProc->setFrameDelay(0.01667); // 60 fps
 		pRenderProc->setRenderer(pChain);
+		pCore->addProcess(pRenderProc);
 
 		pCore->getDriver()->getContext()->unbind();
 
+		/************************************************************************/
+		/* Preload some resources                                               */
+		/************************************************************************/
 		pCore->getDriver()->getLoaderContext()->bind();
 
 		FrameBufferDef fbDef(pLoader);
@@ -145,8 +205,8 @@ void main(const char *argc, int argv)
 		fbDef->setLoaded(true);
 		GLFrameBufferResource fb(fbDef);
 		fb.load();
-		pStartFB->as<render::StartFrameBuffer>()->setFrameBuffer(fb);
-		pEndFB->as<render::EndFrameBuffer>()->setFrameBuffer(fb);
+		pStartFB->as<StartFrameBuffer>()->setFrameBuffer(fb);
+		pEndFB->as<EndFrameBuffer>()->setFrameBuffer(fb);
 
 		ProgramResource programDef(pLoader);
 		programDef->addShader("File::2d/shaders/bloom.frag");
@@ -154,7 +214,7 @@ void main(const char *argc, int argv)
 		programDef->setLoaded(true);
 		GLProgramResource program(programDef);
 		program.load(ResourceLoaderBase::FLAG_ASYNC);
-		pEndFB->as<render::EndFrameBuffer>()->setProgram(program);
+		pEndFB->as<EndFrameBuffer>()->setProgram(program);
 
 
 #ifdef ENABLE_ASYNC_LOAD_TEST
@@ -172,19 +232,16 @@ void main(const char *argc, int argv)
 
 		pCore->getDriver()->getLoaderContext()->unbind();
 
-		// Add the window process
-		pCore->addProcess(pWindow);
-
-		// Add the render process chain
-		pCore->addProcess(pRenderProc);
-
+		/************************************************************************/
+		/* Run the core                                                         */
+		/************************************************************************/
 		pWindow->show();
 
 		// Run process handling
 		pCore->run();
 
 #if PROCESS_OVERHEAD_TEST
-		logging::Log *log = LOG_GET_ROOT;
+		Log *log = LOG_GET_ROOT;
 		if (LOG_CHECK(log, LEVEL_TRACE))
 		{
 			for (u32 i = 0; i < PROCESS_OVERHEAD_TEST; i++)
@@ -195,10 +252,13 @@ void main(const char *argc, int argv)
 		}
 		delete pTestLogs;
 #endif
+
 		delete pCore;
 
 		pWindow->destroy();
 		delete pWindow;
+
+		// TODO: Clean up processes and renderers
 
 		LOG_GET_ROOT->clearWriters();
 	}
@@ -211,5 +271,4 @@ void main(const char *argc, int argv)
 
 	return;
 }
-
 #endif //ENABLE_UNIT_TEST

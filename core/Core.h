@@ -12,7 +12,10 @@
 #include "util/logging/LogManager.h"
 #include "util/FastDelegate.h"
 
-class ResourceLoader;
+namespace resources
+{
+	class ResourceLoader;
+}
 namespace render
 {
 	class RenderDriver;
@@ -213,25 +216,25 @@ namespace core
 		}
 
 		//! Gets if the core is still running.
-		bool isRunning() const							{ return m_running; }
+		bool isRunning() const								{ return m_running; }
 
 		//! Gets the job the core process is currently working on.
-		const Job &getJob() const						{ return m_job; }
+		const Job &getJob() const							{ return m_job; }
 		//! Gets if the core process is currently working on a job.
-		bool isWorking() const							{ return m_job.threadMask != 0; }
+		bool isWorking() const								{ return m_job.threadMask != 0; }
 
 		//! Gets the current resource loader.
-		ResourceLoader *getLoader() const				{ return m_pLoader; }
+		resources::ResourceLoader *getLoader() const		{ return m_pLoader; }
 		//! Sets the current resource loader.
-		void setLoader(ResourceLoader *pLoader)			{ m_pLoader = pLoader; }
+		void setLoader(resources::ResourceLoader *pLoader)	{ m_pLoader = pLoader; }
 
 		//! Gets the current render driver.
-		render::RenderDriver *getDriver() const			{ return m_pDriver; }
+		render::RenderDriver *getDriver() const				{ return m_pDriver; }
 		//! Sets the current render driver.
-		void setDriver(render::RenderDriver *pDriver)	{ m_pDriver = pDriver; }
+		void setDriver(render::RenderDriver *pDriver)		{ m_pDriver = pDriver; }
 
 		//! Gets the core log.
-		logging::Log * getLog()	{ return m_log; }
+		logging::Log * getLog()								{ return m_log; }
 
 	protected:
 		os::Time				m_startTime;			// start time of the core system.
@@ -252,7 +255,7 @@ namespace core
 
 		//////////////////////////////////////////////////////////////////////////
 
-		ResourceLoader *		m_pLoader;				// current resource loader.
+		resources::ResourceLoader *m_pLoader;			// current resource loader.
 		render::RenderDriver *	m_pDriver;				// current render driver.
 
 		logging::Log *			m_log;					// logger used for core

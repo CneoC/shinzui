@@ -16,15 +16,15 @@ namespace render
 	public:
 		EndFrameBuffer(core::Core *pCore) : Renderer(pCore) {}
 
-		void setFrameBuffer(FrameBufferResource frameBuffer)	{ m_frameBuffer = frameBuffer; }
-		FrameBufferResource getFrameBuffer()					{ return m_frameBuffer; }
+		void setFrameBuffer(resources::FrameBufferResource frameBuffer)	{ m_frameBuffer = frameBuffer; }
+		resources::FrameBufferResource getFrameBuffer()					{ return m_frameBuffer; }
 
-		void setProgram(ProgramResource program)				{ m_program = program; }
-		ProgramResource getProgram()							{ return m_program; }
+		void setProgram(resources::ProgramResource program)				{ m_program = program; }
+		resources::ProgramResource getProgram()							{ return m_program; }
 
 	protected:
-		FrameBufferResource	m_frameBuffer;
-		ProgramResource		m_program;
+		resources::FrameBufferResource	m_frameBuffer;
+		resources::ProgramResource		m_program;
 	};
 }
 

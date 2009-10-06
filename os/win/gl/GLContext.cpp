@@ -45,7 +45,7 @@ bool GLContext::create()
 	if (!pixelFormat)
 	{
 		destroy();
-		MessageBox(NULL,"Can't Find A Suitable PixelFormat.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		throw std::runtime_error("Unable to find proper pixel format.");
 		return false;
 	}
 
@@ -53,7 +53,7 @@ bool GLContext::create()
 	if (!SetPixelFormat(m_pWindow->getHDC(), pixelFormat, &pfd))
 	{
 		destroy();
-		MessageBox(NULL,"Can't Set The PixelFormat.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		throw std::runtime_error("Unable to set pixel format.");
 		return false;
 	}
 
@@ -62,7 +62,7 @@ bool GLContext::create()
 	if (!m_hRC)
 	{
 		destroy();
-		MessageBox(NULL,"Can't Create A GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		throw std::runtime_error("Unable to create GL context.");
 		return false;
 	}
 
@@ -70,7 +70,7 @@ bool GLContext::create()
 	if (!bind())
 	{
 		destroy();
-		MessageBox(NULL,"Can't Activate The GL Rendering Context.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		throw std::runtime_error("Unable to activate GL context.");
 		return false;
 	}
 
@@ -105,12 +105,12 @@ bool GLContext::destroy()
 	{
 		if (wglGetCurrentContext() && !wglMakeCurrent(NULL, NULL))
 		{
-			MessageBox(NULL,"Release Of DC And RC Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+			throw std::runtime_error("Unable to release GL context.");
 		}
 
 		if (!wglDeleteContext(m_hRC))
 		{
-			MessageBox(NULL,"Release Rendering Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+			throw std::runtime_error("Unable to destroy GL context.");
 		}
 		m_hRC = NULL;
 	}

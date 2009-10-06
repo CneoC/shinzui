@@ -4,6 +4,10 @@
 
 #include <stack>
 
+using namespace resources;
+
+//////////////////////////////////////////////////////////////////////////
+
 Resource ResourceLoaderBase::get(const ResourceId &id)
 {
 	// Try to get the resource with each of the child loaders

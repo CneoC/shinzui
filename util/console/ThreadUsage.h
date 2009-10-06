@@ -35,7 +35,7 @@ namespace console
 
 		//////////////////////////////////////////////////////////////////////////
 
-		ThreadUsageInfo(core::Core *pCore, double show = 10, double keep = 12);
+		ThreadUsageInfo(core::Core *pCore, double show = 1, double keep = 2);
 
 		virtual bool run();
 

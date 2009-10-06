@@ -7,22 +7,33 @@
 
 #include "math/Vector2.h"
 
-class TextureData
-	: public ResourceData
+//////////////////////////////////////////////////////////////////////////
+
+namespace resources
 {
-public:
-	static const char *getName()	{ return "Texture"; }
-
-	TextureData(ResourceLoaderBase *pData)
-		: ResourceData(pData)
+	class TextureData
+		: public ResourceData
 	{
-		getType() += getName();
-	}
+	public:
+		static const char *getName()	{ return "Texture"; }
 
-	virtual void bind() {}
-	virtual void unbind() {}
-};
+		//////////////////////////////////////////////////////////////////////////
 
-typedef ResourceRef<TextureData>	TextureResource;
+		TextureData(ResourceLoaderBase *pData)
+			: ResourceData(pData)
+		{
+			getType() += getName();
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+
+		virtual void bind() {}
+		virtual void unbind() {}
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+
+	typedef ResourceRef<TextureData>	TextureResource;
+}
 
 #endif //__TEXTURE_RESOURCE_H__

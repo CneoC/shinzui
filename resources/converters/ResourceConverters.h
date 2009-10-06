@@ -9,19 +9,25 @@
 #include "resources/converters/texture/TextureConverter.h"
 #include "resources/ResourceType.h"
 
-class ResourceConverters
-	: public ResourceLoaderBase
+namespace resources
 {
-public:
-	/**
-	* Constructs a new file resource loader for raw disk access resources.
-	*/
-	ResourceConverters()
+namespace converters
+{
+	class ResourceConverters
+		: public ResourceLoaderBase
 	{
-		addLoader(new FontConverter);
-		addLoader(new ShaderConverter);
-		addLoader(new TextureConverter);
-	}
-};
+	public:
+		/**
+		* Constructs a new file resource loader for raw disk access resources.
+		*/
+		ResourceConverters()
+		{
+			addLoader(new FontConverter);
+			addLoader(new ShaderConverter);
+			addLoader(new TextureConverter);
+		}
+	};
+}
+}
 
 #endif //__RESOURCES_RESOURCECONVERTERS_H__

@@ -7,20 +7,23 @@
 #include "FTFontConverters.h"
 #include "GLFontConverters.h"
 
-class FontConverter
-	: public ResourceLoaderBase
-{
-public:
-	/**
-	 * Constructs a font converter.
-	 * @param types the types of font resource loaders to support.
-	 */
-	FontConverter()
+namespace resources {
+namespace converters {
+	class FontConverter
+		: public ResourceLoaderBase
 	{
-		addLoader(new FTFontConverters::ConvertFromFile);
-		addLoader(new GLFontConverters::ConvertFromFT);
-	}
+	public:
+		/**
+		 * Constructs a font converter.
+		 */
+		FontConverter()
+		{
+			addLoader(new FTFontConverters::ConvertFromFile);
+			addLoader(new GLFontConverters::ConvertFromFT);
+		}
 
-};
+	};
+}
+}
 
 #endif //__RESOURCES_FONTCONVERTER_H__

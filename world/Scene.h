@@ -24,7 +24,7 @@ namespace world
 		virtual void render(double delta);
 
 	protected:
-		GLTextureResource m_texture;
+		resources::GLTextureResource m_texture;
 	};
 }
 

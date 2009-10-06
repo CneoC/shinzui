@@ -7,6 +7,8 @@
 
 #include "resources/texture/FrameBufferResource.h"
 
+//////////////////////////////////////////////////////////////////////////
+
 namespace render
 {
 	class StartFrameBuffer
@@ -15,11 +17,13 @@ namespace render
 	public:
 		StartFrameBuffer(core::Core *pCore) : Renderer(pCore) {}
 
-		void setFrameBuffer(FrameBufferResource frameBuffer)	{ m_frameBuffer = frameBuffer; }
-		FrameBufferResource getFrameBuffer()					{ return m_frameBuffer; }
+		//////////////////////////////////////////////////////////////////////////
+
+		void setFrameBuffer(resources::FrameBufferResource frameBuffer)	{ m_frameBuffer = frameBuffer; }
+		resources::FrameBufferResource getFrameBuffer()					{ return m_frameBuffer; }
 
 	protected:
-		FrameBufferResource	m_frameBuffer;
+		resources::FrameBufferResource	m_frameBuffer;
 	};
 }
 

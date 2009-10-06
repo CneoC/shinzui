@@ -9,24 +9,36 @@
 
 namespace os
 {
+	/**
+	 * High detail time class.
+	 */
 	class Time
 	{
 	public:
 		// Initial value
 		enum NowValue	{ NOW };
 
+		/**
+		 * Initializes time to zero.
+		 */
 		Time()
 		{
 			m_value.QuadPart = 0;
 			m_frequency.QuadPart = 0;
 		}
 
+		/**
+		 * Initializes time to NOW.
+		 */
 		Time(NowValue)
 		{
 			QueryPerformanceCounter(&m_value);
 			QueryPerformanceFrequency(&m_frequency);
 		}
 
+		/**
+		 * Copy constructor.
+		 */
 		Time(const Time &copy)
 		{
 			m_value.QuadPart = copy.m_value.QuadPart;
@@ -35,6 +47,10 @@ namespace os
 
 		//////////////////////////////////////////////////////////////////////////
 
+		/**
+		 * Gets the number of seconds as a double.
+		 * Possibly causes some precision loss.
+		 */
 		double getSeconds() const
 		{
 			assert(m_frequency.QuadPart > 0);
@@ -43,12 +59,13 @@ namespace os
 
 		//////////////////////////////////////////////////////////////////////////
 
+		//! Subtract two times.
 		Time &operator -= (const Time &other)
 		{
 			m_value.QuadPart = m_value.QuadPart - other.m_value.QuadPart;
 			return *this;
 		}
-
+		//! Subtract two times.
 		Time operator - (const Time &other) const
 		{
 			Time result(*this);
@@ -56,12 +73,13 @@ namespace os
 			return result;
 		}
 
+		//! Add two times.
 		Time &operator += (const Time &other)
 		{
 			m_value.QuadPart = m_value.QuadPart + other.m_value.QuadPart;
 			return *this;
 		}
-
+		//! Add two times.
 		Time operator + (const Time &other) const
 		{
 			Time result(*this);
@@ -71,16 +89,19 @@ namespace os
 
 		//////////////////////////////////////////////////////////////////////////
 
+		//! Compare if two times are equal.
 		bool operator == (const Time &other) const
 		{
 			return m_value.QuadPart == m_value.QuadPart + other.m_value.QuadPart;
 		}
 
+		//! Compare if this time comes earlier than the other time.
 		bool operator < (const Time &other) const
 		{
 			return m_value.QuadPart < m_value.QuadPart + other.m_value.QuadPart;
 		}
 
+		//! Compare if this time comes later than the other time.
 		bool operator > (const Time &other) const
 		{
 			return m_value.QuadPart > m_value.QuadPart + other.m_value.QuadPart;

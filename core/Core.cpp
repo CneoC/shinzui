@@ -32,6 +32,7 @@ Core::Core(s32 threadCount)
 
 Core::~Core()
 {
+	// Stop all threads
 	ThreadList::iterator iter;
 	for (iter = m_threads.begin(); iter != m_threads.end(); ++iter)
 	{
@@ -76,7 +77,7 @@ void Core::run()
 
 				// If the process is ready
 				double delta = elapsed - pProcess->getLastRunTime();
-				if (pProcess->getJobs() == 0 &&		// No longer running any jobs
+				if (pProcess->getJobs() == 0 &&				// No longer running any jobs
 					delta >= pProcess->getFrameDelay() &&	// Passed expected frame delay between calls
 					pProcess->isDependencyDone())			// Dependencies done as well
 				{
@@ -92,6 +93,7 @@ void Core::run()
 						if (fabs(diff) > 0.05) LOG_WARN(m_log, "Process expected execution time exceeded by: " << diff);
 					}
 
+					// Inform the process it started, let it add it's own jobs if required.
 					pProcess->setDeltaTime(elapsed - pProcess->getLastRunTime());
 					pProcess->onStart();
 					pProcess->setLastRunTime(elapsed);
@@ -113,6 +115,7 @@ void Core::run()
 			// Only assign jobs to inactive threads
 			if (!pThread->isWorking())
 			{
+				// Get next job compatible with this thread id
 				if (getNextJob(pThread->getId(), job))
 				{
 					{
@@ -151,7 +154,7 @@ bool Core::getNextJob(u32 threadMask, Job &nextJob)
 	return false;
 }
 
-// TODO: optimization point - threading
+// TODO: optimize
 void Core::addProcess(Process *pProcess)
 {
 	boost::lock_guard<boost::shared_mutex> lock(m_processesMutex);
@@ -231,13 +234,16 @@ void Core::removeProcess(Process *pProcess)
 
 void Core::addJob(Process *pProcess, const Job::Function &func, u32 threadMask)
 {
+	// Define the job
 	Job job;
 	job.threadMask = threadMask;
 	job.pProcess = pProcess;
 	job.func = func;
 
+	// Update the job count in the process
 	pProcess->incJobs();
 
+	// Add the job to the queue
 	boost::lock_guard<boost::shared_mutex> lock(m_jobsMutex);
 	m_jobs.push_back(job);
 }
@@ -252,7 +258,10 @@ void Core::runJob(const Job &job)
 	}
 	else
 	{
+		// Update the job count in the process
 		job.pProcess->decJobs();
+		
+		// Inform the process if the last job is completed
 		if (job.pProcess->getJobs() == 0)
 			job.pProcess->onStop();
 	}
@@ -262,16 +271,21 @@ void Core::runJob(const Job &job)
 
 bool CoreThread::run()
 {
+	// Wait for a notify from the job dispatcher
 	boost::unique_lock<boost::mutex> lock(m_mutex);
 	while (!isWorking() && m_pCore->isRunning())
 	{
 		m_condition.wait(lock);
 	}
 
-	m_pCore->runJob(m_job);
-	m_job.threadMask	= 0;
-	m_job.pProcess		= NULL;
-	++m_jobsDone;
+	// We always have a job here, except when !m_pCore->isRunning()
+	if (isWorking())
+	{
+		m_pCore->runJob(m_job);
+		m_job.threadMask	= 0;
+		m_job.pProcess		= NULL;
+		++m_jobsDone;
+	}
 
 	return m_pCore->isRunning();
 }

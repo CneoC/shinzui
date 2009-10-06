@@ -2,6 +2,10 @@
 
 #include "ResourceCache.h"
 
+using namespace resources;
+
+//////////////////////////////////////////////////////////////////////////
+
 ResourceLoader::ResourceLoader(ResourceCache *pCache)
 	: m_pCache(pCache)
 	, m_log(LOG_GET("Resource.Loader"))

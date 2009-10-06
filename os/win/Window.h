@@ -11,14 +11,21 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+//////////////////////////////////////////////////////////////////////////
+
 namespace os
 {
+	/**
+	 * Windows based Window class.
+	 */
 	class Window :
 		public WindowBase
 	{
 	public:
 		Window(core::Core *pCore);
 		~Window();
+
+		//////////////////////////////////////////////////////////////////////////
 
 		virtual void update();
 

@@ -7,20 +7,25 @@
 #include "GLShaderConverters.h"
 #include "GLProgramConverters.h"
 
-class ShaderConverter
-	: public ResourceLoaderBase
+namespace resources
 {
-public:
-	/**
-	 * Constructs a font converter.
-	 * @param types the types of font resource loaders to support.
-	 */
-	ShaderConverter()
+namespace converters
+{
+	class ShaderConverter
+		: public ResourceLoaderBase
 	{
-		addLoader(new GLShaderConverters::ConvertFromFile);
-		addLoader(new GLProgramConverters::ConvertFromProgram);
-	}
+	public:
+		/**
+		 * Constructs a font converter.
+		 */
+		ShaderConverter()
+		{
+			addLoader(new GLShaderConverters::ConvertFromFile);
+			addLoader(new GLProgramConverters::ConvertFromProgram);
+		}
 
-};
+	};
+}
+}
 
 #endif //__RESOURCES_SHADERCONVERTER_H__

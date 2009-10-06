@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 using namespace render;
+using namespace resources;
 
 GLFontUtil::GLFontUtil(GLFontResource font)
 	: FontUtil(font)

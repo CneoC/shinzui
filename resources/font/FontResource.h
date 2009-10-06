@@ -5,19 +5,28 @@
 
 #include "resources/Resource.h"
 
-class FontData
-	: public ResourceData
+//////////////////////////////////////////////////////////////////////////
+
+namespace resources
 {
-public:
-	static const char *getName()	{ return "Font"; }
-
-	FontData(ResourceLoaderBase *pData)
-		: ResourceData(pData)
+	class FontData
+		: public ResourceData
 	{
-		getType() += getName();
-	}
-};
+	public:
+		static const char *getName()	{ return "Font"; }
 
-typedef ResourceRef<FontData>		FontResource;
+		//////////////////////////////////////////////////////////////////////////
+
+		FontData(ResourceLoaderBase *pData)
+			: ResourceData(pData)
+		{
+			getType() += getName();
+		}
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+
+	typedef ResourceRef<FontData>		FontResource;
+}
 
 #endif //__RESOURCES_FONT_FONTRESOURCE_H__

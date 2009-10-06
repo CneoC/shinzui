@@ -5,21 +5,30 @@
 
 #include "resources/Resource.h"
 
-class ShaderData
-	: public ResourceData
+//////////////////////////////////////////////////////////////////////////
+
+namespace resources
 {
-public:
-	static const char *getName()	{ return "Shader"; }
-
-	ShaderData(ResourceLoaderBase *pLoader)
-		: ResourceData(pLoader)
+	class ShaderData
+		: public ResourceData
 	{
-		getType() += getName();
-	}
+	public:
+		static const char *getName()	{ return "Shader"; }
 
-protected:
-};
+		//////////////////////////////////////////////////////////////////////////
 
-typedef ResourceRef<ShaderData>		ShaderResource;
+		ShaderData(ResourceLoaderBase *pLoader)
+			: ResourceData(pLoader)
+		{
+			getType() += getName();
+		}
+
+	protected:
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+
+	typedef ResourceRef<ShaderData>		ShaderResource;
+}
 
 #endif //__RESOURCES_SHADERRESOURCE_H__

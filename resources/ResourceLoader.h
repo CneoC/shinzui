@@ -1,58 +1,63 @@
 #pragma once
 
-#ifndef __RESOURCE_LOADER_H__
-#define __RESOURCE_LOADER_H__
+#ifndef __RESOURCE_RESOURCELOADER_H__
+#define __RESOURCE_RESOURCELOADER_H__
 
 #include "ResourceLoaderBase.h"
 
 #include "util/logging/Log.h"
 
-class ResourceCache;
+//////////////////////////////////////////////////////////////////////////
 
-/**
- * Root class for resource loaders.
- * Uses a ResourceCache instance to cache and stream loaded resources.
- */
-class ResourceLoader
-	: public ResourceLoaderBase
+namespace resources
 {
-public:
-	/**
-	 * Constructs a base resource loader.
-	 * @param pCache	the ResourceCache to use to manage cached and async loaded resources.
-	 */
-	ResourceLoader(ResourceCache *pCache = NULL);
-
-	//////////////////////////////////////////////////////////////////////////
-
-	//! @see ResourceLoaderBase::get
-	virtual Resource get(const ResourceId &id);
-	//! @see ResourceLoaderBase::convert
-	virtual Resource convert(const Resource &resource, const ResourceType &type);
-	//! @see ResourceLoaderBase::clone
-	virtual Resource clone(const Resource &src, Resource dst);
-
-	//////////////////////////////////////////////////////////////////////////
+	class ResourceCache;
 
 	/**
-	 * Loads a resource (blocking).
-	 * @return if resource was properly loaded.
+	 * Root class for resource loaders.
+	 * Uses a ResourceCache instance to cache and stream loaded resources.
 	 */
-	virtual bool load(Resource &res, u32 flags = FLAG_NONE)		{ return false; }
+	class ResourceLoader
+		: public ResourceLoaderBase
+	{
+	public:
+		/**
+		 * Constructs a base resource loader.
+		 * @param pCache	the ResourceCache to use to manage cached and async loaded resources.
+		 */
+		ResourceLoader(ResourceCache *pCache = NULL);
 
-	/**
-	 * Unloads a resource (blocking).
-	 */
-	virtual bool unload(Resource &res, u32 flags = FLAG_NONE)	{ return false; }
+		//////////////////////////////////////////////////////////////////////////
 
-	//////////////////////////////////////////////////////////////////////////
+		//! @see ResourceLoaderBase::get
+		virtual Resource get(const ResourceId &id);
+		//! @see ResourceLoaderBase::convert
+		virtual Resource convert(const Resource &resource, const ResourceType &type);
+		//! @see ResourceLoaderBase::clone
+		virtual Resource clone(const Resource &src, Resource dst);
 
-	//! Gets the resource cache
-	ResourceCache *getCache() const		{ return m_pCache; }
+		//////////////////////////////////////////////////////////////////////////
 
-protected:
-	ResourceCache *	m_pCache;
-	logging::Log *	m_log;
-};
+		/**
+		 * Loads a resource (blocking).
+		 * @return if resource was properly loaded.
+		 */
+		virtual bool load(Resource &res, u32 flags = FLAG_NONE)		{ return false; }
 
-#endif //__RESOURCE_LOADER_H__
+		/**
+		 * Unloads a resource (blocking).
+		 */
+		virtual bool unload(Resource &res, u32 flags = FLAG_NONE)	{ return false; }
+
+		//////////////////////////////////////////////////////////////////////////
+
+		//! Gets the resource cache
+		ResourceCache *getCache() const		{ return m_pCache; }
+
+	protected:
+		ResourceCache *	m_pCache;
+		logging::Log *	m_log;
+	};
+}
+
+#endif //__RESOURCE_RESOURCELOADER_H__

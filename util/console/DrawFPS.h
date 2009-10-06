@@ -24,7 +24,7 @@ namespace console
 	protected:
 		render::FontUtil *m_pFontUtil;
 
-		FontResource	m_font;
+		resources::FontResource	m_font;
 
 		double	m_fps;
 		u32		m_frameCount;
