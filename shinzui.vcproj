@@ -42,11 +42,12 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include;../libraries/FreeImage/include;../libraries/FreeImage/Wrapper/FreeImagePlus/include"
+				AdditionalIncludeDirectories=".;libraries/glew/include;libraries/freetype/include;libraries/freeimage/include;libraries/freeimageplus/include"
 				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				FloatingPointModel="2"
 				RuntimeTypeInfo="true"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -62,7 +63,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				LinkLibraryDependencies="false"
+				LinkLibraryDependencies="true"
+				AdditionalDependencies="glew32sd.lib freetypemtd.lib FreeImaged.lib FreeImagePlusd.lib"
+				AdditionalLibraryDirectories="libraries\freeimage\lib;libraries\freeimageplus\lib;libraries\freetype\lib;libraries\glew\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -108,11 +111,12 @@
 				AdditionalOptions="/MP"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include;../libraries/FreeImage/include;../libraries/FreeImage/Wrapper/FreeImagePlus/include"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories=".;libraries/glew/include;libraries/freetype/include;libraries/freeimage/include;libraries/freeimageplus/include"
 				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
 				StringPooling="true"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
+				EnableFunctionLevelLinking="false"
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
 				RuntimeTypeInfo="false"
@@ -131,6 +135,8 @@
 			<Tool
 				Name="VCLibrarianTool"
 				LinkLibraryDependencies="false"
+				AdditionalDependencies="glew32s.lib freetypemt.lib FreeImage.lib FreeImagePlus.lib"
+				AdditionalLibraryDirectories="libraries\freeimage\lib;libraries\freeimageplus\lib;libraries\freetype\lib;libraries\glew\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -143,78 +149,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug UnitTest|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
-				Optimization="0"
-				AdditionalIncludeDirectories=".;../libraries/glew/include;../libraries/freetype_2_3_9/include;../libraries/boost_1_40_0/include;../libraries/FreeImage/include;../libraries/FreeImage/Wrapper/FreeImagePlus/include"
-				PreprocessorDefinitions="ENABLE_UNIT_TEST;GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE"
-				MinimalRebuild="false"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				RuntimeTypeInfo="true"
-				WarningLevel="3"
-				DebugInformationFormat="4"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib"
-				AdditionalLibraryDirectories="../libraries/boost_1_40_0/lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -375,10 +309,6 @@
 			</File>
 			<File
 				RelativePath=".\world\Scene.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\test\testMain.cpp"
 				>
 			</File>
 			<File
@@ -644,10 +574,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\test\LogTestProc.h"
-				>
-			</File>
-			<File
 				RelativePath=".\math\Math.h"
 				>
 			</File>
@@ -760,14 +686,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\test\StreamResourceTest.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test\TestCase.h"
-				>
-			</File>
-			<File
 				RelativePath=".\resources\converters\texture\TextureConverter.h"
 				>
 			</File>
@@ -776,11 +694,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Thread.h"
+				RelativePath=".\os\common\Thread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\Thread.h"
+				RelativePath=".\os\current\Thread.h"
 				>
 			</File>
 			<File
@@ -838,6 +756,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath=".\test\test.vcproj"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

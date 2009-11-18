@@ -1,7 +1,8 @@
 Debug/
-Debug UnitTest/
 Release/
-engine.suo
-engine.ncb
-engine.vcproj.*
+test/Debug/
+test/Release/
+*.suo
+*.ncb
+*.vcproj.*
 *.log
