@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<ShaderDesigner_Configuration>
+  <Settings Mesh="PLANE" InfoTips="1" ShowNormals="False" ShowSpheres="False" HUD="True" UseGenericCompiler="True" OutputIntermediate="False" EnablePointSmooth="False" />
+</ShaderDesigner_Configuration>

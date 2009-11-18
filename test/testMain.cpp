@@ -1,3 +1,27 @@
+//////////////////////////////////////////////////////////////////////////
+//
+// This file is part of Shinzui.
+//
+// Shinzui is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Shinzui is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Shinzui.  If not, see <http://www.gnu.org/licenses/>.
+//
+//////////////////////////////////////////////////////////////////////////
+//
+// testMain.cpp
+// Copyright (c) 2009 Coen Campman
+//
+//////////////////////////////////////////////////////////////////////////
+
 #ifdef ENABLE_UNIT_TEST
 #include <cstdio>
 
@@ -39,8 +63,8 @@
 #include <test/LogTestProc.h>
 #include <test/StreamResourceTest.h>
 
-#define ENABLE_RESOURCE_TEST
-#define ENABLE_ASYNC_LOAD_TEST
+//#define ENABLE_RESOURCE_TEST
+//#define ENABLE_ASYNC_LOAD_TEST
 #define PROCESS_OVERHEAD_TEST 0 //10000
 
 using namespace core;
@@ -138,7 +162,7 @@ void main(const char *argc, int argv)
 		pComponentMgr->addComponent("Input", new world::InputComponent(pCore, pComponentMgr));
 		pComponentMgr->addComponent("RenderBox", pRenderBoxComponent);
 
-		for (u32 i = 0; i < 10000; i++)
+		for (u32 i = 0; i < 1000; i++)
 		{
 			world::Entity ent = world::Entity::create("Test", pComponentMgr);
 			ent.addComponent("Move");
@@ -146,17 +170,17 @@ void main(const char *argc, int argv)
 			ent.addComponent("RenderBox");
 
 			math::Vector3f pos(
-				(rand() % 1000 - 500) * 0.05f,
-				(rand() % 1000 - 500) * 0.01f,
-				(rand() % 1000 - 500) * 0.05f);
+				(rand() % 1000 - 500) * 0.1f,
+				(rand() % 1000 - 500) * 0.1f,
+				(rand() % 1000 - 500) * 0.1f);
 			world::TransformData *pTransform = ent.getData()->get<world::TransformData>("Transform");
 			pTransform->position = pos;
 
 			world::MoveData *pMove = ent.getData()->get<world::MoveData>("Move");
-			pMove->velocity = pos * math::Vector3f(0.3f, 0, 0.3f);
+			pMove->velocity = pos * math::Vector3f(0.01f, 0, 0.01f);
 			pMove->velocity.y += (rand() % 1000) * 0.02f;
 			pMove->gravity = math::Vector3f(0, (fabs(pos.x) + fabs(pos.z)) * -0.02, 0);
-			pMove->damping = math::Vector3f(0.99f, 0.99f, 0.99f);
+			pMove->damping = math::Vector3f(0.8f, 0.8f, 0.8f);
 		}
 
 		/************************************************************************/
