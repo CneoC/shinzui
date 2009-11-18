@@ -66,7 +66,7 @@ void RenderBoxComponent::render(double delta)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(0, 30, -100);
+	glTranslatef(0, 10, -100);
 
 	// 			static float rotx = 0;
 	static float roty = 0;
@@ -118,10 +118,11 @@ void RenderBoxComponent::renderBox(const math::Vector3f &position)
 
 	glTranslatef(position.x, position.y, position.z);
 
+	double elapsed = Renderer::m_pCore->getElapsedTime();
 	glColor4f(
-		min(-0.5 + fabs(position.x * 0.05f), 1), 
-		min(-0.5 + fabs(position.y * 0.05f), 1),
-		min(-0.5 + fabs(position.z * 0.05f), 1),
+		(1 + cos(position.x * 0.05f + elapsed * 1.0f)) * 0.5,
+		(1 + cos(position.y * 0.06f + elapsed * 0.8f)) * 0.5,
+		(1 + cos(position.z * 0.07f + elapsed * 0.5f)) * 0.5,
 		1);
 	//glCallList(m_displayList);
 	glDrawElements(GL_QUADS, sizeof(indices) / sizeof(indices[0]), GL_UNSIGNED_INT, 0);

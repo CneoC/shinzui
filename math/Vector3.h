@@ -122,6 +122,52 @@ namespace math
 			return Vector3(-x, -y, -z);
 		}
 
+
+		//////////////////////////////////////////////////////////////////////////
+
+		T getDotProduct() const
+		{
+			return x * x + y * y + z * z;
+		}
+
+		T getSquaredDist() const
+		{
+			Vector3 result(*this);
+			return getDotProduct();
+		}
+
+		T getDist() const
+		{
+			return sqrt(getSquaredDist());
+		}
+
+		Vector3 &normalize(T &magnitude)
+		{
+			magnitude = getDist();
+			T invMagnitude = 1.0 / magnitude;
+			x *= invMagnitude;
+			y *= invMagnitude;
+			z *= invMagnitude;
+			return *this;
+		}
+
+		Vector3 getNormalized(T &magnitude) const
+		{
+			return Vector3(*this).normalize(magnitude);
+		}
+
+		Vector3 &normalize()
+		{
+			T magnitude;
+			return normalize(magnitude);
+		}
+
+		Vector3 getNormalized() const
+		{
+			T magnitude;
+			return Vector3(*this).normalize(magnitude);
+		}
+
 	public:
 		T x, y, z;
 	};

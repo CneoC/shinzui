@@ -13,7 +13,7 @@ Core::Core(s32 threadCount)
 	// Determine thread count automatically
 	if (threadCount == -1)
 	{
-		threadCount = boost::thread::hardware_concurrency();
+		threadCount = 2 + boost::thread::hardware_concurrency();
 	}
 
 	// Clamp thread count
@@ -167,7 +167,7 @@ void Core::addProcess(Process *pProcess)
 		return;
 	}
 
-	// pick side to start insertion sort at
+	// Pick side to start insertion sort at
 	double nextRun = pProcess->getNextRunTime();
 	double frontTime = m_processes.front()->getNextRunTime();
 	double backTime = m_processes.back()->getNextRunTime();

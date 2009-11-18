@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="engine"
+	Name="shinzui"
 	ProjectGUID="{781D54A7-F045-46DB-960D-644DDE484572}"
-	RootNamespace="engine"
+	RootNamespace="shinzui"
 	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
@@ -234,6 +234,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\world\components\CollisionComponent.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\world\components\Component.cpp"
 				>
 			</File>
@@ -255,6 +259,10 @@
 			</File>
 			<File
 				RelativePath=".\world\Entity.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\util\ExceptionWithStack.cpp"
 				>
 			</File>
 			<File
@@ -400,15 +408,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\os\current\AtomicCounter.h"
-				>
-			</File>
-			<File
 				RelativePath=".\os\win\AtomicCounter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\util\Callback.h"
+				RelativePath=".\os\current\AtomicCounter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\world\components\CollisionComponent.h"
 				>
 			</File>
 			<File
@@ -464,6 +472,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\util\ExceptionWithStack.h"
+				>
+			</File>
+			<File
 				RelativePath=".\util\FastDelegate.h"
 				>
 			</File>
@@ -516,11 +528,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\io\FSFile.h"
+				RelativePath=".\os\common\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\io\FSFile.h"
+				RelativePath=".\os\win\io\FSFile.h"
 				>
 			</File>
 			<File
@@ -536,11 +548,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLContext.h"
+				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\gl\GLContext.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -760,11 +772,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\Thread.h"
+				RelativePath=".\os\current\Thread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Thread.h"
+				RelativePath=".\os\common\Thread.h"
 				>
 			</File>
 			<File
@@ -772,11 +784,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Time.h"
+				RelativePath=".\os\current\Time.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Time.h"
+				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File

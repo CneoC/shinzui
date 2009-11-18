@@ -30,6 +30,10 @@ void MoveComponent::onStart()
 	m_pCore->addJob(this, core::Job::Function(this, &MoveComponent::step));
 	m_pCore->addJob(this, core::Job::Function(this, &MoveComponent::step));
 	m_pCore->addJob(this, core::Job::Function(this, &MoveComponent::step));
+	m_pCore->addJob(this, core::Job::Function(this, &MoveComponent::step));
+	m_pCore->addJob(this, core::Job::Function(this, &MoveComponent::step));
+	m_pCore->addJob(this, core::Job::Function(this, &MoveComponent::step));
+	m_pCore->addJob(this, core::Job::Function(this, &MoveComponent::step));
 }
 
 bool MoveComponent::step()
@@ -46,7 +50,7 @@ bool MoveComponent::step()
 		boost::lock_guard<boost::mutex> lock(m_mutex);
 
 		begin = m_entity;
-		u32 amount = 500;
+		u32 amount = 200;
 		while (m_entity != m_entities.end() && amount > 0)
 		{
 			--amount;
@@ -60,9 +64,35 @@ bool MoveComponent::step()
 		TransformData *	pTransform	= entry->second.dataSet->get<TransformData>(m_transformHash);
 		MoveData *		pMove		= static_cast<MoveData *>(entry->second.data);
 
+		u32 count = 0;
+		math::Vector3f addVelocity(0, 0, 0);
+		for (EntityList::iterator iter = m_entities.begin(); iter != m_entities.end(); ++iter)
+		{
+			if (iter->first == entry->first)
+				continue;
+			TransformData *	pOtherTransform	= iter->second.dataSet->get<TransformData>(m_transformHash);
+			math::Vector3f dir(pOtherTransform->position - pTransform->position);
+			float dist;
+			dir.normalize(dist);
+			dist -= 10;
+			if (dist > 20)
+			{
+				addVelocity += dir * (1000 / dist);
+				count++;
+			}
+ 			else if (dist < -5)
+ 			{
+				addVelocity += dir * dist;
+ 				count++;
+ 			}
+		}
+		addVelocity /= count;
+
 		pTransform->position += pMove->velocity * delta;
-		pMove->velocity	+= pMove->gravity;
-		pMove->velocity *= pMove->damping;
+		pMove->velocity	+= (pMove->gravity + addVelocity) * delta;
+		pMove->velocity.x  *= powf(pMove->damping.x, delta);
+		pMove->velocity.y  *= powf(pMove->damping.y, delta);
+		pMove->velocity.z  *= powf(pMove->damping.z, delta);
 	}
 
 	return true;
