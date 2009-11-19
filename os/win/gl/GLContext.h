@@ -47,7 +47,7 @@ namespace os
 			assert(!m_hRC);
 		}
 
-		virtual bool create();
+		virtual bool create(Type type);
 		virtual bool destroy();
 
 		virtual bool bind();

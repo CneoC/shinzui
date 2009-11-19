@@ -43,7 +43,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;libraries/glew/include;libraries/freetype/include;libraries/freeimage/include;libraries/freeimageplus/include"
-				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -113,7 +113,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories=".;libraries/glew/include;libraries/freetype/include;libraries/freeimage/include;libraries/freeimageplus/include"
-				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0"
+				PreprocessorDefinitions="GLEW_STATIC;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
@@ -342,11 +342,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\os\current\AtomicCounter.h"
+				RelativePath=".\os\win\AtomicCounter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\AtomicCounter.h"
+				RelativePath=".\os\current\AtomicCounter.h"
 				>
 			</File>
 			<File
@@ -462,11 +462,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\io\FSFile.h"
+				RelativePath=".\os\common\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\io\FSFile.h"
+				RelativePath=".\os\win\io\FSFile.h"
 				>
 			</File>
 			<File
@@ -482,11 +482,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLContext.h"
+				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\gl\GLContext.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -694,11 +694,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\Thread.h"
+				RelativePath=".\os\current\Thread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Thread.h"
+				RelativePath=".\os\common\Thread.h"
 				>
 			</File>
 			<File
@@ -706,11 +706,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Time.h"
+				RelativePath=".\os\current\Time.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Time.h"
+				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File
@@ -734,11 +734,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Window.h"
+				RelativePath=".\os\current\Window.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Window.h"
+				RelativePath=".\os\win\Window.h"
 				>
 			</File>
 			<File

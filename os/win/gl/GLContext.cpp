@@ -40,45 +40,49 @@ void GLContext::swapBuffers()
 	SwapBuffers(m_pWindow->getHDC());
 }
 
-bool GLContext::create()
+bool GLContext::create(ContextBase::Type type)
 {
-	static	PIXELFORMATDESCRIPTOR pfd =
+	m_type = type;
+	if (type == CONTEXT_RENDER)
 	{
-		sizeof(PIXELFORMATDESCRIPTOR),
-		1,
-		PFD_DRAW_TO_WINDOW |
-		PFD_SUPPORT_OPENGL |
-		PFD_DOUBLEBUFFER,
-		PFD_TYPE_RGBA,
-		m_pWindow->getBpp(),
-		0, 0, 0, 0, 0, 0,
-		0,											// TODO: alpha buffer support
-		0,
-		0,											// TODO: accumulation buffer support
-		0, 0, 0, 0,									//		 accumulation bits
-		16,											// TODO: customizable z-buffer
-		0,											// TODO: stencil buffer support
-		0,
-		PFD_MAIN_PLANE,
-		0,
-		0, 0, 0
-	};
+		static	PIXELFORMATDESCRIPTOR pfd =
+		{
+			sizeof(PIXELFORMATDESCRIPTOR),
+			1,
+			PFD_DRAW_TO_WINDOW |
+			PFD_SUPPORT_OPENGL |
+			PFD_DOUBLEBUFFER,
+			PFD_TYPE_RGBA,
+			m_pWindow->getBpp(),
+			0, 0, 0, 0, 0, 0,
+			0,											// TODO: alpha buffer support
+			0,
+			0,											// TODO: accumulation buffer support
+			0, 0, 0, 0,									//		 accumulation bits
+			16,											// TODO: customizable z-buffer
+			0,											// TODO: stencil buffer support
+			0,
+			PFD_MAIN_PLANE,
+			0,
+			0, 0, 0
+		};
 
-	// Choose a pixel format
-	GLuint pixelFormat = ChoosePixelFormat(m_pWindow->getHDC(), &pfd);
-	if (!pixelFormat)
-	{
-		destroy();
-		throw std::runtime_error("Unable to find proper pixel format.");
-		return false;
-	}
+		// Choose a pixel format
+		GLuint pixelFormat = ChoosePixelFormat(m_pWindow->getHDC(), &pfd);
+		if (!pixelFormat)
+		{
+			destroy();
+			throw std::runtime_error("Unable to find proper pixel format.");
+			return false;
+		}
 
-	// Set the pixel format
-	if (!SetPixelFormat(m_pWindow->getHDC(), pixelFormat, &pfd))
-	{
-		destroy();
-		throw std::runtime_error("Unable to set pixel format.");
-		return false;
+		// Set the pixel format
+		if (!SetPixelFormat(m_pWindow->getHDC(), pixelFormat, &pfd))
+		{
+			destroy();
+			throw std::runtime_error("Unable to set pixel format.");
+			return false;
+		}
 	}
 
 	// Create rendering context
@@ -98,25 +102,28 @@ bool GLContext::create()
 		return false;
 	}
 
-	// Initialize some standard OpenGL settings
-	glewInit();
-
-	glShadeModel(GL_SMOOTH);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClearDepth(1.0f);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-	if (WGL_EXT_swap_control)
+	if (type == CONTEXT_RENDER)
 	{
-		wglSwapIntervalEXT(0);
-	}
+		// Initialize some standard OpenGL settings
+		glewInit();
 
-	if (!resize(m_pWindow->getSize()))
-	{
-		destroy();
-		return false;
+		glShadeModel(GL_SMOOTH);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearDepth(1.0f);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+		if (WGL_EXT_swap_control)
+		{
+			wglSwapIntervalEXT(0);
+		}
+
+		if (!resize(m_pWindow->getSize()))
+		{
+			destroy();
+			return false;
+		}
 	}
 
 	return true;
@@ -154,7 +161,7 @@ bool GLContext::unbind()
 
 bool GLContext::link(ContextBase *pOther)
 {
-	return wglShareLists(m_hRC, static_cast<GLContext *>(pOther)->getHRC()) == TRUE;
+	return wglShareLists(static_cast<GLContext *>(pOther)->getHRC(), m_hRC) == TRUE;
 }
 
 void GLContext::update()

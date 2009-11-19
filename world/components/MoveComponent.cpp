@@ -36,7 +36,7 @@ MoveComponent::MoveComponent(core::Core *pCore, ComponentManager *pManager)
 	m_transformHash = util::hashString("Transform", 9);
 	m_color = math::Color3f(1, 0, 1);
 
-	setFrameDelay(0.0167);
+	setFrameDelay(0.0333);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ bool MoveComponent::step()
 	if (m_entity == m_entities.end())
 		return false;
 
-	const double delta = getDeltaTime();
+	const float delta = getDeltaTime();
 
 	EntityList::iterator begin;
 	EntityList::iterator end;
@@ -74,7 +74,7 @@ bool MoveComponent::step()
 		boost::lock_guard<boost::mutex> lock(m_mutex);
 
 		begin = m_entity;
-		u32 amount = 200;
+		u32 amount = 15;
 		while (m_entity != m_entities.end() && amount > 0)
 		{
 			--amount;
@@ -90,27 +90,28 @@ bool MoveComponent::step()
 
 		u32 count = 0;
 		math::Vector3f addVelocity(0, 0, 0);
-		for (EntityList::iterator iter = m_entities.begin(); iter != m_entities.end(); ++iter)
+		for (EntityList::const_iterator iter = m_entities.begin(); iter != m_entities.end(); ++iter)
 		{
 			if (iter->first == entry->first)
 				continue;
-			TransformData *	pOtherTransform	= iter->second.dataSet->get<TransformData>(m_transformHash);
+
+			const TransformData *	pOtherTransform	= iter->second.dataSet->get<TransformData>(m_transformHash);
+
 			math::Vector3f dir(pOtherTransform->position - pTransform->position);
 			float dist;
 			dir.normalize(dist);
 			dist -= 10;
+
 			if (dist > 20)
 			{
-				addVelocity += dir * (1000 / dist);
-				count++;
+				addVelocity += dir * (50 / dist);
 			}
  			else if (dist < -5)
  			{
-				addVelocity += dir * dist;
- 				count++;
+				addVelocity += dir * (20 / dist);
  			}
 		}
-		addVelocity /= count;
+		//addVelocity /= count;
 
 		pTransform->position += pMove->velocity * delta;
 		pMove->velocity	+= (pMove->gravity + addVelocity) * delta;

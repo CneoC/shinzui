@@ -40,10 +40,10 @@ GLRenderDriver::GLRenderDriver(core::Core *pCore, os::Window *pWindow)
 	, m_pWindow(pWindow)
 {
 	m_pContext = new os::GLContext(pWindow);
-	getGLContext()->create();
+	getGLContext()->create(os::GLContext::CONTEXT_RENDER);
 
 	m_pLoaderContext = new os::GLContext(pWindow);
-	getLoaderGLContext()->create();
+	getLoaderGLContext()->create(os::GLContext::CONTEXT_LOAD);
 	getLoaderGLContext()->unbind();
 
 	getGLContext()->link(getLoaderGLContext());

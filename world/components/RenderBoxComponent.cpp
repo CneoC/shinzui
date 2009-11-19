@@ -140,9 +140,14 @@ void RenderBoxComponent::renderBox(const math::Vector3f &position)
 {
 	glPushMatrix();
 
-	glTranslatef(position.x, position.y, position.z);
-
 	double elapsed = Renderer::m_pCore->getElapsedTime();
+
+	glTranslatef(position.x, position.y, position.z);
+	glScalef(
+		2 + (cos(position.x * 0.06f + elapsed * 0.6f) * 0.5),
+		2 + (cos(position.y * 0.05f + elapsed * 0.7f) * 0.5),
+		2 + (cos(position.z * 0.04f + elapsed * 0.8f) * 0.5));
+
 	glColor4f(
 		(1 + cos(position.x * 0.05f + elapsed * 1.0f)) * 0.5,
 		(1 + cos(position.y * 0.06f + elapsed * 0.8f)) * 0.5,

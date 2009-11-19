@@ -42,10 +42,18 @@ namespace os
 			FLAG_RESIZED
 		};
 
+		enum Type
+		{
+			CONTEXT_NONE,
+			CONTEXT_RENDER,
+			CONTEXT_LOAD
+		};
+
 		//////////////////////////////////////////////////////////////////////////
 
 		ContextBase(Window *pWindow)
-			: m_pWindow(pWindow) 
+			: m_pWindow(pWindow)
+			, m_type(CONTEXT_NONE)
 		{
 			pWindow->resizeEvent.connect(this, &ContextBase::onResize);
 		}
@@ -53,7 +61,7 @@ namespace os
 		//////////////////////////////////////////////////////////////////////////
 
 		//! Creates the context.
-		virtual bool create() = 0;
+		virtual bool create(Type type) = 0;
 		//! Destroys the context.
 		virtual bool destroy() = 0;
 
@@ -82,6 +90,7 @@ namespace os
 
 	protected:
 		std::bitset<16>	m_flags;
+		u16				m_type;
 		Window *		m_pWindow;
 	};
 }

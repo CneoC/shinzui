@@ -161,7 +161,7 @@ void main(const char *argc, int argv)
 		pComponentMgr->addComponent("Input", new world::InputComponent(pCore, pComponentMgr));
 		pComponentMgr->addComponent("RenderBox", pRenderBoxComponent);
 
-		for (u32 i = 0; i < 1000; i++)
+		for (u32 i = 0; i < 200; i++)
 		{
 			world::Entity ent = world::Entity::create("Test", pComponentMgr);
 			ent.addComponent("Move");
@@ -177,8 +177,8 @@ void main(const char *argc, int argv)
 
 			world::MoveData *pMove = ent.getData()->get<world::MoveData>("Move");
 			pMove->velocity = pos * math::Vector3f(0.01f, 0, 0.01f);
-			pMove->velocity.y += (rand() % 1000) * 0.02f;
-			pMove->gravity = math::Vector3f(0, (fabs(pos.x) + fabs(pos.z)) * -0.02, 0);
+			pMove->velocity.y += (rand() % 1000) * 0.01f;
+			pMove->gravity = math::Vector3f(0, (fabs(pos.x) + fabs(pos.z)) * -0.01, 0);
 			pMove->damping = math::Vector3f(0.8f, 0.8f, 0.8f);
 		}
 
@@ -189,7 +189,6 @@ void main(const char *argc, int argv)
 
 		Renderer *	pRenderStart	= pCore->getDriver()->createRenderer("Start");
 		Renderer *	pStartFB		= pCore->getDriver()->createRenderer("StartFB");
-		//Renderer *	pScene			= new world::Scene(pCore);
 		Renderer *	pDrawFPS		= new console::DrawFPS(pCore);
 		Renderer *	pConsole		= new console::Console(pCore);
 		Renderer *	pThreadUsage	= new console::ThreadUsage(pCore);
