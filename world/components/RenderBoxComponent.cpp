@@ -24,8 +24,6 @@
 
 #include "RenderBoxComponent.h"
 
-#include <gl/glew.h>
-
 using namespace world;
 
 //////////////////////////////////////////////////////////////////////////
@@ -140,19 +138,19 @@ void RenderBoxComponent::renderBox(const math::Vector3f &position)
 {
 	glPushMatrix();
 
-	double elapsed = Renderer::m_pCore->getElapsedTime();
+	float elapsed = (float)Renderer::m_pCore->getElapsedTime();
 
 	glTranslatef(position.x, position.y, position.z);
 	glScalef(
-		2 + (cos(position.x * 0.06f + elapsed * 0.6f) * 0.5),
-		2 + (cos(position.y * 0.05f + elapsed * 0.7f) * 0.5),
-		2 + (cos(position.z * 0.04f + elapsed * 0.8f) * 0.5));
+		2.0f + (cosf(position.x * 0.06f + elapsed * 0.6f) * 0.5f),
+		2.0f + (cosf(position.y * 0.05f + elapsed * 0.7f) * 0.5f),
+		2.0f + (cosf(position.z * 0.04f + elapsed * 0.8f) * 0.5f));
 
 	glColor4f(
-		(1 + cos(position.x * 0.05f + elapsed * 1.0f)) * 0.5,
-		(1 + cos(position.y * 0.06f + elapsed * 0.8f)) * 0.5,
-		(1 + cos(position.z * 0.07f + elapsed * 0.5f)) * 0.5,
-		1);
+		(1.0f + cosf(position.x * 0.05f + elapsed * 1.0f)) * 0.5f,
+		(1.0f + cosf(position.y * 0.06f + elapsed * 0.8f)) * 0.5f,
+		(1.0f + cosf(position.z * 0.07f + elapsed * 0.5f)) * 0.5f,
+		1.0f);
 	//glCallList(m_displayList);
 	glDrawElements(GL_QUADS, sizeof(indices) / sizeof(indices[0]), GL_UNSIGNED_INT, 0);
 	//glDrawArrays(GL_QUADS, 0, 4);

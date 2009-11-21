@@ -29,7 +29,7 @@
 
 #include "FrameBufferResource.h"
 
-#include <gl/glew.h>
+#include "os/current/gl/GLContext.h"
 
 namespace resources
 {
@@ -42,7 +42,7 @@ namespace resources
 		GLFrameBufferData(ResourceLoaderBase *pData)
 			: FrameBufferData(pData)
 			, m_fbo(0)
-			, m_depthFbo(0)
+			, m_depthRbo(0)
 		{
 			getType() += getName();
 			m_flags[FLAG_REQUIRE_CONTEXT] = true;
@@ -51,8 +51,8 @@ namespace resources
 		void setFBO(GLuint fbo)			{ m_fbo = fbo; }
 		GLuint getFBO()					{ return m_fbo; }
 
-		void setDepthFBO(GLuint fbo)	{ m_depthFbo = fbo; }
-		GLuint getDepthFBO()			{ return m_depthFbo; }
+		void setDepthRBO(GLuint rbo)	{ m_depthRbo = rbo; }
+		GLuint getDepthRBO()			{ return m_depthRbo; }
 
 		virtual void bind()
 		{
@@ -84,7 +84,7 @@ namespace resources
 
 	protected:
 		GLuint			m_fbo;
-		GLuint			m_depthFbo;
+		GLuint			m_depthRbo;
 	};
 
 	typedef ResourceRef<GLFrameBufferData>		GLFrameBufferResource;

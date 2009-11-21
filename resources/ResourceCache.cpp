@@ -34,6 +34,7 @@ ResourceCache::ResourceCache(core::Core *pCore, int id)
 	, m_maxLoadingCount(0)
 {
 	m_color = math::Color3f(0, 1, 0);
+	m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::initJob), core::Core::THREAD_ID_LOAD_BIT);
 }
 
 Resource ResourceCache::find(const ResourceId &id)
@@ -88,7 +89,7 @@ void ResourceCache::add(Resource resource)
 	}
 
 	// Maybe there's something to load now
-	setFrameDelay(0);
+	setDelay(0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -100,73 +101,71 @@ void ResourceCache::onStart()
 	unload();
 
 	// Initialize before we start loading
-	if (getLastRunTime() == 0)
+// 	if (getLastRunTime() == 0)
+// 	{
+// 		m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::initJob), core::Core::THREAD_ID_LOAD_BIT);
+// 	}
+// 	else
+// 	{
+	// Create load jobs
+	if (!m_load.empty())
 	{
-		m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::initJob), core::Core::THREAD_ID_LOAD_BIT);
+		m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::loadCoreJob), core::Core::THREAD_ID_LOAD_BIT);
+		for (u32 i = 1; i < getLoadJobs(); i++)
+		{
+			m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::loadJob));
+		}
+
+		setDelay(0);
 	}
+	// Delay execution of this process if we have nothing to load
 	else
 	{
-		// Create load jobs
-		if (!m_load.empty())
-		{
-			m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::loadCoreJob), core::Core::THREAD_ID_LOAD_BIT);
-			for (u32 i = 1; i < getLoadJobs(); i++)
-			{
-				m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::loadJob));
-			}
-
-			setFrameDelay(0);
-		}
-		// Delay execution of this process if we have nothing to load
-		else
-		{
-			setFrameDelay(1);
-		}
+		setDelay(1);
 	}
+// 	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void ResourceCache::update()
 {
+	boost::lock_guard<boost::shared_mutex> lock(m_resourcesMutex);
+
+	bool loadAdded = false;
+	// For all resources
+	ResourceMap::iterator i;
+	for (i = m_resources.begin(); i != m_resources.end(); ++i)
 	{
-		boost::lock_guard<boost::shared_mutex> lock(m_resourcesMutex);
-
-		bool loadAdded = false;
-		// For all resources
-		ResourceMap::iterator i;
-		for (i = m_resources.begin(); i != m_resources.end(); ++i)
+		// And all non-unique hashes
+		Entry::List::iterator j;
+		for (j = i->second.resources.begin(); j != i->second.resources.end();)
 		{
-			// And all non-unique hashes
-			Entry::List::iterator j;
-			for (j = i->second.resources.begin(); j != i->second.resources.end();)
-			{
-				Resource resource = *j;
-				Entry::List::iterator prev = j;
-				++j;
+			Resource resource = *j;
+			Entry::List::iterator prev = j;
+			++j;
 
-				// If the resources is marked for unloading, put it in the unload queue.
-				if (resource->isUnloading()) // TODO: Time out if unused (and NO_TIMEOUT flag not set)
-				{
-					resource->setUnload(false);
-					m_unload.push_back(resource);
-					i->second.resources.erase(prev);
-					break;
-				}
-				// If the resource is marked for loading, put it in the load queue.
-				// if resource is (still) loaded wait for unload to complete (to support reload)
-				else if (resource->isLoading() && !resource->isLoaded())
-				{
-					resource->setLoad(false);
-					m_load.push_front(resource);
-					loadAdded = true;
-				}
+			// If the resources is marked for unloading, put it in the unload queue.
+			if (resource->isUnloading()) // TODO: Time out if unused (and NO_TIMEOUT flag not set)
+			{
+				resource->setUnload(false);
+				m_unload.push_back(resource);
+				i->second.resources.erase(prev);
+				break;
+			}
+			// If the resource is marked for loading, put it in the load queue.
+			// if resource is (still) loaded wait for unload to complete (to support reload)
+			else if (resource->isLoading() && !resource->isLoaded())
+			{
+				resource->setLoad(false);
+				m_load.push_front(resource);
+				loadAdded = true;
 			}
 		}
-
-		if (loadAdded)
-			m_load.sort();
 	}
+
+	if (loadAdded)
+		m_load.sort();
 }
 
 void ResourceCache::load(bool coreJob)

@@ -66,7 +66,7 @@ bool GLFrameBufferConverters::ConvertFromDef::load(Resource &res, u32 flags)
 
 	fb->setTexture(texture);
 
-	GLuint depthFboId	= GL_NONE;
+	GLuint depthRboId	= GL_NONE;
 	GLuint fboId		= GL_NONE;
 
 	if (GLEW_ARB_framebuffer_object)
@@ -74,12 +74,11 @@ bool GLFrameBufferConverters::ConvertFromDef::load(Resource &res, u32 flags)
 		// Create depth frame buffer
 		if (def->isDepthAttached())
 		{
-			glGenRenderbuffers(1, &depthFboId);
-			glBindRenderbuffer(GL_RENDERBUFFER, depthFboId);
+			glGenRenderbuffers(1, &depthRboId);
+			glBindRenderbuffer(GL_RENDERBUFFER, depthRboId);
 			glRenderbufferStorage(
-				GL_RENDERBUFFER, GL_DEPTH_COMPONENT24,
+				GL_RENDERBUFFER, GL_DEPTH_COMPONENT,
 				def->getSize().x, def->getSize().y);
-			// TODO: check FBO validity
 		}
 
 		// Create the frame buffer object
@@ -91,23 +90,24 @@ bool GLFrameBufferConverters::ConvertFromDef::load(Resource &res, u32 flags)
 
 		// Attach depth buffer
 		if (def->isDepthAttached())
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthFboId);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRboId);
+
+		GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
+		if (status != GL_FRAMEBUFFER_COMPLETE)
+			throw std::runtime_error("Unable to properly create FBO");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		// TODO: check FBO validity
 	}
 	else if (GLEW_EXT_framebuffer_object)
 	{
 		// Create depth frame buffer
 		if (def->isDepthAttached())
 		{
-			glGenRenderbuffersEXT(1, &depthFboId);
-			glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthFboId);
+			glGenRenderbuffersEXT(1, &depthRboId);
+			glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthRboId);
 			glRenderbufferStorageEXT(
-				GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24,
+				GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT,
 				def->getSize().x, def->getSize().y);
-			// TODO: check FBO validity
 		}
 
 		// Create the frame buffer object
@@ -119,11 +119,13 @@ bool GLFrameBufferConverters::ConvertFromDef::load(Resource &res, u32 flags)
 
 		// Attach depth buffer
 		if (def->isDepthAttached())
-			glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthFboId);
+			glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthRboId);
+
+		GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
+		if (status != GL_FRAMEBUFFER_COMPLETE)
+			throw std::runtime_error("Unable to properly create FBO");
 
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-		// TODO: check FBO validity
 	}
 	else
 	{
@@ -132,7 +134,7 @@ bool GLFrameBufferConverters::ConvertFromDef::load(Resource &res, u32 flags)
 	}
 
 	fb->setFBO(fboId);
-	fb->setDepthFBO(depthFboId);
+	fb->setDepthRBO(depthRboId);
 
 	fb->setLoaded(true);
 
@@ -147,16 +149,16 @@ bool GLFrameBufferConverters::ConvertFromDef::unload(Resource &res, u32 flags)
 	GLFrameBufferResource fb(res, DONT_CONVERT);
 
 	GLuint fboId = fb->getFBO();
-	GLuint fboDepthId = fb->getDepthFBO();
+	GLuint rboDepthId = fb->getDepthRBO();
 	if (GLEW_ARB_framebuffer_object)
 	{
 		glDeleteFramebuffers(1, &fboId);
-		glDeleteFramebuffers(1, &fboDepthId);
+		glDeleteRenderbuffers(1, &rboDepthId);
 	}
 	else if (GLEW_EXT_framebuffer_object)
 	{
 		glDeleteFramebuffersEXT(1, &fboId);
-		glDeleteFramebuffersEXT(1, &fboDepthId);
+		glDeleteRenderbuffersEXT(1, &rboDepthId);
 	}
 
 	fb->setLoaded(false);

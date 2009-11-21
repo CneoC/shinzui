@@ -43,6 +43,7 @@ namespace render
 			, m_pRenderer(NULL)
 		{
 			m_color = math::Color3f(1, 0, 0);
+			m_pCore->addJob(this, core::Job::Function(this, &RendererProc::initJob), core::Core::THREAD_ID_RENDER_BIT);
 		}
 
 	public:
@@ -50,12 +51,9 @@ namespace render
 
 		virtual void onStart()
 		{
-			if (getLastRunTime() == 0)
-				m_pCore->addJob(this, core::Job::Function(this, &RendererProc::initJob), core::Core::THREAD_ID_MAIN_BIT);
-			else
-				m_pCore->addJob(this, core::Job::Function(this, &RendererProc::renderJob), core::Core::THREAD_ID_MAIN_BIT);
+			m_pCore->addJob(this, core::Job::Function(this, &RendererProc::renderJob), core::Core::THREAD_ID_RENDER_BIT);
 		}
-		
+
 		bool initJob()
 		{
 			if (m_pRenderer)

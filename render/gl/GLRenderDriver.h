@@ -47,9 +47,12 @@ namespace render
 
 		//! Get context.
 		os::GLContext *getGLContext() const			{ return static_cast<os::GLContext *>(m_pContext); }
-		os::GLContext *getLoaderGLContext() const	{ return static_cast<os::GLContext *>(m_pLoaderContext); }
+		os::GLContext *getGLLoaderContext() const	{ return static_cast<os::GLContext *>(m_pLoaderContext); }
 
 	protected:
+		void setPixelFormat();
+		void init();
+
 		os::Window *	m_pWindow;
 	};
 }

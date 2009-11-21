@@ -40,51 +40,8 @@ void GLContext::swapBuffers()
 	SwapBuffers(m_pWindow->getHDC());
 }
 
-bool GLContext::create(ContextBase::Type type)
+bool GLContext::create()
 {
-	m_type = type;
-	if (type == CONTEXT_RENDER)
-	{
-		static	PIXELFORMATDESCRIPTOR pfd =
-		{
-			sizeof(PIXELFORMATDESCRIPTOR),
-			1,
-			PFD_DRAW_TO_WINDOW |
-			PFD_SUPPORT_OPENGL |
-			PFD_DOUBLEBUFFER,
-			PFD_TYPE_RGBA,
-			m_pWindow->getBpp(),
-			0, 0, 0, 0, 0, 0,
-			0,											// TODO: alpha buffer support
-			0,
-			0,											// TODO: accumulation buffer support
-			0, 0, 0, 0,									//		 accumulation bits
-			16,											// TODO: customizable z-buffer
-			0,											// TODO: stencil buffer support
-			0,
-			PFD_MAIN_PLANE,
-			0,
-			0, 0, 0
-		};
-
-		// Choose a pixel format
-		GLuint pixelFormat = ChoosePixelFormat(m_pWindow->getHDC(), &pfd);
-		if (!pixelFormat)
-		{
-			destroy();
-			throw std::runtime_error("Unable to find proper pixel format.");
-			return false;
-		}
-
-		// Set the pixel format
-		if (!SetPixelFormat(m_pWindow->getHDC(), pixelFormat, &pfd))
-		{
-			destroy();
-			throw std::runtime_error("Unable to set pixel format.");
-			return false;
-		}
-	}
-
 	// Create rendering context
 	m_hRC = wglCreateContext(m_pWindow->getHDC());
 	if (!m_hRC)
@@ -100,30 +57,6 @@ bool GLContext::create(ContextBase::Type type)
 		destroy();
 		throw std::runtime_error("Unable to activate GL context.");
 		return false;
-	}
-
-	if (type == CONTEXT_RENDER)
-	{
-		// Initialize some standard OpenGL settings
-		glewInit();
-
-		glShadeModel(GL_SMOOTH);
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClearDepth(1.0f);
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-		if (WGL_EXT_swap_control)
-		{
-			wglSwapIntervalEXT(0);
-		}
-
-		if (!resize(m_pWindow->getSize()))
-		{
-			destroy();
-			return false;
-		}
 	}
 
 	return true;
@@ -151,17 +84,33 @@ bool GLContext::destroy()
 
 bool GLContext::bind()
 {
-	return wglMakeCurrent(m_pWindow->getHDC(), m_hRC) == TRUE;
+	ContextBase::bind();
+	bool status = wglMakeCurrent(m_pWindow->getHDC(), m_hRC) == TRUE;
+	if (!status)
+	{
+		throw std::runtime_error("Unable to bind GL context: ");
+	}
+
+	glewInit();
+	wglewInit();
+
+	return status;
 }
 
 bool GLContext::unbind()
 {
-	return wglMakeCurrent(m_pWindow->getHDC(), NULL) == TRUE;
+	ContextBase::unbind();
+	return wglMakeCurrent(NULL, NULL) == TRUE;
 }
 
 bool GLContext::link(ContextBase *pOther)
 {
-	return wglShareLists(static_cast<GLContext *>(pOther)->getHRC(), m_hRC) == TRUE;
+	bool status = wglShareLists(m_hRC, static_cast<GLContext *>(pOther)->getHRC()) == TRUE;
+	if (!status)
+	{
+		throw std::runtime_error("Unable to link GL contexts: ");
+	}
+	return status;
 }
 
 void GLContext::update()

@@ -27,8 +27,14 @@
 #ifndef __OS_GLCONTEXT_H__
 #define __OS_GLCONTEXT_H__
 
-#include "os/common//ContextBase.h"
+#include "os/common/ContextBase.h"
 #include "os/current/Window.h"
+
+#include <GL/glew.h>
+#include <GL/wglew.h>
+
+#define glewGetContext()	(static_cast< os::GLContext * >(os::ContextBase::getActiveContext())->getGlewContext())
+#define wglewGetContext()	(static_cast< os::GLContext * >(os::ContextBase::getActiveContext())->getWglewContext())
 
 namespace os
 {
@@ -47,27 +53,30 @@ namespace os
 			assert(!m_hRC);
 		}
 
-		virtual bool create(Type type);
+		virtual bool create();
 		virtual bool destroy();
 
 		virtual bool bind();
 		virtual bool unbind();
+
 		virtual bool link(ContextBase *pOther);
 
 		virtual void update();
 
 		virtual void swapBuffers();
+
+		bool resize(const math::Vector2i &size);
 		
 		//////////////////////////////////////////////////////////////////////////
 
-		HGLRC getHRC() const	{ return m_hRC; }
+		GLEWContext *getGlewContext()	{ return &m_glewContext; }
+		WGLEWContext *getWglewContext()	{ return &m_wglewContext; }
+		HGLRC getHRC() const			{ return m_hRC; }
 
 	protected:
-		bool init();
-		bool resize(const math::Vector2i &size);
-
-	protected:
-		HGLRC		m_hRC;		// OpenGL rendering context
+		GLEWContext		m_glewContext;
+		WGLEWContext	m_wglewContext;
+		HGLRC			m_hRC;		// OpenGL rendering context
 	};
 }
 

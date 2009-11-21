@@ -35,8 +35,6 @@
 #include "resources/ResourceLoaderBase.h"
 #include "resources/font/GLFontResource.h"
 
-#include <gl/glew.h>
-
 #pragma warning(disable: 4996)
 
 namespace render

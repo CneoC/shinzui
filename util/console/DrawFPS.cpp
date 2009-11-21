@@ -34,7 +34,7 @@
 #include "resources/font/GLFontResource.h"
 #include "resources/font/FTFontResource.h"
 
-#include <gl/glew.h>
+#include "os/current/gl/GLContext.h"
 
 using namespace console;
 using namespace resources;
@@ -90,7 +90,7 @@ void DrawFPS::render(double delta)
 	if (pCache->isLoading())
 	{
 		glColor3f(1.0f, 1.0f, 1.0f);
-		m_pFontUtil->printf(math::Vector2f(getContext()->getWindow()->getSize().x - 150, 10), "Loading... %3.1f%%", pCache->getProgress() * 100);
+		m_pFontUtil->printf(math::Vector2f(getContext()->getWindow()->getSize().x - 150.0f, 10.0f), "Loading... %3.1f%%", pCache->getProgress() * 100);
 	}
 
 	glColor3f(1.0f, 1.0f, 1.0f);

@@ -29,7 +29,7 @@
 
 #include "ShaderResource.h"
 
-#include <gl/glew.h>
+#include "os/current/gl/GLContext.h"
 
 //////////////////////////////////////////////////////////////////////////
 

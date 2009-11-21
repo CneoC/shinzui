@@ -26,7 +26,7 @@
 
 #include "render/RenderDriver.h"
 
-#include <gl/glew.h>
+#include "os/current/gl/GLContext.h"
 
 using namespace render;
 
@@ -41,7 +41,7 @@ GLStartRenderer::~GLStartRenderer()
 
 void GLStartRenderer::init()
 {
-	m_pCore->getDriver()->getContext()->bind();
+	getContext()->bind();
 }
 
 void GLStartRenderer::render(double delta)

@@ -143,12 +143,14 @@ namespace core
 		 */
 		enum ThreadID
 		{
-			THREAD_ID_MAIN,			// Main program thread for Window and Rendering related tasks.
-			THREAD_ID_LOAD,			// Special loading thread to load Context requiring resources.
-			THREAD_ID_NORMAL_START,	// First id of rest of (normal) threads.
+			THREAD_ID_MAIN,							// Main program thread core tasks.
+			THREAD_ID_RENDER = THREAD_ID_MAIN,		// Render thread for Rendering related tasks.
+			THREAD_ID_LOAD,							// Loading thread to load Context requiring resources.
+			THREAD_ID_NORMAL_START,					// First id of rest of (normal) threads.
 
 			// Thread mask bits
 			THREAD_ID_MAIN_BIT			= 1 << THREAD_ID_MAIN,
+			THREAD_ID_RENDER_BIT		= 1 << THREAD_ID_RENDER,
 			THREAD_ID_LOAD_BIT			= 1 << THREAD_ID_LOAD,
 			THREAD_ID_NORMAL_START_BIT	= 1 << THREAD_ID_NORMAL_START,
 			THREAD_ID_CORE_BIT			= 0x80000000,

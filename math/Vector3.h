@@ -168,7 +168,7 @@ namespace math
 		Vector3 &normalize(T &magnitude)
 		{
 			magnitude = getDist();
-			T invMagnitude = 1.0 / magnitude;
+			T invMagnitude = 1.0f / magnitude;
 			x *= invMagnitude;
 			y *= invMagnitude;
 			z *= invMagnitude;

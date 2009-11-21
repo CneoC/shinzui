@@ -36,7 +36,7 @@ MoveComponent::MoveComponent(core::Core *pCore, ComponentManager *pManager)
 	m_transformHash = util::hashString("Transform", 9);
 	m_color = math::Color3f(1, 0, 1);
 
-	setFrameDelay(0.0333);
+	setDelay(0.0333);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ bool MoveComponent::step()
 		boost::lock_guard<boost::mutex> lock(m_mutex);
 
 		begin = m_entity;
-		u32 amount = 15;
+		u32 amount = 50;
 		while (m_entity != m_entities.end() && amount > 0)
 		{
 			--amount;

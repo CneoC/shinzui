@@ -39,14 +39,16 @@ GLRenderDriver::GLRenderDriver(core::Core *pCore, os::Window *pWindow)
 	: RenderDriver(pCore)
 	, m_pWindow(pWindow)
 {
+	setPixelFormat();
+
 	m_pContext = new os::GLContext(pWindow);
-	getGLContext()->create(os::GLContext::CONTEXT_RENDER);
+	getGLContext()->create();
+	getGLContext()->bind();
+	init();
+	getGLContext()->unbind();
 
 	m_pLoaderContext = new os::GLContext(pWindow);
-	getLoaderGLContext()->create(os::GLContext::CONTEXT_LOAD);
-	getLoaderGLContext()->unbind();
-
-	getGLContext()->link(getLoaderGLContext());
+	getGLLoaderContext()->create();
 
 	// Register core renderers
 	addRenderer("Start",	&GLStartRenderer::create);
@@ -63,5 +65,64 @@ GLRenderDriver::GLRenderDriver(core::Core *pCore, os::Window *pWindow)
 GLRenderDriver::~GLRenderDriver()
 {
 	getGLContext()->destroy();
-	getLoaderGLContext()->destroy();
+	getGLLoaderContext()->destroy();
+}
+
+void GLRenderDriver::setPixelFormat()
+{
+	static	PIXELFORMATDESCRIPTOR pfd =
+	{
+		sizeof(PIXELFORMATDESCRIPTOR),
+		1,
+		PFD_DRAW_TO_WINDOW |
+		PFD_SUPPORT_OPENGL |
+		PFD_DOUBLEBUFFER,
+		PFD_TYPE_RGBA,
+		m_pWindow->getBpp(),
+		0, 0, 0, 0, 0, 0,
+		0,											// TODO: alpha buffer support
+		0,
+		0,											// TODO: accumulation buffer support
+		0, 0, 0, 0,									//		 accumulation bits
+		16,											// TODO: customizable z-buffer
+		0,											// TODO: stencil buffer support
+		0,
+		PFD_MAIN_PLANE,
+		0,
+		0, 0, 0
+	};
+
+	// Choose a pixel format
+	GLuint pixelFormat = ChoosePixelFormat(m_pWindow->getHDC(), &pfd);
+	if (!pixelFormat)
+	{
+		throw std::runtime_error("Unable to find proper pixel format.");
+	}
+
+	// Set the pixel format
+	if (!SetPixelFormat(m_pWindow->getHDC(), pixelFormat, &pfd))
+	{
+		throw std::runtime_error("Unable to set pixel format.");
+	}
+}
+
+void GLRenderDriver::init()
+{
+	// Initialize some standard OpenGL settings
+	glShadeModel(GL_SMOOTH);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearDepth(1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+	if (WGL_EXT_swap_control)
+	{
+		wglSwapIntervalEXT(0);
+	}
+
+	if (!getGLContext()->resize(m_pWindow->getSize()))
+	{
+		throw std::runtime_error("Unable to set resize context.");
+	}
 }

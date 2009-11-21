@@ -131,7 +131,7 @@ void main(const char *argc, int argv)
 		for (u32 i = 0; i < PROCESS_OVERHEAD_TEST; i++)
 		{
 			test::LogTestProc *test = new LogTestProc(pCore, i);
-			test->setFrameDelay(1 + i * 0.01);
+			test->setDelay(1 + i * 0.01);
 			pCore->addProcess(test);
 			pTestLogs[i] = test;
 		}
@@ -178,7 +178,7 @@ void main(const char *argc, int argv)
 			world::MoveData *pMove = ent.getData()->get<world::MoveData>("Move");
 			pMove->velocity = pos * math::Vector3f(0.01f, 0, 0.01f);
 			pMove->velocity.y += (rand() % 1000) * 0.01f;
-			pMove->gravity = math::Vector3f(0, (fabs(pos.x) + fabs(pos.z)) * -0.01, 0);
+			pMove->gravity = math::Vector3f(0, (fabs(pos.x) + fabs(pos.z)) * -0.01f, 0);
 			pMove->damping = math::Vector3f(0.8f, 0.8f, 0.8f);
 		}
 
@@ -197,16 +197,16 @@ void main(const char *argc, int argv)
 
 		RenderChain *pChain = new RenderChain(pCore);
 		pChain->link(pRenderStart)
-			->link(pStartFB)
+			//->link(pStartFB)
 			->link(pScene)
-			->link(pEndFB)
+			//->link(pEndFB)
 			->link(pConsole)
 			->link(pThreadUsage)
 			->link(pDrawFPS)
 			->link(pRenderEnd);
 
 		RendererProc *pRenderProc = new RendererProc(pCore);
-		pRenderProc->setFrameDelay(0.01667); // 60 fps
+		pRenderProc->setDelay(0.01667); // 60 fps
 		pRenderProc->setRenderer(pChain);
 		pCore->addProcess(pRenderProc);
 

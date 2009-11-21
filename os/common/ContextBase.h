@@ -42,18 +42,10 @@ namespace os
 			FLAG_RESIZED
 		};
 
-		enum Type
-		{
-			CONTEXT_NONE,
-			CONTEXT_RENDER,
-			CONTEXT_LOAD
-		};
-
 		//////////////////////////////////////////////////////////////////////////
 
 		ContextBase(Window *pWindow)
 			: m_pWindow(pWindow)
-			, m_type(CONTEXT_NONE)
 		{
 			pWindow->resizeEvent.connect(this, &ContextBase::onResize);
 		}
@@ -61,14 +53,17 @@ namespace os
 		//////////////////////////////////////////////////////////////////////////
 
 		//! Creates the context.
-		virtual bool create(Type type) = 0;
+		virtual bool create() = 0;
 		//! Destroys the context.
 		virtual bool destroy() = 0;
 
 		//! Binds the context to the current thread.
-		virtual bool bind() = 0;
+		virtual bool bind()		{ ms_activeContext.reset(this); return true; }
 		//! Unbinds the context from the current thread.
-		virtual bool unbind() = 0;
+		virtual bool unbind()	{ if (isBound()) ms_activeContext.release(); return !isBound(); }
+
+		//! Checks if the context is bound to the current thread.
+		bool isBound()			{ return ms_activeContext.get() == this; }
 
 		//! Links the resources of 2 contexts.
 		virtual bool link(ContextBase *pOther) = 0;
@@ -84,14 +79,20 @@ namespace os
 		//! Gets the window this context belongs to.
 		Window *getWindow() const	{ return m_pWindow; }
 
+		//////////////////////////////////////////////////////////////////////////
+
+		//! Gets the currently active context for this thread.
+		static ContextBase *getActiveContext()	{ return ms_activeContext.get(); }
+
 	protected:
 		//! Resize event
 		void onResize(const math::Vector2i &size) { m_flags[FLAG_RESIZED] = true; }
 
 	protected:
 		std::bitset<16>	m_flags;
-		u16				m_type;
 		Window *		m_pWindow;
+
+		static boost::thread_specific_ptr< ContextBase >	ms_activeContext;
 	};
 }
 

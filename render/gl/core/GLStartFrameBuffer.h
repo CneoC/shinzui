@@ -29,8 +29,6 @@
 
 #include "render/core/StartFrameBuffer.h"
 
-#include <gl/glew.h>
-
 namespace render
 {
 	class GLStartFrameBuffer
