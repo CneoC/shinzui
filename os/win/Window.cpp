@@ -281,6 +281,12 @@ LRESULT CALLBACK Window::rerouteWndProc(HWND m_hWnd, UINT uMsg, WPARAM wParam, L
 	else
 	{
 		pProc = reinterpret_cast<Window *>(GetWindowLong(m_hWnd, GWL_USERDATA));
+
+		// no valid user data yet
+		if (!pProc)
+		{
+			return DefWindowProc(m_hWnd, uMsg, wParam, lParam);
+		}
 	}
 
 	return pProc->wndProc(m_hWnd, uMsg, wParam, lParam);

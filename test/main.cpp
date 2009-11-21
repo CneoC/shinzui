@@ -131,7 +131,7 @@ void main(const char *argc, int argv)
 		for (u32 i = 0; i < PROCESS_OVERHEAD_TEST; i++)
 		{
 			test::LogTestProc *test = new LogTestProc(pCore, i);
-			test->setFrameDelay(1 + i * 0.01);
+			test->setDelay(1 + i * 0.01);
 			pCore->addProcess(test);
 			pTestLogs[i] = test;
 		}
@@ -178,7 +178,7 @@ void main(const char *argc, int argv)
 			world::MoveData *pMove = ent.getData()->get<world::MoveData>("Move");
 			pMove->velocity = pos * math::Vector3f(0.01f, 0, 0.01f);
 			pMove->velocity.y += (rand() % 1000) * 0.01f;
-			pMove->gravity = math::Vector3f(0, (fabs(pos.x) + fabs(pos.z)) * -0.01, 0);
+			pMove->gravity = math::Vector3f(0, (fabs(pos.x) + fabs(pos.z)) * -0.01f, 0);
 			pMove->damping = math::Vector3f(0.8f, 0.8f, 0.8f);
 		}
 
@@ -206,17 +206,13 @@ void main(const char *argc, int argv)
 			->link(pRenderEnd);
 
 		RendererProc *pRenderProc = new RendererProc(pCore);
-		pRenderProc->setFrameDelay(0.01667); // 60 fps
+		pRenderProc->setDelay(0.01667); // 60 fps
 		pRenderProc->setRenderer(pChain);
 		pCore->addProcess(pRenderProc);
-
-		pCore->getDriver()->getContext()->unbind();
 
 		/************************************************************************/
 		/* Preload some resources                                               */
 		/************************************************************************/
-		pCore->getDriver()->getLoaderContext()->bind();
-
 		FrameBufferDef fbDef(pLoader);
 		fbDef->setClearColor(math::Color4f(0, 0, 0, 0));
 		fbDef->setCleared(true);
@@ -238,7 +234,6 @@ void main(const char *argc, int argv)
 		program.load(ResourceLoaderBase::FLAG_ASYNC);
 		pEndFB->as<EndFrameBuffer>()->setProgram(program);
 
-
 #ifdef ENABLE_ASYNC_LOAD_TEST
 		pCore->getLoader()->addLoader(new StreamResourceTestLoader());
 		for (u32 i = 0; i < 500; i++)
@@ -252,7 +247,7 @@ void main(const char *argc, int argv)
 		}
 #endif
 
-		pCore->getDriver()->getLoaderContext()->unbind();
+		pCore->getDriver()->getContext()->unbind();
 
 		/************************************************************************/
 		/* Run the core                                                         */

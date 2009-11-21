@@ -34,8 +34,6 @@
 
 #include "resources/font/FontResource.h"
 
-#include <gl/glew.h>
-
 namespace render
 {
 	class FontUtil

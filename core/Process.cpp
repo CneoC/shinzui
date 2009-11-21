@@ -31,7 +31,7 @@ using namespace core;
 Process::Process(core::Core *pCore, u32 id)
 	: m_pCore(pCore)
 	, m_id(id)
-	, m_frameDelay(0)
+	, m_delay(0)
 	, m_lastRunTime(0)
 	, m_jobs(0)
 	, m_color(0.8, 0.9, 1.0)

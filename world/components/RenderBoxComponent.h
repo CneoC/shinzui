@@ -35,7 +35,7 @@
 
 #include "math/Vector3.h"
 
-#include <gl/glew.h>
+#include "os/current/gl/GLContext.h"
 
 namespace world
 {

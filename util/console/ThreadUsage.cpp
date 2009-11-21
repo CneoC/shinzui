@@ -24,7 +24,7 @@
 
 #include "ThreadUsage.h"
 
-#include <gl/glew.h>
+#include "os/current/gl/GLContext.h"
 
 using namespace console;
 
@@ -119,9 +119,9 @@ void ThreadUsage::render(double delta)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	float width = rec[2] - rec[0] - 10;
+	float width = (float)(rec[2] - rec[0] - 10);
 	float offsetX = 5;
-	glTranslatef(offsetX, rec[3] - rec[1] - 5, 0.0f);
+	glTranslatef(offsetX, (float)(rec[3] - rec[1] - 5), 0.0f);
 
 	for (u32 i = 0; i < m_pCore->getThreadCount(); i++)
 	{

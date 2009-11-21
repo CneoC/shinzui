@@ -17,28 +17,16 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// GLStartFrameBuffer.cpp
+// ContextBase.cpp
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
-#include "GLStartFrameBuffer.h"
+#include "ContextBase.h"
 
-#include "os/current/gl/GLContext.h"
+using namespace os;
 
-using namespace render;
+//! don't clean up the thread based context
+void contextCleanup(ContextBase *pContext) {}
 
-GLStartFrameBuffer::GLStartFrameBuffer(core::Core *pCore)
-	: StartFrameBuffer(pCore)
-{
-}
-
-GLStartFrameBuffer::~GLStartFrameBuffer()
-{
-}
-
-void GLStartFrameBuffer::render(double delta)
-{
-	if (m_frameBuffer)
-		m_frameBuffer->bind();
-}
+boost::thread_specific_ptr< ContextBase > ContextBase::ms_activeContext(contextCleanup);

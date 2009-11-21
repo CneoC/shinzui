@@ -103,9 +103,9 @@ namespace core
 		core::Core *getCore() const				{ return m_pCore; }
 
 		//! Gets the frame delay time in seconds.
-		float getFrameDelay() const				{ return m_frameDelay; }
+		float getDelay() const					{ return m_delay; }
 		//! Sets the frame delay time in seconds.
-		void setFrameDelay(float frameDelay)	{ m_frameDelay = frameDelay; }
+		void setDelay(float delay)				{ m_delay = delay; }
 
 		//! Get id of last run, used for dependency checking.
 		u32 getLastRunId() const				{ return m_lastRunId; }
@@ -123,7 +123,7 @@ namespace core
 		void setDeltaTime(float time)			{ m_deltaTime = time; }
 
 		//! Gets the next time the process wants to be run.
-		double getNextRunTime() const			{ return m_lastRunTime + m_frameDelay; }
+		double getNextRunTime() const			{ return m_lastRunTime + m_delay; }
 
 		//! Forces the process ready (ignoring dependencies and frame delay).
 		void forceStart()						{ m_forceStart = true; }
@@ -138,7 +138,7 @@ namespace core
 
 		os::AtomicCounter<u32>	m_jobs;				// amount of active jobs this process has.
 		
-		float					m_frameDelay;		// wait time between activations for this process.
+		float					m_delay;			// wait time between activations for this process.
 
 		u32						m_lastRunId;		// last run identifier (used for dependency checking).
 		double					m_lastRunTime;		// last time the process was run.

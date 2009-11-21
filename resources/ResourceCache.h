@@ -86,7 +86,7 @@ namespace resources
 	protected:
 		bool initJob()
 		{
-			m_pCore->getDriver()->getLoaderContext()->bind();
+			getCore()->getDriver()->getLoaderContext()->bind();
 			return false;
 		}
 

@@ -37,7 +37,7 @@ Core::Core(s32 threadCount)
 	// Determine thread count automatically
 	if (threadCount == -1)
 	{
-		threadCount = 2 + boost::thread::hardware_concurrency();
+		threadCount = THREAD_ID_NORMAL_START + boost::thread::hardware_concurrency();
 	}
 
 	// Clamp thread count
@@ -102,7 +102,7 @@ void Core::run()
 				// If the process is ready
 				double delta = elapsed - pProcess->getLastRunTime();
 				if (pProcess->getJobs() == 0 &&				// No longer running any jobs
-					delta >= pProcess->getFrameDelay() &&	// Passed expected frame delay between calls
+					delta >= pProcess->getDelay() &&	// Passed expected frame delay between calls
 					pProcess->isDependencyDone())			// Dependencies done as well
 				{
 					// Reset job counters
@@ -118,7 +118,7 @@ void Core::run()
 					}
 
 					// Inform the process it started, let it add it's own jobs if required.
-					pProcess->setDeltaTime(elapsed - pProcess->getLastRunTime());
+					pProcess->setDeltaTime((float)(elapsed - pProcess->getLastRunTime()));
 					pProcess->onStart();
 					pProcess->setLastRunTime(elapsed);
 
