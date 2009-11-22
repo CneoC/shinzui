@@ -197,9 +197,9 @@ void main(const char *argc, int argv)
 
 		RenderChain *pChain = new RenderChain(pCore);
 		pChain->link(pRenderStart)
-			->link(pStartFB)
+			//->link(pStartFB)
 			->link(pScene)
-			->link(pEndFB)
+			//->link(pEndFB)
 			->link(pConsole)
 			->link(pThreadUsage)
 			->link(pDrawFPS)
