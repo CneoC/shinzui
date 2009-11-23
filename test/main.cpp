@@ -161,7 +161,7 @@ void main(const char *argc, int argv)
 		pComponentMgr->addComponent("Input", new world::InputComponent(pCore, pComponentMgr));
 		pComponentMgr->addComponent("RenderBox", pRenderBoxComponent);
 
-		for (u32 i = 0; i < 200; i++)
+		for (u32 i = 0; i < 50; i++)
 		{
 			world::Entity ent = world::Entity::create("Test", pComponentMgr);
 			ent.addComponent("Move");
@@ -197,9 +197,9 @@ void main(const char *argc, int argv)
 
 		RenderChain *pChain = new RenderChain(pCore);
 		pChain->link(pRenderStart)
-			//->link(pStartFB)
+			->link(pStartFB)
 			->link(pScene)
-			//->link(pEndFB)
+			->link(pEndFB)
 			->link(pConsole)
 			->link(pThreadUsage)
 			->link(pDrawFPS)
