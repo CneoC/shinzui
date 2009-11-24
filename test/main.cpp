@@ -29,6 +29,7 @@
 #include <core/Core.h>
 
 #include <os/current/gl/GLContext.h>
+#include <os/current/Exception.h>
 
 #include <util/console/Console.h>
 #include <util/console/ThreadUsage.h>
@@ -279,9 +280,15 @@ void main(const char *argc, int argv)
 
 		LOG_GET_ROOT->clearWriters();
 	}
+	catch (os::Exception &e)
+	{
+		LOG_FATAL(LOG_GET_ROOT, "Fatal exception: " << e.what());
+		LOG_FATAL(LOG_GET_ROOT, "  in " << e.getFilename() << "[" << e.getLineNumber() << "]:");
+		//LOG_FATAL(LOG_GET_ROOT, "  stack:" << e.getStackTrace());
+	}
 	catch (std::runtime_error &e)
 	{
-		printf("Oops: %s\n", e.what());
+		LOG_FATAL(LOG_GET_ROOT, "Fatal exception: " << e.what());
 	}
 
 	FreeImage_DeInitialise();

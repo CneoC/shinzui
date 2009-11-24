@@ -200,7 +200,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\util\ExceptionWithStack.cpp"
+				RelativePath=".\os\win\Exception.cpp"
 				>
 			</File>
 			<File
@@ -346,11 +346,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\os\current\AtomicCounter.h"
+				RelativePath=".\os\win\AtomicCounter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\AtomicCounter.h"
+				RelativePath=".\os\current\AtomicCounter.h"
 				>
 			</File>
 			<File
@@ -410,7 +410,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\util\ExceptionWithStack.h"
+				RelativePath=".\os\win\Exception.h"
+				>
+			</File>
+			<File
+				RelativePath=".\os\current\Exception.h"
 				>
 			</File>
 			<File
@@ -466,11 +470,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\io\FSFile.h"
+				RelativePath=".\os\common\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\io\FSFile.h"
+				RelativePath=".\os\win\io\FSFile.h"
 				>
 			</File>
 			<File
@@ -486,11 +490,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLContext.h"
+				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\gl\GLContext.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -698,11 +702,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\Thread.h"
+				RelativePath=".\os\current\Thread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Thread.h"
+				RelativePath=".\os\common\Thread.h"
 				>
 			</File>
 			<File
@@ -710,11 +714,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Time.h"
+				RelativePath=".\os\current\Time.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Time.h"
+				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File

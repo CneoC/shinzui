@@ -59,6 +59,8 @@ namespace os
 		void show();
 		void hide();
 
+		//////////////////////////////////////////////////////////////////////////
+
 		HDC getHDC() const				{ return m_hDC; }
 		HWND getHWnd() const			{ return m_hWnd; }
 		HINSTANCE getHInstance() const	{ return m_hInstance; }
@@ -73,6 +75,8 @@ namespace os
 			resizeEvent(size);
 			return true;
 		}
+
+		//////////////////////////////////////////////////////////////////////////
 
 		HDC				m_hDC;			// GDI device context.
 		HWND			m_hWnd;			// window handle.
