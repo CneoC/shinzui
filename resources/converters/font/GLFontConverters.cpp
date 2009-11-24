@@ -103,21 +103,21 @@ void GLFontConverters::ConvertFromFT::createDisplayList(GLFontResource &font, un
 	FTFontResource ftFont(font->getSource());
 
 	if (!ftFont)
-		throw std::runtime_error("Unable to get FTFontResource.");
+		THROW_EXCEPTION("Unable to get FTFontResource.");
 
 	FT_Face face = ftFont->getFace();
 
 	// Load the character glyph.
 	if (FT_Load_Glyph(face, FT_Get_Char_Index(face, c), FT_LOAD_DEFAULT))
 	{
-		throw std::runtime_error("FT_Load_Glyph failed.");
+		THROW_EXCEPTION("FT_Load_Glyph failed.");
 	}
 
 	// Get the glyph data.
 	FT_Glyph glyph;
 	if (FT_Get_Glyph(face->glyph, &glyph))
 	{
-		throw std::runtime_error("FT_Get_Glyph failed.");
+		THROW_EXCEPTION("FT_Get_Glyph failed.");
 	}
 
 	// Convert to bitmap.
@@ -125,7 +125,7 @@ void GLFontConverters::ConvertFromFT::createDisplayList(GLFontResource &font, un
 	{
 		if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, 0, 1))
 		{
-			throw std::runtime_error("FT_Glyph_To_Bitmap failed.");
+			THROW_EXCEPTION("FT_Glyph_To_Bitmap failed.");
 		}
 	}
 

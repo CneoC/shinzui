@@ -29,6 +29,8 @@
 
 #include "core/types.h"
 
+#include <string>
+
 namespace util
 {
 	/**
@@ -36,6 +38,14 @@ namespace util
 	 * This is a slightly modified version from Paul Hsieh (http://www.azillionmonkeys.com/qed/hash.html)
 	 */
 	u32 hashString(const char *data, u32 len, u32 hash = 0);
+
+	/**
+	 * Same as hashString only with std::string as input.
+	 */
+	inline u32 hashString(const std::string &data, u32 hash = 0)
+	{
+		return hashString(data.c_str(), data.length(), hash);
+	}
 
 };
 

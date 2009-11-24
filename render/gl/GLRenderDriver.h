@@ -32,6 +32,8 @@
 #include "os/current/Window.h"
 #include "os/current/gl/GLContext.h"
 
+#include "util/console/Cvar.h"
+
 namespace render
 {
 	class GLRenderDriver
@@ -54,6 +56,8 @@ namespace render
 		void init();
 
 		os::Window *	m_pWindow;
+
+		console::Cvar	m_multiContext;
 	};
 }
 

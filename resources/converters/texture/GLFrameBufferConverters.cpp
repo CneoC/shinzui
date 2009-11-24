@@ -94,7 +94,7 @@ bool GLFrameBufferConverters::ConvertFromDef::load(Resource &res, u32 flags)
 
 		GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE)
-			throw std::runtime_error("Unable to properly create FBO");
+			THROW_EXCEPTION("Unable to properly create FBO");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
@@ -123,7 +123,7 @@ bool GLFrameBufferConverters::ConvertFromDef::load(Resource &res, u32 flags)
 
 		GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE)
-			throw std::runtime_error("Unable to properly create FBO");
+			THROW_EXCEPTION("Unable to properly create FBO");
 
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	}

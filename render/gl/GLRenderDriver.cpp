@@ -35,9 +35,12 @@ using namespace render;
 
 //////////////////////////////////////////////////////////////////////////
 
+CVAR_DEFINE(r_gl_multiContext, "r.gl.multiContext", false, console::CVAR_SAVE | console::CVAR_LATCH);
+
 GLRenderDriver::GLRenderDriver(core::Core *pCore, os::Window *pWindow)
 	: RenderDriver(pCore)
 	, m_pWindow(pWindow)
+	, m_multiContext(r_gl_multiContext)
 {
 	setPixelFormat();
 
@@ -49,13 +52,20 @@ GLRenderDriver::GLRenderDriver(core::Core *pCore, os::Window *pWindow)
 	init();
 	getGLContext()->unbind();
 
-	m_pLoaderContext = new os::GLContext(pWindow);
-	getGLLoaderContext()->create();
-	getGLLoaderContext()->bind();
-	glewInit();
-	wglewInit();
-	getGLLoaderContext()->link(getGLContext());
-	getGLLoaderContext()->unbind();
+	if (static_cast<bool>(m_multiContext))
+	{
+		m_pLoaderContext = new os::GLContext(pWindow);
+		getGLLoaderContext()->create();
+		getGLLoaderContext()->bind();
+		glewInit();
+		wglewInit();
+		getGLLoaderContext()->link(getGLContext());
+		getGLLoaderContext()->unbind();
+	}
+	else
+	{
+		m_pLoaderContext = NULL;
+	}
 
 	// Register core renderers
 	addRenderer("Start",	&GLStartRenderer::create);
@@ -72,7 +82,11 @@ GLRenderDriver::GLRenderDriver(core::Core *pCore, os::Window *pWindow)
 GLRenderDriver::~GLRenderDriver()
 {
 	getGLContext()->destroy();
-	getGLLoaderContext()->destroy();
+
+	if (static_cast<bool>(m_multiContext))
+	{
+		getGLLoaderContext()->destroy();
+	}
 }
 
 void GLRenderDriver::setPixelFormat()
@@ -103,13 +117,13 @@ void GLRenderDriver::setPixelFormat()
 	GLuint pixelFormat = ChoosePixelFormat(m_pWindow->getHDC(), &pfd);
 	if (!pixelFormat)
 	{
-		throw std::runtime_error("Unable to find proper pixel format.");
+		THROW_EXCEPTION("Unable to find proper pixel format.");
 	}
 
 	// Set the pixel format
 	if (!SetPixelFormat(m_pWindow->getHDC(), pixelFormat, &pfd))
 	{
-		throw std::runtime_error("Unable to set pixel format.");
+		THROW_EXCEPTION("Unable to set pixel format.");
 	}
 }
 
@@ -130,6 +144,6 @@ void GLRenderDriver::init()
 
 	if (!getGLContext()->resize(m_pWindow->getSize()))
 	{
-		throw std::runtime_error("Unable to set resize context.");
+		THROW_EXCEPTION("Unable to set resize context.");
 	}
 }

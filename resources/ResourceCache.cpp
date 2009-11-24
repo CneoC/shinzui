@@ -110,7 +110,19 @@ void ResourceCache::onStart()
 	// Create load jobs
 	if (!m_load.empty())
 	{
-		m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::loadCoreJob), core::Core::THREAD_ID_LOAD_BIT);
+		u32 threadMask;
+		// Force usage of loader thread when we have a loader context
+		if (m_pCore->getDriver()->getLoaderContext())
+		{
+			threadMask = core::Core::THREAD_ID_LOAD_BIT;
+		}
+		// Otherwise force main thread since we need a proper context for the core job
+		else
+		{
+			threadMask = core::Core::THREAD_ID_MAIN_BIT;
+		}
+
+		m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::loadCoreJob), threadMask);
 		for (u32 i = 1; i < getLoadJobs(); i++)
 		{
 			m_pCore->addJob(this, core::Job::Function(this, &ResourceCache::loadJob));

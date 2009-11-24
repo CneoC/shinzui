@@ -33,6 +33,8 @@
 
 #include "os/current/Thread.h"
 #include "os/current/Time.h"
+#include "os/current/Exception.h"
+#include "util/console/CvarList.h"
 #include "util/logging/LogManager.h"
 #include "util/FastDelegate.h"
 
@@ -66,14 +68,14 @@ namespace core
 			, pProcess(NULL)
 		{}
 
-		volatile u32	threadMask;	// thread mask for this job, 0 if not active.
-		Process *		pProcess;	// process owning the job.
-		Function		func;		// function call that runs the job.
+		volatile u32	threadMask;	//!< thread mask for this job, 0 if not active.
+		Process *		pProcess;	//!< process owning the job.
+		Function		func;		//!< function call that runs the job.
 	};
 
 	/**
-	* Core thread class which is used by Core to run a Process.
-	*/
+	 * Core thread class which is used by Core to run a Process.
+	 */
 	class CoreThread
 		: public os::Thread
 	{
@@ -143,10 +145,10 @@ namespace core
 		 */
 		enum ThreadID
 		{
-			THREAD_ID_MAIN,							// Main program thread core tasks.
-			THREAD_ID_RENDER = THREAD_ID_MAIN,		// Render thread for Rendering related tasks.
-			THREAD_ID_LOAD,							// Loading thread to load Context requiring resources.
-			THREAD_ID_NORMAL_START,					// First id of rest of (normal) threads.
+			THREAD_ID_MAIN,							//!< Main program thread core tasks.
+			THREAD_ID_RENDER = THREAD_ID_MAIN,		//!< Render thread for Rendering related tasks.
+			THREAD_ID_LOAD,							//!< Loading thread to load Context requiring resources.
+			THREAD_ID_NORMAL_START,					//!< First id of rest of (normal) threads.
 
 			// Thread mask bits
 			THREAD_ID_MAIN_BIT			= 1 << THREAD_ID_MAIN,
@@ -263,28 +265,28 @@ namespace core
 		logging::Log * getLog()								{ return m_log; }
 
 	protected:
-		os::Time				m_startTime;			// start time of the core system.
+		os::Time				m_startTime;			//!< Start time of the core system.
 
-		bool					m_running;				// is the core still running.
-
-		//////////////////////////////////////////////////////////////////////////
-
-		ThreadList				m_threads;				// pool of active core threads.
-
-		boost::shared_mutex		m_processesMutex;		// mutex used to lock the list of processes.
-		u32						m_processRunId;			// incremental identifier to determine process run order.
-		ProcessList				m_processes;			// list of processes.
-
-		boost::shared_mutex		m_jobsMutex;			// mutex used to lock the list of jobs.
-		JobList					m_jobs;					// list of queued jobs.
-		Job						m_job;					// current job the core process is running internally.
+		bool					m_running;				//!< Is the core still running.
 
 		//////////////////////////////////////////////////////////////////////////
 
-		resources::ResourceLoader *m_pLoader;			// current resource loader.
-		render::RenderDriver *	m_pDriver;				// current render driver.
+		ThreadList				m_threads;				//!< Pool of active core threads.
 
-		logging::Log *			m_log;					// logger used for core
+		boost::shared_mutex		m_processesMutex;		//!< Mutex used to lock the list of processes.
+		u32						m_processRunId;			//!< Incremental identifier to determine process run order.
+		ProcessList				m_processes;			//!< List of processes.
+
+		boost::shared_mutex		m_jobsMutex;			//!< Mutex used to lock the list of jobs.
+		JobList					m_jobs;					//!< List of queued jobs.
+		Job						m_job;					//!< Current job the core process is running internally.
+
+		//////////////////////////////////////////////////////////////////////////
+
+		resources::ResourceLoader *m_pLoader;			//!< Current resource loader.
+		render::RenderDriver *	m_pDriver;				//!< Current render driver.
+
+		logging::Log *			m_log;					//!< Logger used for core.
 	};
 }
 

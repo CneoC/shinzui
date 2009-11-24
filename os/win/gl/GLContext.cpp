@@ -47,7 +47,7 @@ bool GLContext::create()
 	if (!m_hRC)
 	{
 		destroy();
-		throw std::runtime_error("Unable to create GL context.");
+		THROW_EXCEPTION("Unable to create GL context.");
 		return false;
 	}
 
@@ -61,12 +61,12 @@ bool GLContext::destroy()
 	{
 		if (wglGetCurrentContext() && !wglMakeCurrent(NULL, NULL))
 		{
-			throw std::runtime_error("Unable to release GL context.");
+			THROW_EXCEPTION("Unable to release GL context.");
 		}
 
 		if (!wglDeleteContext(m_hRC))
 		{
-			throw std::runtime_error("Unable to destroy GL context.");
+			THROW_EXCEPTION("Unable to destroy GL context.");
 		}
 		m_hRC = NULL;
 	}
@@ -79,7 +79,7 @@ bool GLContext::bind()
 	bool status = wglMakeCurrent(m_pWindow->getHDC(), m_hRC) == TRUE;
 	if (!status)
 	{
-		throw std::runtime_error("Unable to bind GL context.");
+		THROW_EXCEPTION("Unable to bind GL context.");
 		return false;
 	}
 	return ContextBase::bind();
@@ -90,7 +90,7 @@ bool GLContext::unbind()
 	bool status = wglMakeCurrent(NULL, NULL) == TRUE;
 	if (!status)
 	{
-		throw std::runtime_error("Unable to ubbind GL context.");
+		THROW_EXCEPTION("Unable to ubbind GL context.");
 		return false;
 	}
 	return ContextBase::unbind();
@@ -101,7 +101,7 @@ bool GLContext::link(ContextBase *pOther)
 	bool status = wglShareLists(m_hRC, static_cast< GLContext * >(pOther)->getHRC()) == TRUE;
 	if (!status)
 	{
-		throw std::runtime_error("Unable to link GL contexts.");
+		THROW_EXCEPTION("Unable to link GL contexts.");
 	}
 	return status;
 }

@@ -79,7 +79,7 @@ bool Window::create()
 	// Try to register the window class
 	if (!RegisterClass(&wc))
 	{
-		throw std::runtime_error("Unable to register window class.");
+		THROW_EXCEPTION("Unable to register window class.");
 		return false;
 	}
 
@@ -133,7 +133,7 @@ bool Window::create()
 	if (!m_hWnd)
 	{
 		destroy();
-		throw std::runtime_error("Window Creation Error.");
+		THROW_EXCEPTION("Window Creation Error.");
 		return false;
 	}
 
@@ -141,7 +141,7 @@ bool Window::create()
 	if (!m_hDC)
 	{
 		destroy();
-		throw std::runtime_error("Unable to create device context.");
+		THROW_EXCEPTION("Unable to create device context.");
 		return false;
 	}
 
@@ -159,19 +159,19 @@ bool Window::destroy()
 
 	if (m_hDC && !ReleaseDC(m_hWnd, m_hDC))
 	{
-		throw std::runtime_error("Unable to release device context.");
+		THROW_EXCEPTION("Unable to release device context.");
 	}
 	m_hDC = NULL;
 
 	if (m_hWnd && !DestroyWindow(m_hWnd))
 	{
-		throw std::runtime_error("Unable to destroy m_hWnd.");
+		THROW_EXCEPTION("Unable to destroy m_hWnd.");
 	}
 	m_hWnd = NULL;
 
 	if (!UnregisterClass(WINDOW_CLASS, m_hInstance))
 	{
-		throw std::runtime_error("Unable to unregister class.");
+		THROW_EXCEPTION("Unable to unregister class.");
 	}
 	m_hInstance = NULL;
 

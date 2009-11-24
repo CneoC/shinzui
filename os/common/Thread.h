@@ -70,8 +70,8 @@ namespace os
 		//////////////////////////////////////////////////////////////////////////
 
 		/**
-		* Constructs an empty thread.
-		*/
+		 * Constructs an empty thread.
+		 */
 		Thread()
 			: m_running(false)
 			, m_pThread(NULL)
@@ -79,8 +79,8 @@ namespace os
 		}
 
 		/**
-		* Starts the thread.
-		*/
+		 * Starts the thread.
+		 */
 		void start()
 		{
 			m_running = true;
@@ -88,9 +88,9 @@ namespace os
 		}
 
 		/**
-		* Stops the thread
-		* @param block	waits for the thread to finish
-		*/
+		 * Stops the thread
+		 * @param block	waits for the thread to finish
+		 */
 		void stop(bool block = false)
 		{
 			m_running = false;

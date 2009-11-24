@@ -65,7 +65,7 @@ namespace resources
 		ResourceCache(core::Core *pCore, int id = 0);
 
 		/**
-		 * Finds a resource with a specific identifier and type
+		 * Finds a resource with a specific identifier and type.
 		 */
 		Resource find(const ResourceId &id);
 
@@ -86,7 +86,11 @@ namespace resources
 	protected:
 		bool initJob()
 		{
-			getCore()->getDriver()->getLoaderContext()->bind();
+			// If we have a separate loader context
+			if (getCore()->getDriver()->getLoaderContext())
+			{
+				getCore()->getDriver()->getLoaderContext()->bind();
+			}
 			return false;
 		}
 

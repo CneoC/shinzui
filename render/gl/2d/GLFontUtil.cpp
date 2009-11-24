@@ -26,8 +26,6 @@
 
 #include "resources/ResourceLoaderBase.h"
 
-#include <stdexcept>
-
 using namespace render;
 using namespace resources;
 
@@ -40,7 +38,7 @@ void GLFontUtil::print(const math::Vector2f &p, size_t length, const char *text)
 {
 	GLFontResource font(m_font);
 	if (!font)
-		throw std::runtime_error("Invalid font resource, expected GLFontResource.");
+		THROW_EXCEPTION("Invalid font resource, expected GLFontResource.");
 
 	// Set proper render settings for font rendering.
 	glPushAttrib(GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_ENABLE_BIT | GL_LIST_BIT); 

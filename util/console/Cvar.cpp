@@ -17,41 +17,13 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// Console.h
+// Cvar.cpp
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
-#ifndef __CONSOLE_CONSOLE_H__
-#define __CONSOLE_CONSOLE_H__
-
-#include "render/Renderer.h"
+#include "Cvar.h"
 
 #include "CvarList.h"
 
-#include <list>
-
-namespace console
-{
-	class Console
-		: public render::Renderer
-	{
-	public:
-		typedef std::list< CvarList * >	CvarListList;
-
-		Console(core::Core *pCore);
-		~Console();
-
-		virtual void render(double delta);
-
-		void addCvarList(CvarList &group)		{ m_CvarLists.push_back(&group); }
-		void removeCvarList(CvarList &group)	{ m_CvarLists.remove(&group); }
-
-	protected:
-		CvarListList	m_CvarLists;
-	};
-}
-
-#endif //__CONSOLE_CONSOLE_H__
+using namespace console;

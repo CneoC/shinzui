@@ -17,41 +17,35 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// Console.h
+// CvarList.cpp
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
-#ifndef __CONSOLE_CONSOLE_H__
-#define __CONSOLE_CONSOLE_H__
-
-#include "render/Renderer.h"
-
 #include "CvarList.h"
 
-#include <list>
+#include "Cvar.h"
 
-namespace console
+using namespace console;
+
+void CvarList::add(CvarDef *pCvar)
 {
-	class Console
-		: public render::Renderer
-	{
-	public:
-		typedef std::list< CvarList * >	CvarListList;
-
-		Console(core::Core *pCore);
-		~Console();
-
-		virtual void render(double delta);
-
-		void addCvarList(CvarList &group)		{ m_CvarLists.push_back(&group); }
-		void removeCvarList(CvarList &group)	{ m_CvarLists.remove(&group); }
-
-	protected:
-		CvarListList	m_CvarLists;
-	};
+	assert(m_variables.find(pCvar->getHash()) == m_variables.end());	// Only unique hashes supported atm
+	m_variables.insert(std::make_pair(pCvar->getHash(), pCvar));
 }
 
-#endif //__CONSOLE_CONSOLE_H__
+void CvarList::remove(CvarDef *pCvar)
+{
+	m_variables.erase(pCvar->getHash());
+}
+
+bool CvarList::has(u32 hash) const
+{
+	return m_variables.find(hash) != m_variables.end();
+}
+
+CvarDef *CvarList::find(u32 hash)
+{
+	assert(has(hash));
+	return m_variables.find(hash)->second;
+}

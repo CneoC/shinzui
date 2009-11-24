@@ -24,6 +24,8 @@
 
 #include "FTFontConverters.h"
 
+#include "os/current/Exception.h"
+
 #include "resources/FileResource.h"
 #include "resources/font/FTFontResource.h"
 
@@ -64,12 +66,12 @@ bool FTFontConverters::ConvertFromFile::load(Resource &res, u32 flags)
 
 	if (FT_Init_FreeType(&font->getLibrary()))
 	{
-		throw std::runtime_error("FT_Init_FreeType failed.");
+		THROW_EXCEPTION("FT_Init_FreeType failed.");
 	}
 
 	if (FT_New_Face(font->getLibrary(), file->getPath().native_file_string().c_str(), 0, &font->getFace()))
 	{
-		throw std::runtime_error(std::string("FT_New_Face failed. file '") + font->getId().toString() + "' probably doesn't exist.");
+		THROW_EXCEPTION((std::string("FT_New_Face failed. file '") + font->getId().toString() + "' probably doesn't exist.").c_str());
 	}
 
 	font->setSize(font->getSize(), font->getResolution());
