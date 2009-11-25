@@ -17,61 +17,48 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// DrawFPS.cpp
+// Console.cpp
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
-#include "DrawFPS.h"
-
-#include "core/Core.h"
-
-#include "render/RenderDriver.h"
-#include "render/2d/FontUtil.h"
+#include "DrawConsole.h"
 
 #include "resources/ResourceLoader.h"
 #include "resources/ResourceCache.h"
 #include "resources/font/GLFontResource.h"
 #include "resources/font/FTFontResource.h"
 
+#include "util/console/Console.h"
+
 #include "os/current/gl/GLContext.h"
 
-using namespace console;
+using namespace render;
 using namespace resources;
+using namespace console;
 
 //////////////////////////////////////////////////////////////////////////
 
-DrawFPS::DrawFPS(core::Core *pCore)
-	: render::Renderer(pCore)
-	, m_frameCount(0)
-	, m_frameTime(0)
-	, m_fps(0)
+DrawConsole::DrawConsole(core::Core *pCore, const Console &console)
+	: Renderer(pCore)
+	, m_console(console)
 {
 	m_pFontUtil = m_pCore->getDriver()->getUtil("2d.Font")->as<render::FontUtil>();
 
-	FTFontResource ftFont(m_pCore->getLoader(), "File::2d/fonts/debug.ttf", "fps");
-	ftFont->setSize(14, 96);
+	FTFontResource ftFont(m_pCore->getLoader(), "File::2d/fonts/debug.ttf", "console");
+	ftFont->setSize(16, 16);
 
 	m_font = GLFontResource(ftFont);
 	m_font.load();
 }
 
-DrawFPS::~DrawFPS()
+DrawConsole::~DrawConsole()
 {
 }
 
-void DrawFPS::render(double delta)
+void DrawConsole::render(double delta)
 {
 	m_pFontUtil->setResource(m_font);
-
-	m_frameCount++;
-	m_frameTime += delta;
-	if (m_frameTime > 0.5)
-	{
-		m_fps = m_frameCount / m_frameTime;
-		m_frameTime = 0;
-		m_frameCount = 0;
-	}
 
 	glPushAttrib(GL_CURRENT_BIT | GL_TRANSFORM_BIT | GL_ENABLE_BIT); 
 	glDisable(GL_DEPTH_TEST);
@@ -82,20 +69,24 @@ void DrawFPS::render(double delta)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0.0f, rec[2], rec[3], 0.0f, -1, 1);
-	
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	ResourceCache *pCache = m_pCore->getLoader()->getCache();
-	if (pCache->isLoading())
-	{
-		glColor3f(1.0f, 1.0f, 1.0f);
-		m_pFontUtil->printf(math::Vector2f(getContext()->getWindow()->getSize().x - 150.0f, 10.0f), "Loading... %3.1f%%", pCache->getProgress() * 100);
-	}
-
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glLoadIdentity();
-	m_pFontUtil->printf(math::Vector2f(10, 10), "%04.2f FPS", getFPS());
+
+	math::Vector2f pos(10, rec[3] - 50);
+	Console::ConsoleBuffer::const_reverse_iterator lineIter = m_console.getBuffer().rbegin();
+	while (lineIter != m_console.getBuffer().rend() && pos.y > 0)
+	{
+		const ConsoleLine &line = *lineIter;
+
+		m_pFontUtil->print(pos, line.getText().length(), line.getText().c_str());
+		pos.y -= 14;
+
+		++lineIter;
+	}
 
 	glPopAttrib();
 }

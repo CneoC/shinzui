@@ -33,11 +33,13 @@
 
 #include <util/console/Console.h>
 #include <util/console/ThreadUsage.h>
-#include <util/console/DrawFPS.h>
 
 #include <render/gl/GLRenderDriver.h>
 #include <render/core/StartFrameBuffer.h>
 #include <render/core/EndFrameBuffer.h>
+#include <render/2d/util/DrawConsole.h>
+#include <render/2d/util/DrawFPS.h>
+#include <render/2d/util/DrawThreadUsage.h>
 #include <render/RenderChain.h>
 #include <render/RenderProc.h>
 
@@ -59,6 +61,8 @@
 #include <world/components/MoveComponent.h>
 #include <world/components/InputComponent.h>
 #include <world/components/RenderBoxComponent.h>
+
+#include <script/PythonScriptEngine.h>
 
 #include <test/LogTestProc.h>
 #include <test/StreamResourceTest.h>
@@ -137,6 +141,20 @@ void main(const char *argc, int argv)
 			pTestLogs[i] = test;
 		}
 #endif
+
+		/************************************************************************/
+		/* Console system initialization                                        */
+		/************************************************************************/
+		console::ThreadUsage	threadUsage(pCore);
+		console::Console		console(pCore);
+
+		threadUsage.start();
+
+		console::GameConsoleWriter	gameConsoleWriter(console);
+		gameConsoleWriter.setFormatter(&textFormatter);
+		LOG_GET_ROOT->addWriter(&gameConsoleWriter);
+		gameConsoleWriter.setLevel(LEVEL_INFO);
+
 		/************************************************************************/
 		/* Window creation                                                      */
 		/************************************************************************/
@@ -148,6 +166,13 @@ void main(const char *argc, int argv)
 
 		RenderDriver *pDriver	= new GLRenderDriver(pCore, pWindow);
 		pCore->setDriver(pDriver);
+
+		/************************************************************************/
+		/* Python test                                                          */
+		/************************************************************************/
+// 		script::PythonScriptEngine scriptEngine(pCore);
+// 		scriptEngine.exec("test = 12.5");
+// 		float test = static_cast<float>(scriptEngine.eval("test"));
 
 		/************************************************************************/
 		/* Initialize entity system                                             */
@@ -190,9 +215,9 @@ void main(const char *argc, int argv)
 
 		Renderer *	pRenderStart	= pCore->getDriver()->createRenderer("Start");
 		Renderer *	pStartFB		= pCore->getDriver()->createRenderer("StartFB");
-		Renderer *	pDrawFPS		= new console::DrawFPS(pCore);
-		Renderer *	pConsole		= new console::Console(pCore);
-		Renderer *	pThreadUsage	= new console::ThreadUsage(pCore);
+		Renderer *	pDrawFPS		= new render::DrawFPS(pCore);
+		Renderer *	pConsole		= new render::DrawConsole(pCore, console);
+		Renderer *	pThreadUsage	= new render::DrawThreadUsage(pCore, threadUsage);
 		Renderer *	pEndFB			= pCore->getDriver()->createRenderer("EndFB");
 		Renderer *	pRenderEnd		= pCore->getDriver()->createRenderer("End");
 

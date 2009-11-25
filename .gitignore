@@ -2,6 +2,7 @@ Debug/
 Release/
 test/Debug/
 test/Release/
+doc/doxygen/
 *.suo
 *.ncb
 *.vcproj.*

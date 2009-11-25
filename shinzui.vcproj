@@ -43,7 +43,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;libraries/glew/include;libraries/freetype/include;libraries/freeimage/include;libraries/freeimageplus/include"
-				PreprocessorDefinitions="GLEW_STATIC;GLEW_MX;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="GLEW_STATIC;GLEW_MX;OPJ_STATIC;FREEIMAGE_LIB;BOOST_PYTHON_STATIC_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -113,7 +113,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories=".;libraries/glew/include;libraries/freetype/include;libraries/freeimage/include;libraries/freeimageplus/include"
-				PreprocessorDefinitions="GLEW_STATIC;GLEW_MX;OPJ_STATIC;FREEIMAGE_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="GLEW_STATIC;GLEW_MX;OPJ_STATIC;FREEIMAGE_LIB;BOOST_PYTHON_STATIC_LIB;_USE_MATH_DEFINES;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
@@ -200,7 +200,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\util\console\DrawFPS.cpp"
+				RelativePath=".\render\2d\util\DrawConsole.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\2d\util\DrawFPS.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\render\2d\util\DrawThreadUsage.cpp"
 				>
 			</File>
 			<File
@@ -292,6 +300,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\script\PythonScript.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script\PythonScriptEngine.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\world\components\RenderBoxComponent.cpp"
 				>
 			</File>
@@ -354,11 +370,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\os\current\AtomicCounter.h"
+				RelativePath=".\os\win\AtomicCounter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\AtomicCounter.h"
+				RelativePath=".\os\current\AtomicCounter.h"
 				>
 			</File>
 			<File
@@ -410,7 +426,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\util\console\DrawFPS.h"
+				RelativePath=".\render\2d\util\DrawConsole.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\2d\util\DrawFPS.h"
+				>
+			</File>
+			<File
+				RelativePath=".\render\2d\util\DrawThreadUsage.h"
 				>
 			</File>
 			<File
@@ -486,11 +510,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\io\FSFile.h"
+				RelativePath=".\os\common\io\FSFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\io\FSFile.h"
+				RelativePath=".\os\win\io\FSFile.h"
 				>
 			</File>
 			<File
@@ -506,11 +530,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\gl\GLContext.h"
+				RelativePath=".\os\current\gl\GLContext.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\gl\GLContext.h"
+				RelativePath=".\os\win\gl\GLContext.h"
 				>
 			</File>
 			<File
@@ -622,6 +646,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\script\PythonScript.h"
+				>
+			</File>
+			<File
+				RelativePath=".\script\PythonScriptEngine.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resources\RawResource.h"
 				>
 			</File>
@@ -694,6 +726,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\script\Script.h"
+				>
+			</File>
+			<File
+				RelativePath=".\script\ScriptEngine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\script\ScriptObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resources\converters\shader\ShaderConverter.h"
 				>
 			</File>
@@ -718,11 +762,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\common\Thread.h"
+				RelativePath=".\os\current\Thread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Thread.h"
+				RelativePath=".\os\common\Thread.h"
 				>
 			</File>
 			<File
@@ -730,11 +774,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\os\win\Time.h"
+				RelativePath=".\os\current\Time.h"
 				>
 			</File>
 			<File
-				RelativePath=".\os\current\Time.h"
+				RelativePath=".\os\win\Time.h"
 				>
 			</File>
 			<File

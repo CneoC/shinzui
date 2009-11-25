@@ -74,7 +74,7 @@ bool FTFontConverters::ConvertFromFile::load(Resource &res, u32 flags)
 		THROW_EXCEPTION((std::string("FT_New_Face failed. file '") + font->getId().toString() + "' probably doesn't exist.").c_str());
 	}
 
-	font->setSize(font->getSize(), font->getResolution());
+	font->setSize(font->getWidth(), font->getHeight());
 
 	font->setLoaded(true);
 

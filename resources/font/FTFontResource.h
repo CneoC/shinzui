@@ -48,8 +48,8 @@ namespace resources
 			: FontData(pData)
 			, m_face(NULL)
 			, m_library(NULL)
-			, m_size(14)
-			, m_resolution(128)
+			, m_width(16)
+			, m_height(16)
 		{
 			getType() += getName();
 		}
@@ -59,20 +59,20 @@ namespace resources
 		FT_Library &getLibrary()	{ return m_library; }
 		FT_Face &getFace()			{ return m_face; }
 
-		u32 getSize() const			{ return m_size; }
-		u32 getResolution() const	{ return m_resolution; }
+		u32 getWidth() const		{ return m_width; }
+		u32 getHeight() const		{ return m_height; }
 
-		void setSize(u32 size, u32 resolution = 128)
+		void setSize(u32 width, u32 height)
 		{ 
-			m_size = size;
-			m_resolution = resolution;
+			m_width		= width;
+			m_height	= height;
 
-			if (m_face) FT_Set_Char_Size(m_face, m_size << 6, m_size << 6, m_resolution, m_resolution);
+			if (m_face) FT_Set_Pixel_Sizes(m_face, m_width, m_height);
 		}
 
 	protected:
-		u32			m_size;
-		u32			m_resolution;
+		u32			m_width;
+		u32			m_height;
 
 		FT_Library	m_library;
 		FT_Face		m_face;

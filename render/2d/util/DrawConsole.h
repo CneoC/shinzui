@@ -17,15 +17,15 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// DrawFPS.h
+// Console.h
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#ifndef __CONSOLE_DRAWFPS_H__
-#define __CONSOLE_DRAWFPS_H__
+#ifndef __RENDER_DRAWCONSOLE_H__
+#define __RENDER_DRAWCONSOLE_H__
 
 #include "render/Renderer.h"
 #include "render/2d/FontUtil.h"
@@ -34,26 +34,26 @@
 
 namespace console
 {
-	class DrawFPS
+	class Console;
+}
+
+namespace render
+{
+	class DrawConsole
 		: public render::Renderer
 	{
 	public:
-		DrawFPS(core::Core *pCore);
-		~DrawFPS();
+		DrawConsole(core::Core *pCore, const console::Console &console);
+		~DrawConsole();
 
 		virtual void render(double delta);
 
-		double getFPS() const	{ return m_fps; }
-
 	protected:
-		render::FontUtil *m_pFontUtil;
+		const console::Console &	m_console;
 
-		resources::FontResource	m_font;
-
-		double	m_fps;
-		u32		m_frameCount;
-		double	m_frameTime;
+		render::FontUtil *			m_pFontUtil;
+		resources::FontResource		m_font;
 	};
 }
 
-#endif //__CONSOLE_DRAWFPS_H__
+#endif //__RENDER_DRAWCONSOLE_H__

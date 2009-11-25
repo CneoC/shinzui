@@ -48,13 +48,11 @@ namespace console
 	 */
 	enum Flags
 	{
-		CVAR_SAVE,			// save when serializing group
-		CVAR_LOCK,			// locked, can never change
-		CVAR_LATCH,			// locked, changes will be reflected after unlatch
-		CVAR_LATCH_DIRTY,	// value changed during latch, change pending
-		CVAR_CHANGED,		// value changed since last save
-
-		NUM_CVAR_FLAGS
+		CVAR_SAVE			= 0x0001,	//!< Save when serializing group.
+		CVAR_LOCK			= 0x0002,	//!< Locked, can never change.
+		CVAR_LATCH			= 0x0004,	//!< Locked, changes will be reflected after unlatch.
+		CVAR_LATCH_DIRTY	= 0x0008,	//!< Value changed during latch, change pending.
+		CVAR_CHANGED		= 0x0010	//!< Value changed since last save.
 	};
 
 	/**
@@ -101,7 +99,7 @@ namespace console
 		CvarDef(const std::string &name, T def, u32 flags = 0)
 			: m_name(name)
 			, m_hash(util::hashString(name))
-			, m_flags(flags)
+			, m_flags((u16)flags)
 			, m_value(def)
 			, m_latchedValue()
 			, m_defaultValue(def)
@@ -161,10 +159,10 @@ namespace console
 		//! Gets the name hash of the cvar.
 		u32 getHash() const					{ return m_hash; }
 
-		bool isSaved() const				{ return m_flags[CVAR_SAVE]; }
-		bool isLocked() const				{ return m_flags[CVAR_LOCK]; }
-		bool isLatched() const				{ return m_flags[CVAR_LATCH]; }
-		bool isChanged() const				{ return m_flags[CVAR_CHANGED]; }
+		u32 isSaved() const					{ return m_flags & CVAR_SAVE; }
+		u32 isLocked() const				{ return m_flags & CVAR_LOCK; }
+		u32 isLatched() const				{ return m_flags & CVAR_LATCH; }
+		u32 isChanged() const				{ return m_flags & CVAR_CHANGED; }
 
 		//////////////////////////////////////////////////////////////////////////
 
@@ -175,7 +173,7 @@ namespace console
 		std::string					m_name;				//!< Name of the cvar.
 		u32							m_hash;				//!< Hash of m_name for faster lookup.
 
-		std::bitset<NUM_CVAR_FLAGS>	m_flags;			//!< Active flags for this cvar.
+		u16							m_flags;			//!< Active flags for this cvar.
 
 		ValueType					m_value;			//!< Current value of the cvar.
 		ValueType					m_latchedValue;		//!< Cache value while the cvar is latched

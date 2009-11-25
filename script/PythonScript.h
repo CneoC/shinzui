@@ -17,30 +17,23 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// Entity.cpp
+// PythonScript.h
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
-#include "Entity.h"
+#ifndef __SCRIPT_PYTHONSCRIPT_H__
+#define __SCRIPT_PYTHONSCRIPT_H__
 
-#include "world/components/Component.h"
-#include "world/components/ComponentManager.h"
+#include "Script.h"
 
-using namespace world;
-
-//////////////////////////////////////////////////////////////////////////
-
-os::AtomicCounter<u32> Entity::ms_guid	= ENTITY_NONE + 1;
-
-void Entity::addComponent(const std::string &name)
+namespace script
 {
-	ComponentRef component = m_pManager->getComponent(name);
-	component->addEntity(*this);
+	class PythonScript
+		: public Script
+	{
+	public:
+	};
 }
 
-void Entity::removeComponent(const std::string &name)
-{
-	ComponentRef component = m_pManager->getComponent(name);
-	component->removeEntity(*this);
-}
+#endif /* __SCRIPT_PYTHONSCRIPT_H__ */

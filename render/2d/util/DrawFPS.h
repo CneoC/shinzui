@@ -17,30 +17,42 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// Entity.cpp
+// DrawFPS.h
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
-#include "Entity.h"
+#pragma once
 
-#include "world/components/Component.h"
-#include "world/components/ComponentManager.h"
+#ifndef __RENDER_DRAWFPS_H__
+#define __RENDER_DRAWFPS_H__
 
-using namespace world;
+#include "render/Renderer.h"
+#include "render/2d/FontUtil.h"
 
-//////////////////////////////////////////////////////////////////////////
+#include "resources/font/FontResource.h"
 
-os::AtomicCounter<u32> Entity::ms_guid	= ENTITY_NONE + 1;
-
-void Entity::addComponent(const std::string &name)
+namespace render
 {
-	ComponentRef component = m_pManager->getComponent(name);
-	component->addEntity(*this);
+	class DrawFPS
+		: public render::Renderer
+	{
+	public:
+		DrawFPS(core::Core *pCore);
+		~DrawFPS();
+
+		virtual void render(double delta);
+
+		double getFPS() const	{ return m_fps; }
+
+	protected:
+		render::FontUtil *		m_pFontUtil;
+		resources::FontResource	m_font;
+
+		double	m_fps;
+		u32		m_frameCount;
+		double	m_frameTime;
+	};
 }
 
-void Entity::removeComponent(const std::string &name)
-{
-	ComponentRef component = m_pManager->getComponent(name);
-	component->removeEntity(*this);
-}
+#endif //__RENDER_DRAWFPS_H__

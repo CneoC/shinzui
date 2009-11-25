@@ -31,15 +31,17 @@
 
 #include "world/components/ComponentDataSet.h"
 
+#include "os/current/AtomicCounter.h"
+
 #include <boost/thread/mutex.hpp>
 #include <boost/static_assert.hpp>
+
+#define ENTITY_NONE	0
 
 namespace world
 {
 	class Component;
 	class ComponentManager;
-
-#define ENTITY_NONE	0
 
 	class Entity
 	{
@@ -92,13 +94,11 @@ namespace world
 	public:
 		static u32 getNextGUID()
 		{
-			boost::lock_guard<boost::mutex> lock(ms_guidMutex);
 			return ms_guid++;
 		}
 
 	private:
-		static u32			ms_guid;
-		static boost::mutex	ms_guidMutex;
+		static os::AtomicCounter<u32>	ms_guid;
 	};
 }
 

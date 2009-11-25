@@ -69,7 +69,7 @@ namespace render
 		os::ContextBase *getLoaderContext() const	{ return m_pCore->getDriver()->getLoaderContext(); }
 
 	protected:
-		core::Core *		m_pCore;	// core class.
+		core::Core *	m_pCore;	// core class.
 	};
 }
 

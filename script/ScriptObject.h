@@ -17,30 +17,41 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// Entity.cpp
+// Script.h
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
-#include "Entity.h"
+#ifndef __SCRIPT_SCRIPTOBJECT_H__
+#define __SCRIPT_SCRIPTOBJECT_H__
 
-#include "world/components/Component.h"
-#include "world/components/ComponentManager.h"
+#include <boost/python/object.hpp>
+#include <boost/python/extract.hpp>
 
-using namespace world;
+namespace bp = boost::python;
 
-//////////////////////////////////////////////////////////////////////////
-
-os::AtomicCounter<u32> Entity::ms_guid	= ENTITY_NONE + 1;
-
-void Entity::addComponent(const std::string &name)
+namespace script
 {
-	ComponentRef component = m_pManager->getComponent(name);
-	component->addEntity(*this);
+	/**
+	 * Really simple wrapper around boost::python::object to allow easy switch between script engines.
+	 */
+	class PythonScriptObject
+	{
+	public:
+		PythonScriptObject(const bp::object &object)
+			: m_object(object)
+		{}
+
+		/**
+		 * Conversion operator to get C type from Python object.
+		 * @return Converted type
+		 */
+		template < class T >
+		operator T () const		{ return bp::extract< T >(m_object); }
+
+	protected:
+		bp::object m_object;
+	};
 }
 
-void Entity::removeComponent(const std::string &name)
-{
-	ComponentRef component = m_pManager->getComponent(name);
-	component->removeEntity(*this);
-}
+#endif /* __SCRIPT_SCRIPT_H__ */

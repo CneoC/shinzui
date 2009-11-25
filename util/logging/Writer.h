@@ -72,8 +72,8 @@ namespace logging
 	};
 
 	/**
-	* Writer that outputs messages to the command prompt
-	*/
+	 * Writer that outputs messages to the command prompt
+	 */
 	class ConsoleWriter
 		: public Writer
 	{

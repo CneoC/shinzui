@@ -155,6 +155,8 @@ void GLFontConverters::ConvertFromFT::createDisplayList(GLFontResource &font, un
 
 	// Prepare OpenGL texture.
 	glBindTexture(GL_TEXTURE_2D, font->getTexture(c));
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -182,10 +184,10 @@ void GLFontConverters::ConvertFromFT::createDisplayList(GLFontResource &font, un
 
 	// Generate quad to render character.
 	glBegin(GL_QUADS);
-	glTexCoord2d(0, 0); glVertex2i(0, 0);
-	glTexCoord2d(0, y); glVertex2i(0, bitmap.rows);
-	glTexCoord2d(x, y); glVertex2i(bitmap.width, bitmap.rows);
-	glTexCoord2d(x, 0); glVertex2i(bitmap.width, 0);
+		glTexCoord2f(0, 0); glVertex2i(0, 0);
+		glTexCoord2f(0, y); glVertex2i(0, bitmap.rows);
+		glTexCoord2f(x, y); glVertex2i(bitmap.width, bitmap.rows);
+		glTexCoord2f(x, 0); glVertex2i(bitmap.width, 0);
 	glEnd();
 
 	glPopMatrix();

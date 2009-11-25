@@ -17,15 +17,15 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// ThreadUsage.h
+// DrawThreadUsage.h
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-#ifndef __CONSOLE_THREADUSAGE_H__
-#define __CONSOLE_THREADUSAGE_H__
+#ifndef __RENDER_DRAWTHREADUSAGE_H__
+#define __RENDER_DRAWTHREADUSAGE_H__
 
 #include "render/Renderer.h"
 
@@ -35,50 +35,24 @@
 
 namespace console
 {
-	class ThreadUsage
-		: public os::Thread
+	class ThreadUsage;
+}
+
+namespace render
+{
+	class DrawThreadUsage
+		: public render::Renderer
 	{
 	public:
-		struct Activity
-		{
-			double			m_start;
-			double			m_end;
-			core::Process *	m_pProcess;
-		};
+		DrawThreadUsage(core::Core *pCore, const console::ThreadUsage &usage, double showDuration = 2);
+		~DrawThreadUsage();
 
-		struct ActivityInfo
-		{
-			typedef std::list<Activity>		ActivityList;
-
-			Activity			m_current;
-			ActivityList		m_list;
-			mutable boost::shared_mutex	m_mutex;
-		};
-
-		typedef std::vector<ActivityInfo>	ThreadList;
-
-		//////////////////////////////////////////////////////////////////////////
-
-		ThreadUsage(core::Core *pCore, double keepDuration = 2);
-
-		virtual bool run();
-
-		//////////////////////////////////////////////////////////////////////////
-
-		const ActivityInfo &getActivityInfo(u32 i) const
-		{
-			return m_threads[i];
-		}
-
-		double getKeepDuration() const	{ return m_keepDuration; }
-		u32 getThreadCount() const		{ return m_threadCount; }
+		virtual void render(double delta);
 
 	protected:
-		core::Core *	m_pCore;
-		double			m_keepDuration;
-		u32				m_threadCount;
-		ActivityInfo *	m_threads;
+		const console::ThreadUsage &	m_usage;
+		double							m_showDuration;
 	};
 }
 
-#endif //__CONSOLE_THREADUSAGE_H__
+#endif //__RENDER_DRAWTHREADUSAGE_H__

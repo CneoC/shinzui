@@ -17,30 +17,22 @@
 //
 //////////////////////////////////////////////////////////////////////////
 //
-// Entity.cpp
+// PythonScript.cpp
 // Copyright (c) 2009 Coen Campman
 //
 //////////////////////////////////////////////////////////////////////////
 
-#include "Entity.h"
+#include "PythonScript.h"
 
-#include "world/components/Component.h"
-#include "world/components/ComponentManager.h"
+#include <boost/python.hpp>
 
-using namespace world;
+namespace bp = boost::python;
 
-//////////////////////////////////////////////////////////////////////////
+using namespace script;
 
-os::AtomicCounter<u32> Entity::ms_guid	= ENTITY_NONE + 1;
-
-void Entity::addComponent(const std::string &name)
-{
-	ComponentRef component = m_pManager->getComponent(name);
-	component->addEntity(*this);
-}
-
-void Entity::removeComponent(const std::string &name)
-{
-	ComponentRef component = m_pManager->getComponent(name);
-	component->removeEntity(*this);
-}
+/*
+object main_module = import("__main__");
+object main_namespace = main_module.attr("__dict__");
+object ignored = exec("result = 5 ** 2", main_namespace);
+int five_squared = extract<int>(main_namespace["result"]);
+*/

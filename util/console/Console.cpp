@@ -24,12 +24,15 @@
 
 #include "Console.h"
 
+#include "util/logging/Formatter.h"
+
 using namespace console;
 
 //////////////////////////////////////////////////////////////////////////
 
-Console::Console(core::Core *pCore)
-	: Renderer(pCore)
+Console::Console(core::Core *pCore, u32 id)
+	: core::Process(pCore, id)
+	, m_scriptEngine(pCore)
 {
 }
 
@@ -37,6 +40,25 @@ Console::~Console()
 {
 }
 
-void Console::render(double delta)
+void Console::onStart()
 {
+}
+
+void Console::write(const std::string &text)
+{
+	boost::lock_guard<boost::mutex> lock(m_bufferMutex);
+	m_buffer.push_back(ConsoleLine(text)); 
+}
+
+void Console::writeLine(const std::string &line)
+{
+	boost::lock_guard<boost::mutex> lock(m_bufferMutex);
+	m_buffer.push_back(ConsoleLine(line)); 
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void GameConsoleWriter::write(logging::Message &message)
+{
+	m_console.write(m_pFormatter? m_pFormatter->format(message): message.getMessage());
 }

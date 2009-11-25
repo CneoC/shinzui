@@ -33,6 +33,7 @@ using namespace logging;
 
 boost::mutex ConsoleWriter::ms_mutex;
 boost::mutex FileWriter::ms_mutex;
+
 //////////////////////////////////////////////////////////////////////////
 
 void ConsoleWriter::write(Message &message)
