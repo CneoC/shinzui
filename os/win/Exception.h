@@ -71,4 +71,4 @@ namespace os
 
 #define THROW_EXCEPTION(REASON)    throw os::Exception(REASON, __FILE__, __LINE__)
 
-#endif /* __OS_EXCEPTION_H__ */
+#endif // __OS_EXCEPTION_H__

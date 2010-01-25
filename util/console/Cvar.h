@@ -22,6 +22,8 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
+#pragma once
+
 #ifndef __CONSOLE_CVAR_H__
 #define __CONSOLE_CVAR_H__
 
@@ -246,4 +248,4 @@ namespace console
 
 #define CVAR_INSTANCE(ID)		console::Cvar		NAME
 
-#endif /* __CONSOLE_CVAR_H__ */
+#endif // __CONSOLE_CVAR_H__

@@ -88,4 +88,4 @@ namespace console
 	};
 }
 
-#endif /* __CONSOLE_CVAR_LIST_H__ */
+#endif // __CONSOLE_CVAR_LIST_H__

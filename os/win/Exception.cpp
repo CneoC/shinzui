@@ -60,4 +60,4 @@ Exception & Exception::operator = (const Exception &e)
 	return *this;
 }
 
-#endif /* _WIN32 */
+#endif // _WIN32

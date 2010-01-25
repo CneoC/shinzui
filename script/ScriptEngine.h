@@ -22,6 +22,8 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
+#pragma once
+
 #ifndef __SCRIPT_SCRIPTENGINE_H__
 #define __SCRIPT_SCRIPTENGINE_H__
 
@@ -66,4 +68,4 @@ namespace script
 	};
 }
 
-#endif /* __SCRIPT_SCRIPTENGINE_H__ */
+#endif // __SCRIPT_SCRIPTENGINE_H__

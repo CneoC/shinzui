@@ -22,6 +22,8 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
+#pragma once
+
 #ifndef __SCRIPT_SCRIPTOBJECT_H__
 #define __SCRIPT_SCRIPTOBJECT_H__
 
@@ -54,4 +56,4 @@ namespace script
 	};
 }
 
-#endif /* __SCRIPT_SCRIPT_H__ */
+#endif // __SCRIPT_SCRIPT_H__

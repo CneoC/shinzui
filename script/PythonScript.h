@@ -22,6 +22,8 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
+#pragma once
+
 #ifndef __SCRIPT_PYTHONSCRIPT_H__
 #define __SCRIPT_PYTHONSCRIPT_H__
 
@@ -36,4 +38,4 @@ namespace script
 	};
 }
 
-#endif /* __SCRIPT_PYTHONSCRIPT_H__ */
+#endif // __SCRIPT_PYTHONSCRIPT_H__

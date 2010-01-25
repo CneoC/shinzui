@@ -37,6 +37,7 @@
 #include <render/gl/GLRenderDriver.h>
 #include <render/core/StartFrameBuffer.h>
 #include <render/core/EndFrameBuffer.h>
+#include <render/2d/swf/DrawSWF.h>
 #include <render/2d/util/DrawConsole.h>
 #include <render/2d/util/DrawFPS.h>
 #include <render/2d/util/DrawThreadUsage.h>
@@ -215,6 +216,7 @@ void main(const char *argc, int argv)
 
 		Renderer *	pRenderStart	= pCore->getDriver()->createRenderer("Start");
 		Renderer *	pStartFB		= pCore->getDriver()->createRenderer("StartFB");
+		Renderer *	pDrawSWF		= new render::DrawSWF(pCore);
 		Renderer *	pDrawFPS		= new render::DrawFPS(pCore);
 		Renderer *	pConsole		= new render::DrawConsole(pCore, console);
 		Renderer *	pThreadUsage	= new render::DrawThreadUsage(pCore, threadUsage);
@@ -226,6 +228,7 @@ void main(const char *argc, int argv)
 			->link(pStartFB)
 			->link(pScene)
 			->link(pEndFB)
+			->link(pDrawSWF)
 			->link(pConsole)
 			->link(pThreadUsage)
 			->link(pDrawFPS)
